@@ -37,12 +37,12 @@ export class LoginComponent {
       if (this.loginForm.valid) {
         console.log('Enviando datos:', this.loginForm.value);
 
-        this.authService.login(this.loginForm.value).subscribe({
-          
+        this.authService.login(this.loginForm.value).subscribe({          
           next: (response) => {
             console.log('¡Login exitoso!', response);
             //console.log('Token:', response.token);
             this.storageService.saveToken(response.token);
+            this.storageService.saveUser(response);
             
             this.router.navigate(['/dashboard']);
           },        

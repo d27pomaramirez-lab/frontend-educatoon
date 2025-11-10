@@ -19,5 +19,11 @@ export class AuthService {
   login(credentials: any): Observable<LoginResponse> {    
     return this.http.post<LoginResponse>(`${BASE_URL}/auth/login`, credentials);
   }
+
+  register(data: any): Observable<string> {
+    return this.http.post(`${BASE_URL}/auth/register-student`, data, { 
+      responseType: 'text' 
+    });
+  }
   
 }

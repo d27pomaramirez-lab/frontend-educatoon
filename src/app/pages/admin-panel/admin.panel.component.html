@@ -1,0 +1,90 @@
+<div class="admin-container">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="admin-form">
+    <h2>Crear Nuevo Usuario</h2>
+    <p>Crear una cuenta que se activará inmediatamente.</p>
+
+    <div class="form-group">
+      <label for="nombres">Nombres</label>
+      <input type="text" id="nombres" formControlName="nombres">
+      @if (userForm.get('nombres')?.invalid && userForm.get('nombres')?.touched) {
+        <div class="error-msg">Nombres son requeridos.</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="apellidos">Apellidos</label>
+      <input type="text" id="apellidos" formControlName="apellidos">
+      @if (userForm.get('apellidos')?.invalid && userForm.get('apellidos')?.touched) {
+        <div class="error-msg">Apellidos son requeridos.</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="dni">DNI</label>
+      <input type="text" id="dni" formControlName="dni">
+      @if (userForm.get('dni')?.invalid && userForm.get('dni')?.touched) {
+        <div class="error-msg">DNI debe tener 8 dígitos.</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="text" id="telefono" formControlName="telefono">
+      @if (userForm.get('telefono')?.invalid && userForm.get('telefono')?.touched) {
+        <div class="error-msg">Teléfono es requerido.</div>
+      }
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+      <label for="email">Correo Electrónico</label>
+      <input type="email" id="email" formControlName="email">
+      @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+        <div class="error-msg">
+          @if (userForm.get('email')?.errors?.['required']) {
+            <span>Correo es requerido.</span>
+          }
+          @if (userForm.get('email')?.errors?.['email']) {
+            <span>Debe ser un correo válido.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña Temporal</label>
+      <input type="password" id="password" formControlName="password">
+      @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
+        <div class="error-msg">Contraseña debe tener al menos 6 caracteres.</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="nombreRol">Rol del Usuario</label>
+      <select id="nombreRol" formControlName="nombreRol" class="form-select">
+        @for (rol of rolesDisponibles; track rol) {
+          <option [value]="rol">{{ rol }}</option>
+        }
+      </select>
+    </div>
+
+    @if (userForm.get('nombreRol')?.value === 'ROL_DOCENTE') {
+      <div class="form-group">
+        <label for="especialidad">Especialidad</label>
+        <input type="text" id="especialidad" formControlName="especialidad">
+      </div>
+    }
+
+    @if (successMessage) {
+      <div class="server-success-msg">{{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="server-error-msg">{{ errorMessage }}</div>
+    }
+
+    <button type="submit" [disabled]="userForm.invalid" class="btn-crear">
+      Crear Usuario
+    </button>
+  </form>
+</div>
