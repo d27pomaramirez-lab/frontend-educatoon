@@ -37,6 +37,12 @@
       }
     </div>
     
+    @if (errorMessage) {
+      <div class="server-error-msg">
+        {{ errorMessage }}
+      </div>
+    }
+
     <button type="submit" [disabled]="loginForm.invalid" class="btn-login">Ingresar</button>
   </form>
 </div>

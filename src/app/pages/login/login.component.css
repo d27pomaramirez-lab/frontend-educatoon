@@ -1,4 +1,4 @@
-/* en src/app/pages/login/login.component.css */
+
 .login-container {
   display: flex;
   justify-content: center;
@@ -68,4 +68,14 @@
   color: #e63946;
   font-size: 0.85rem;
   margin-top: 0.25rem;
+}
+
+.server-error-msg {
+  color: #e63946;
+  background-color: #fbebee;
+  border: 1px solid #e63946;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }

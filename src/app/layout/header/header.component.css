@@ -33,3 +33,11 @@
   padding: 0.5rem 1rem;
   border-radius: 5px;
 }
+
+.btn-logout {
+  background-color: #dc3545;
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}

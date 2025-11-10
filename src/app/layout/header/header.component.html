@@ -7,11 +7,18 @@
     <li>
       <a routerLink="/inicio">Inicio</a>
     </li>
-    <li>
-      <a routerLink="/login">Iniciar sesión</a>
-    </li>
-    <li>
-      <a routerLink="/registro" class="btn-register">Regístrate</a>
-    </li>
+    
+    @if (!isLoggedIn) {
+      <li>
+        <a routerLink="/login">Iniciar sesión</a>
+      </li>
+      <li>
+        <a routerLink="/registro" class="btn-register">Regístrate</a>
+      </li>
+    } @else {
+      <li>
+        <a (click)="logout()" class="btn-logout">Cerrar sesión</a>
+      </li>
+    }
   </ul>
 </nav>
