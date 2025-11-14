@@ -15,6 +15,9 @@ import { StorageService } from '../../services/storage.service';
 })
 export class HeaderComponent implements OnInit {
     isLoggedIn = false;
+    userEmail: string | null = null;
+    isAdmin = false;
+    isCoordinador = false;
 
     constructor(
       private storageService: StorageService,
@@ -24,6 +27,20 @@ export class HeaderComponent implements OnInit {
     ngOnInit(): void {
       this.storageService.isLoggedIn$.subscribe(status => {
         this.isLoggedIn = status;
+
+        if (status) {
+          const usuario = this.storageService.getUser();
+          this.userEmail = usuario.email;
+          
+          const rol = usuario.authorities[0]?.authority;
+          
+          this.isAdmin = (rol === 'ROL_ADMINISTRADOR');
+          this.isCoordinador = (rol === 'ROL_COORDINADOR');
+        } else {
+          this.userEmail = null;
+          this.isAdmin = false;
+          this.isCoordinador = false;
+        }
       });
     }
 

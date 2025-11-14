@@ -87,4 +87,36 @@
       Crear Usuario
     </button>
   </form>
+
+  <div class="approval-panel">
+    <h2>Solicitudes Pendientes</h2>
+
+    @if (usuariosPendientes.length === 0) {
+      <p class="empty-msg">No hay solicitudes pendientes de aprobación.</p>
+    }
+    @else {
+      <table class="approval-table">
+        <thead>
+          <tr>
+            <th>Nombre Completo</th>
+            <th>Email</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosPendientes; track usuario.id) {
+            <tr>
+              <td>{{ usuario.perfil.nombres }} {{ usuario.perfil.apellidos }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                <button (click)="onAprobar(usuario.id)" class="btn-approve">
+                  Aprobar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
 </div>

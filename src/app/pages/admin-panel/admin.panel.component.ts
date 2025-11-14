@@ -1,8 +1,8 @@
 // en src/app/pages/admin-panel/admin-panel.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { UsuarioService, AdminCrearUsuarioRequest } from '../../services/usuario.service';
+import { UsuarioService, AdminCrearUsuarioRequest, Usuario } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-admin-panel',
@@ -22,6 +22,8 @@ export class AdminPanelComponent {
 
   rolesDisponibles = ['ROL_DOCENTE', 'ROL_COORDINADOR', 'ROL_ADMINISTRADOR'];
 
+  usuariosPendientes: Usuario[] = [];
+
   constructor(private usuarioService: UsuarioService) {
     this.userForm = new FormGroup({
       nombres: new FormControl('', [Validators.required]),
@@ -32,6 +34,35 @@ export class AdminPanelComponent {
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       nombreRol: new FormControl(this.rolesDisponibles[0], [Validators.required]),
       especialidad: new FormControl('')
+    });
+  }
+
+  ngOnInit(): void {
+    this.cargarPendientes();
+  }
+
+  cargarPendientes(): void {
+    this.usuarioService.getUsuariosPendientes().subscribe({
+      next: (data) => {
+        this.usuariosPendientes = data;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error al cargar usuarios pendientes.';
+        console.error(err);
+      }
+    });
+  }
+
+  onAprobar(id: string): void {
+    this.usuarioService.aprobarUsuario(id).subscribe({
+      next: (response) => {
+        this.successMessage = response;
+        this.cargarPendientes(); 
+      },
+      error: (err) => {
+        this.errorMessage = 'Error al aprobar el usuario.';
+        console.error(err);
+      }
     });
   }
 
@@ -56,4 +87,6 @@ export class AdminPanelComponent {
       });
     }
   }
+
+
 }

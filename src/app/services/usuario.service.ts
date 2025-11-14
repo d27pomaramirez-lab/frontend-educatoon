@@ -14,18 +14,47 @@ export interface AdminCrearUsuarioRequest {
   especialidad?: string;
 }
 
+export interface Usuario {
+  id: string;
+  email: string;
+  enabled: boolean;
+  perfil: {
+    nombres: string;
+    apellidos: string;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
-  //private apiUrl = `${BASE_URL}/admin/usuarios`;
+    //private apiUrl = `${BASE_URL}/admin/usuarios`;
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { }
 
-  crearUsuario(data: AdminCrearUsuarioRequest): Observable<string> {
-    return this.http.post(`${BASE_URL}/admin/usuarios/crear`, data, { 
-      responseType: 'text' }
-    );
-  }
+    crearUsuario(data: AdminCrearUsuarioRequest): Observable<string> {
+      return this.http.post(`${BASE_URL}/admin/usuarios/crear`, data, { 
+        responseType: 'text' }
+      );
+    }
+
+    getUsuariosPendientes(): Observable<Usuario[]> {
+      return this.http.get<Usuario[]>(`${BASE_URL}/admin/usuarios/pendientes`);
+    }
+
+    aprobarUsuario(id: string): Observable<string> {
+      return this.http.post(
+        `${BASE_URL}/admin/usuarios/aprobar/${id}`,
+        null,
+        { responseType: 'text' }
+      );
+    }
+
+    validarDocumentos(id: string): Observable<string> {
+      return this.http.post(`${BASE_URL}/coordinador/validar-documentos/${id}`, null, { 
+        responseType: 'text'}
+      );
+    }
+
 }
