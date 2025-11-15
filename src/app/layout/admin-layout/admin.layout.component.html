@@ -1,0 +1,12 @@
+<div class="admin-wrapper" [class.collapsed]="isSidebarCollapsed">
+
+  <app-sidebar 
+    [isCollapsed]="isSidebarCollapsed" 
+    [class.collapsed]="isSidebarCollapsed"
+    (toggleRequest)="toggleSidebar()">
+  </app-sidebar>
+
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

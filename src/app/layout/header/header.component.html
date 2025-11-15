@@ -1,40 +1,59 @@
-<nav class="header-nav">
-  <div class="logo">
-    <a routerLink="/inicio">Educatoon</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container-fluid">
+
+    <a class="navbar-brand fw-bold" routerLink="/inicio">Educatoon</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/nosotros">Nosotros</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/contactanos">Contáctanos</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ms-auto">
+
+        @if (!isLoggedIn) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">Iniciar sesión</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/registro" class="btn btn-primary ms-2">Regístrate</a>
+          </li>
+        }
+
+        @else {
+          <li class="nav-item">
+            <span class="navbar-text me-2">Hola, {{ userEmail }}</span>
+          </li>
+
+          @if (isAdmin) {
+            <li class="nav-item">
+              <a routerLink="/admin" class="btn btn-warning me-2">Panel Admin</a>
+            </li>
+          }
+
+          @if (isCoordinador) {
+            <li class="nav-item">
+              <a routerLink="/coordinador" class="btn btn-info me-2 text-white">Panel Coord.</a>
+            </li>
+          }
+
+          <li class="nav-item">
+            <button (click)="logout()" class="btn btn-danger">Cerrar sesión</button>
+          </li>
+        }
+      </ul>
+    </div>
   </div>
-
-  <ul class="nav-links">
-    <li>
-      <a routerLink="/inicio">Inicio</a>
-    </li>
-
-    @if (!isLoggedIn) {
-      <li>
-        <a routerLink="/login">Iniciar sesión</a>
-      </li>
-      <li>
-        <a routerLink="/registro" class="btn-register">Regístrate</a>
-      </li>
-    } 
-    @else {
-      <li>
-        <span class="welcome-msg">Hola, {{ userEmail }}</span>
-      </li>
-      
-      @if (isAdmin) {
-        <li>
-          <a routerLink="/admin" class="btn-admin">Panel Admin</a>
-        </li>
-      }
-      
-      @if (isCoordinador || isAdmin) {
-        <li>
-          <a routerLink="/coordinador" class="btn-coord">Panel Coordinador</a>
-        </li>
-      }
-      <li>
-        <a (click)="logout()" class="btn-logout">Cerrar sesión</a>
-      </li>
-    }
-  </ul>
 </nav>

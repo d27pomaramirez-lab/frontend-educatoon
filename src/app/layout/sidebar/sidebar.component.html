@@ -1,0 +1,50 @@
+<nav class="sidebar">
+  <div class="sidebar-header">
+
+    @if (!isCollapsed) {
+      <h3>Educatoon</h3>
+    }
+
+    <button class="toggle-btn" (click)="onToggle()">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+
+  @if (!isCollapsed) {
+    <span class="user-email">{{ userEmail }}</span>
+  }
+
+  <ul class="sidebar-nav">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <i class="bi bi-house-door-fill"></i>
+        @if (!isCollapsed) { <span class="link-text">Dashboard</span> }
+      </a>
+    </li>
+
+    @if (isCoordinador) {
+      <li>
+        <a routerLink="/coordinador" routerLinkActive="active">
+          <i class="bi bi-clipboard-check-fill"></i>
+          @if (!isCollapsed) { <span class="link-text">Panel Coordinador</span> }
+        </a>
+      </li>
+    }
+
+    @if (isAdmin) {
+      <li>
+        <a routerLink="/admin" routerLinkActive="active">
+          <i class="bi bi-gear-fill"></i>
+          @if (!isCollapsed) { <span class="link-text">Panel Admin</span> }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="sidebar-footer">
+    <a (click)="logout()" class="logout-link">
+      <i class="bi bi-box-arrow-left"></i>
+      @if (!isCollapsed) { <span class="link-text">Cerrar Sesión</span> }
+    </a>
+  </div>
+</nav>

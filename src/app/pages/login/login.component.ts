@@ -40,15 +40,11 @@ export class LoginComponent {
         this.authService.login(this.loginForm.value).subscribe({          
           next: (response) => {
             console.log('¡Login exitoso!', response);
-            //console.log('Token:', response.token);
-            this.storageService.saveToken(response.token);
-            this.storageService.saveUser(response);
-            
+            this.storageService.saveSession(response, response.token);            
             this.router.navigate(['/dashboard']);
           },        
           error: (err) => {
-            console.error('Error en el login:', err);
-            
+            console.error('Error en el login:', err);            
             if (err.status === 401 || err.status === 403) {
               this.errorMessage = 'Correo o contraseña incorrectos.';
             } else {

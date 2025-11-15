@@ -10,10 +10,17 @@ const USER_KEY = 'auth-user';
 export class StorageService {
 
     private loggedIn = new BehaviorSubject<boolean>(this.isLoggedIn());
-
-    constructor() { }
-
     isLoggedIn$ = this.loggedIn.asObservable();
+
+    constructor() { }    
+
+    public saveSession(user: any, token: string): void {
+      window.localStorage.removeItem(TOKEN_KEY);
+      window.localStorage.removeItem(USER_KEY);  
+      window.localStorage.setItem(TOKEN_KEY, token);      
+      window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+      this.loggedIn.next(true);
+    }
 
     signOut(): void {
       window.localStorage.removeItem(TOKEN_KEY);
@@ -24,7 +31,6 @@ export class StorageService {
     public saveToken(token: string): void {
       window.localStorage.removeItem(TOKEN_KEY);
       window.localStorage.setItem(TOKEN_KEY, token);
-      this.loggedIn.next(true);
     }
 
     public getToken(): string | null {

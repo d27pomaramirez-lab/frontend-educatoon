@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { UsuarioService, AdminCrearUsuarioRequest, Usuario } from '../../services/usuario.service';
+import { UsuarioService, AdminCrearUsuarioRequest, UsuarioPendienteDTO } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-admin-panel',
@@ -22,7 +22,7 @@ export class AdminPanelComponent {
 
   rolesDisponibles = ['ROL_DOCENTE', 'ROL_COORDINADOR', 'ROL_ADMINISTRADOR'];
 
-  usuariosPendientes: Usuario[] = [];
+  usuariosPendientes: UsuarioPendienteDTO[] = [];
 
   constructor(private usuarioService: UsuarioService) {
     this.userForm = new FormGroup({
@@ -60,7 +60,7 @@ export class AdminPanelComponent {
         this.cargarPendientes(); 
       },
       error: (err) => {
-        this.errorMessage = 'Error al aprobar el usuario.';
+        this.errorMessage = err.error || 'Error al aprobar el usuario.';
         console.error(err);
       }
     });

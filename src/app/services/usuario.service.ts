@@ -14,14 +14,14 @@ export interface AdminCrearUsuarioRequest {
   especialidad?: string;
 }
 
-export interface Usuario {
+export interface UsuarioPendienteDTO {
   id: string;
   email: string;
+  nombres: string;
+  apellidos: string;
+  telefono: string;
+  documentosValidados: boolean;
   enabled: boolean;
-  perfil: {
-    nombres: string;
-    apellidos: string;
-  }
 }
 
 @Injectable({
@@ -39,8 +39,8 @@ export class UsuarioService {
       );
     }
 
-    getUsuariosPendientes(): Observable<Usuario[]> {
-      return this.http.get<Usuario[]>(`${BASE_URL}/admin/usuarios/pendientes`);
+    getUsuariosPendientes(): Observable<UsuarioPendienteDTO[]> {
+      return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/admin/usuarios/pendientes`);
     }
 
     aprobarUsuario(id: string): Observable<string> {
@@ -55,6 +55,10 @@ export class UsuarioService {
       return this.http.post(`${BASE_URL}/coordinador/validar-documentos/${id}`, null, { 
         responseType: 'text'}
       );
+    }
+
+    getUsuariosPendientesParaCoordinador(): Observable<UsuarioPendienteDTO[]> {
+      return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/coordinador/pendientes`);
     }
 
 }

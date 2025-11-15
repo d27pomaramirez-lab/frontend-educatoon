@@ -5,16 +5,44 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AdminPanelComponent } from './pages/admin-panel/admin.panel.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { CoordinadorPanelComponent } from './pages/coordinador-panel/coordinador.panel.component';
+import { PublicLayoutComponent } from './layout/public-layout/public.layout.component';
+import { AdminLayoutComponent } from './layout/admin-layout/admin.layout.component';
 import { authGuard } from './core/auth.guard';
 import { roleGuard } from './core/role.guard';
 
-export const routes: Routes = [    
-    { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-    { path: 'inicio', component: HomeComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'registro', component: RegisterComponent },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-    { path: 'admin', component: AdminPanelComponent, canActivate: [authGuard, roleGuard], data: { roles: ['ROL_ADMINISTRADOR'] } },
-    { path: 'coordinador', component: CoordinadorPanelComponent, canActivate: [authGuard, roleGuard], data: { roles: ['ROL_COORDINADOR', 'ROL_ADMINISTRADOR'] } },
-    { path: '**', redirectTo: 'inicio' } 
+export const routes: Routes = [   
+
+  {
+    path: '',
+    component: PublicLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+      { path: 'inicio', component: HomeComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'registro', component: RegisterComponent },
+    ]
+  },
+
+  {
+    path: '', 
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { 
+        path: 'admin', 
+        component: AdminPanelComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ADMINISTRADOR'] }
+      },
+      {
+        path: 'coordinador',
+        component: CoordinadorPanelComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
+      }
+    ]
+  },
+
+  { path: '**', redirectTo: 'inicio' }
 ];
