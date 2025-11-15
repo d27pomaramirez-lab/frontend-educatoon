@@ -11,7 +11,7 @@ import { StorageService } from '../../services/storage.service';
     CommonModule
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
     isLoggedIn = false;
@@ -42,6 +42,31 @@ export class HeaderComponent implements OnInit {
           this.isCoordinador = false;
         }
       });
+    }
+
+    scrollToSection(section: string): void {
+      // Si estamos en otra página, ir al inicio primero
+      if (this.router.url !== '/inicio') {
+        this.router.navigate(['/inicio']).then(() => {
+          setTimeout(() => this.scrollToElement(section), 100);
+        });
+      } else {
+        this.scrollToElement(section);
+      }
+    }
+
+    private scrollToElement(section: string): void {
+      const element = document.getElementById(section);
+      if (element) {
+        const headerHeight = 80;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     }
 
     logout(): void {

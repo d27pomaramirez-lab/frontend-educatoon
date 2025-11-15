@@ -1,56 +1,96 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-  <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand fw-bold" routerLink="/inicio">
+      <i class="fas fa-graduation-cap me-2"></i>Educatoon Perú
+    </a>
 
-    <a class="navbar-brand fw-bold" routerLink="/inicio">Educatoon</a>
-
+    <!-- Botón hamburguesa -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
 
+    <!-- Menú de navegación -->
     <div class="collapse navbar-collapse" id="navbarNav">
-
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+          <a class="nav-link" routerLink="/inicio" routerLinkActive="active" 
+             [routerLinkActiveOptions]="{exact: true}">
+            <i class="fas fa-home me-1"></i>Inicio
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/nosotros">Nosotros</a>
+          <a class="nav-link" (click)="scrollToSection('nosotros')" style="cursor: pointer;">
+            <i class="fas fa-info-circle me-1"></i>Nosotros
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/contactanos">Contáctanos</a>
+          <a class="nav-link" (click)="scrollToSection('servicios')" style="cursor: pointer;">
+            <i class="fas fa-concierge-bell me-1"></i>Servicios
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="scrollToSection('contacto')" style="cursor: pointer;">
+            <i class="fas fa-envelope me-1"></i>Contáctanos
+          </a>
         </li>
       </ul>
 
+      <!-- Botones de usuario -->
       <ul class="navbar-nav ms-auto">
-
         @if (!isLoggedIn) {
           <li class="nav-item">
-            <a class="nav-link" routerLink="/login" routerLinkActive="active">Iniciar sesión</a>
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">
+              <i class="fas fa-sign-in-alt me-1"></i>Iniciar sesión
+            </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/registro" class="btn btn-primary ms-2">Regístrate</a>
+            <a routerLink="/registro" class="btn btn-registro ms-2">
+              <i class="fas fa-user-plus me-1"></i>Regístrate
+            </a>
           </li>
         }
-
         @else {
-          <li class="nav-item">
-            <span class="navbar-text me-2">Hola, {{ userEmail }}</span>
-          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle user-menu" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle me-1"></i>{{ userEmail }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <span class="dropdown-item-text small text-muted">
+                  <i class="fas fa-shield-alt me-1"></i>
+                  {{ isAdmin ? 'Administrador' : isCoordinador ? 'Coordinador' : 'Estudiante' }}
+                </span>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              
+              @if (isAdmin) {
+                <li>
+                  <a routerLink="/admin" class="dropdown-item">
+                    <i class="fas fa-cog me-2"></i>Panel Admin
+                  </a>
+                </li>
+              }
 
-          @if (isAdmin) {
-            <li class="nav-item">
-              <a routerLink="/admin" class="btn btn-warning me-2">Panel Admin</a>
-            </li>
-          }
+              @if (isCoordinador) {
+                <li>
+                  <a routerLink="/coordinador" class="dropdown-item">
+                    <i class="fas fa-users me-2"></i>Panel Coordinador
+                  </a>
+                </li>
+              }
 
-          @if (isCoordinador) {
-            <li class="nav-item">
-              <a routerLink="/coordinador" class="btn btn-info me-2 text-white">Panel Coord.</a>
-            </li>
-          }
-
-          <li class="nav-item">
-            <button (click)="logout()" class="btn btn-danger">Cerrar sesión</button>
+              <li>
+                <a routerLink="/perfil" class="dropdown-item">
+                  <i class="fas fa-id-card me-2"></i>Mi Perfil
+                </a>
+              </li>
+              <li>
+                <button (click)="logout()" class="dropdown-item text-danger">
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
+                </button>
+              </li>
+            </ul>
           </li>
         }
       </ul>

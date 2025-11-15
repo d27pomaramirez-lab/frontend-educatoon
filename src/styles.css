@@ -1,13 +1,26 @@
-
+/* Solo imports esenciales */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '@fortawesome/fontawesome-free/css/all.css';
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-
-.navbar-nav.mx-auto .nav-link {
-  font-weight: 500;
-  color: #555; 
+/* Variables de colores */
+:root {
+  --educatoon-celeste: #6EC1E4;
+  --educatoon-celeste-claro: #87CEEB;
+  --educatoon-celeste-oscuro: #4A90E2;
+  --educatoon-gradiente: linear-gradient(135deg, #6EC1E4, #87CEEB);
+  --header-dark: #2c3e50;
+  --header-darker: #34495e;
 }
 
-.navbar-nav.mx-auto .nav-link.active {
-  color: #007bff !important;
-  font-weight: 700;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 80px; /* Ajustado para header fijo */
+  background: #f8f9fa;
+}
+
+/* Asegurar que el contenido esté por debajo del header */
+main {
+  position: relative;
+  z-index: 1;
 }

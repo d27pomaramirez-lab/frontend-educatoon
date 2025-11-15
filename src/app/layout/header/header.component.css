@@ -1,0 +1,142 @@
+/* Header oscuro elegante */
+.custom-navbar {
+  background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.custom-navbar .navbar-brand {
+  color: #fff !important;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.custom-navbar .navbar-brand:hover {
+  color: #6EC1E4 !important;
+  transform: translateY(-1px);
+}
+
+.custom-navbar .nav-link {
+  color: #ecf0f1 !important;
+  font-weight: 500;
+  margin: 0 0.3rem;
+  padding: 0.5rem 1rem !important;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.custom-navbar .nav-link:hover {
+  color: #6EC1E4 !important;
+  background: rgba(110, 193, 228, 0.1);
+  transform: translateY(-1px);
+}
+
+.custom-navbar .nav-link.active {
+  color: #6EC1E4 !important;
+  background: rgba(110, 193, 228, 0.15);
+  font-weight: 600;
+}
+
+.custom-navbar .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #6EC1E4;
+  border-radius: 50%;
+}
+
+/* Botón de registro destacado */
+.btn-registro {
+  background: linear-gradient(135deg, #6EC1E4, #87CEEB) !important;
+  border: none;
+  color: #2c3e50 !important;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(110, 193, 228, 0.3);
+}
+
+.btn-registro:hover {
+  background: linear-gradient(135deg, #87CEEB, #6EC1E4) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(110, 193, 228, 0.4);
+  color: #2c3e50 !important;
+}
+
+/* Dropdown personalizado */
+.custom-navbar .dropdown-menu {
+  background: #2c3e50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  padding: 0.5rem;
+}
+
+.custom-navbar .dropdown-item {
+  color: #ecf0f1;
+  border-radius: 10px;
+  margin: 0.2rem 0;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.custom-navbar .dropdown-item:hover {
+  background: rgba(110, 193, 228, 0.2);
+  color: #6EC1E4;
+}
+
+.custom-navbar .dropdown-divider {
+  border-color: rgba(236, 240, 241, 0.1);
+}
+
+/* User menu destacado */
+.user-menu {
+  background: rgba(110, 193, 228, 0.1);
+  border-radius: 20px;
+  padding: 0.5rem 1rem !important;
+  border: 1px solid rgba(110, 193, 228, 0.2);
+}
+
+/* Navbar toggler personalizado */
+.custom-navbar .navbar-toggler {
+  border: 1px solid rgba(236, 240, 241, 0.2);
+  padding: 0.25rem 0.5rem;
+}
+
+.custom-navbar .navbar-toggler:focus {
+  box-shadow: 0 0 0 2px rgba(110, 193, 228, 0.5);
+}
+
+.custom-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .custom-navbar .navbar-nav {
+    text-align: center;
+    margin: 1rem 0;
+  }
+  
+  .custom-navbar .nav-link {
+    margin: 0.2rem 0;
+  }
+  
+  .btn-registro {
+    margin-top: 0.5rem;
+    display: block;
+    text-align: center;
+  }
+  
+  .custom-navbar .dropdown-menu {
+    text-align: center;
+  }
+}
