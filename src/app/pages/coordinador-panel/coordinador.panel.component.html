@@ -1,57 +1,56 @@
 <div class="panel-container">
-  <h2>Panel de Coordinador: Validar Documentos</h2>
+  <h2>Validar Documentos</h2>
   <p>Verifique los documentos físicos del estudiante y marque como "Validado".</p>
 
   @if (successMessage) {
-    <div class="server-success-msg">{{ successMessage }}</div>
+  <div class="server-success-msg">{{ successMessage }}</div>
   }
   @if (errorMessage) {
-    <div class="server-error-msg">{{ errorMessage }}</div>
+  <div class="server-error-msg">{{ errorMessage }}</div>
   }
 
   @if (usuariosPendientes.length === 0) {
-    <p class="empty-msg">No hay solicitudes pendientes.</p>
+  <p class="empty-msg">No hay solicitudes pendientes.</p>
   }
 
   @else {
-    <table class="panel-table">
-      <thead>
-        <tr>
-          <th>Nombres</th>
-          <th>Apellidos</th>
-          <th>Email</th>
-          <th>Teléfono</th>
-          <th>Docs. Validados</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (usuario of usuariosPendientes; track usuario.id) {
-          <tr>
-            <td>{{ usuario.nombres }}</td>
-            <td>{{ usuario.apellidos }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{{ usuario.telefono }}</td>
-
-            <td>
-              @if (usuario.documentosValidados) {
-                <span class="status-validated">✓ Validado</span>
-              } @else {
-                <span class="status-pending">✗ Pendiente</span>
-              }
-            </td>
-
-            <td>
-              <button 
-                (click)="onValidar(usuario.id)" 
-                class="btn-validate"
-                [disabled]="usuario.documentosValidados">
-                Validar
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <table class="approval-table">
+    <thead>
+      <tr>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Sexo</th>
+        <th>Rol</th>
+        <th>Docs. Validados</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of usuariosPendientes; track usuario.id) {
+      <tr>
+        <td>{{ usuario.nombres }}</td>
+        <td>{{ usuario.apellidos }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.telefono }}</td>
+        <td>{{ usuario.sexo }}</td>
+        <td>{{ usuario.rolNombre }}</td>
+        <td>
+          @if (usuario.documentosValidados) {
+          <span class="status-validated">✓ Validado</span>
+          } @else {
+          <span class="status-pending">✗ Pendiente</span>
+          }
+        </td>
+        <td>
+          <button (click)="onValidar(usuario.id)" class="btn-validate" [disabled]="usuario.documentosValidados">
+            Validar
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
   }
 </div>

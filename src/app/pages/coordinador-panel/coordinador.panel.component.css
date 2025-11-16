@@ -15,21 +15,20 @@
   padding: 2rem;
 }
 
-.panel-table {
+.approval-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1.5rem;
 }
 
-.panel-table th,
-.panel-table td {
+.approval-table th,
+.approval-table td {
   border: 1px solid #eee;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   text-align: left;
-  vertical-align: middle;
+  word-wrap: break-word;
 }
 
-.panel-table th {
+.approval-table th {
   background-color: #f8f9fa;
   font-weight: 600;
 }
@@ -38,6 +37,7 @@
   color: #28a745;
   font-weight: 600;
 }
+
 .status-pending {
   color: #dc3545;
   font-weight: 600;
@@ -47,7 +47,7 @@
   padding: 0.4rem 0.8rem;
   border: none;
   border-radius: 4px;
-  background-color: #007bff;
+  background-color: #2bb12b;
   color: white;
   font-weight: 600;
   cursor: pointer;

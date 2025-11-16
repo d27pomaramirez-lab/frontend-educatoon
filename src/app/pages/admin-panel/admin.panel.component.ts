@@ -30,10 +30,16 @@ export class AdminPanelComponent {
       apellidos: new FormControl('', [Validators.required]),
       dni: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]),
       telefono: new FormControl('', [Validators.required]),
+      fechaNacimiento: new FormControl('', [Validators.required]),
+      sexo: new FormControl('', [Validators.required]),
+      estadoCivil: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       nombreRol: new FormControl(this.rolesDisponibles[0], [Validators.required]),
-      especialidad: new FormControl('')
+      especialidad: new FormControl(''),
+      universidadPostular: new FormControl(''),
+      carreraPostular: new FormControl(''),
+      colegioProcedencia: new FormControl('')
     });
   }
 

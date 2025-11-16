@@ -1,10 +1,34 @@
-.admin-form-container,
-.approval-panel {
+.admin-panel-container {
   background: white;
   padding: 2.5rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  height: 100%;
+  width: 100%;
+}
+
+.approval-panel {
+  margin-top: 2rem;
+}
+
+.form-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.form-section legend {
+  float: none;
+  width: auto;
+  padding: 0 0.5rem;
+  margin-left: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.form-section .form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-group {
@@ -24,7 +48,7 @@
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   background-color: white;
 }
 
@@ -40,10 +64,15 @@
   cursor: pointer;
 }
 
-hr {
-  margin: 1.5rem 0;
-  border: 0;
-  border-top: 1px solid #eee;
+.btn-crear:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
 
 .approval-panel h2 {
@@ -60,7 +89,6 @@ hr {
 .approval-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; 
 }
 
 .approval-table th,
@@ -101,17 +129,20 @@ hr {
   cursor: not-allowed;
 }
 
-.server-success-msg, .server-error-msg {
+.server-success-msg,
+.server-error-msg {
   border-radius: 4px;
   padding: 0.75rem;
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
 .server-success-msg {
   color: #155724;
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
 }
+
 .server-error-msg {
   color: #e63946;
   background-color: #fbebee;

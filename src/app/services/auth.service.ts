@@ -9,6 +9,20 @@ interface LoginResponse {
   authorities: any[];
 }
 
+export interface RegistroEstudianteRequest {
+  email: string;
+  password: string;
+  nombres: string;
+  apellidos: string;
+  dni: string;
+  telefono: string;
+  sexo: string;
+  estadoCivil: string;
+  fechaNacimiento: Date;
+  carreraPostular: string;
+  universidadPostular: string;
+  colegioProcedencia: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +34,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${BASE_URL}/auth/login`, credentials);
   }
 
-  register(data: any): Observable<string> {
+  register(data: RegistroEstudianteRequest): Observable<string> {
     return this.http.post(`${BASE_URL}/auth/register-student`, data, { 
       responseType: 'text' 
     });

@@ -8,10 +8,16 @@ export interface AdminCrearUsuarioRequest {
   apellidos: string;
   dni: string;
   telefono: string;
+  sexo: string;                
+  estadoCivil: string;        
+  fechaNacimiento: Date;
   email: string;
   password: string;
   nombreRol: string;
   especialidad?: string;
+  carreraPostular?: string;     
+  universidadPostular?: string;
+  colegioProcedencia?: string;
 }
 
 export interface UsuarioPendienteDTO {
@@ -20,6 +26,8 @@ export interface UsuarioPendienteDTO {
   nombres: string;
   apellidos: string;
   telefono: string;
+  sexo: string;
+  rolNombre: string;
   documentosValidados: boolean;
   enabled: boolean;
 }

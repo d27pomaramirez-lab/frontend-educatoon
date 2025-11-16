@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, RegistroEstudianteRequest } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -29,8 +29,16 @@ export class RegisterComponent {
       apellidos: new FormControl('', [Validators.required]),
       dni: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]),
       telefono: new FormControl('', [Validators.required]),
+      sexo: new FormControl('', [Validators.required]),
+      estadoCivil: new FormControl('', [Validators.required]), 
+      fechaNacimiento: new FormControl('', [Validators.required]),
+
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)])
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+
+      carreraPostular: new FormControl('', [Validators.required]),
+      universidadPostular: new FormControl('', [Validators.required]), 
+      colegioProcedencia: new FormControl('', [Validators.required]),
     });
   }
 
@@ -40,6 +48,9 @@ export class RegisterComponent {
 
     if (this.registerForm.valid) {
       console.log('Enviando solicitud:', this.registerForm.value);
+      
+      const requestData: RegistroEstudianteRequest = this.registerForm.value;
+
       this.authService.register(this.registerForm.value).subscribe({
         next: (response) => {
           console.log('Respuesta:', response);
