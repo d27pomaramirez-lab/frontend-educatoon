@@ -23,13 +23,35 @@ export interface AdminCrearUsuarioRequest {
 export interface UsuarioPendienteDTO {
   id: string;
   email: string;
+  rolNombre: string;
+  enabled: boolean;
   nombres: string;
   apellidos: string;
+  dni: string;               
   telefono: string;
   sexo: string;
-  rolNombre: string;
+  estadoCivil: string;      
+  fechaNacimiento: Date;   
   documentosValidados: boolean;
-  enabled: boolean;
+  carreraPostular: string;   
+  universidadPostular: string; 
+  colegioProcedencia: string;  
+  especialidad?: string;       
+}
+export interface ActualizarUsuarioRequest {
+  email: string;
+  password?: string;
+  nombres: string;
+  apellidos: string;
+  dni: string;
+  telefono: string;
+  sexo: string;
+  estadoCivil: string;
+  fechaNacimiento: Date;
+  carreraPostular?: string;
+  universidadPostular?: string;
+  colegioProcedencia?: string;
+  especialidad?: string;
 }
 
 @Injectable({
@@ -69,4 +91,28 @@ export class UsuarioService {
       return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/coordinador/pendientes`);
     }
 
-}
+    getTodosLosUsuarios(): Observable<UsuarioPendienteDTO[]> {
+      return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/admin/usuarios/todos`);
+    }
+
+    desactivarUsuario(id: string): Observable<string> {
+      return this.http.delete(
+        `${BASE_URL}/admin/usuarios/desactivar/${id}`, 
+        { responseType: 'text' }
+      );
+    }
+
+    getUsuarioById(id: string): Observable<UsuarioPendienteDTO> {
+      return this.http.get<UsuarioPendienteDTO>(`${BASE_URL}/admin/usuarios/${id}`);
+    }
+
+    actualizarUsuario(id: string, data: ActualizarUsuarioRequest): Observable<string> {
+      return this.http.put(
+        `${BASE_URL}/admin/usuarios/actualizar/${id}`,
+        data,
+        { responseType: 'text' }
+      );
+    }
+
+
+  }

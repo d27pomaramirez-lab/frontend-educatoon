@@ -1,0 +1,132 @@
+<div class="edit-panel-container">
+
+  <div class="panel-header">
+    <h2>Editar Usuario</h2>
+    <button (click)="onVolver()" class="btn-back">
+      ← Volver a la lista
+    </button>
+  </div>
+
+  @if (isLoading) {
+  <p class="loading-msg">Cargando datos del usuario...</p>
+  }
+
+  @else {
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="admin-form">
+    <div class="row">
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Datos Personales</legend>
+
+          <div class="form-group">
+            <label for="nombres">Nombres</label>
+            <input type="text" id="nombres" formControlName="nombres">
+          </div>
+
+          <div class="form-group">
+            <label for="apellidos">Apellidos</label>
+            <input type="text" id="apellidos" formControlName="apellidos">
+          </div>
+
+          <div class="form-group">
+            <label for="dni">DNI</label>
+            <input type="text" id="dni" formControlName="dni">
+          </div>
+
+          <div class="form-group">
+            <label for="fechaNacimiento">Fecha de Nacimiento</label>
+            <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento">
+          </div>
+
+          <div class="form-group">
+            <label for="sexo">Sexo</label>
+            <select id="sexo" formControlName="sexo" class="form-select">
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="estadoCivil">Estado Civil</label>
+            <select id="estadoCivil" formControlName="estadoCivil" class="form-select">
+              <option value="Soltero(a)">Soltero(a)</option>
+              <option value="Casado(a)">Casado(a)</option>
+            </select>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Datos de Usuario y Rol</legend>
+          <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" formControlName="telefono">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" formControlName="email">
+          </div>
+
+          <div class="form-group">
+            <label for="password">Nueva Contraseña (Opcional)</label>
+            <div class="input-group">
+              <input type="password" id="password" formControlName="password" placeholder="">
+              <button class="btn-lock" (click)="togglePasswordLock($event)">
+                @if (passwordLocked) {
+                <i class="bi bi-lock-fill"></i> } @else {
+                <i class="bi bi-unlock-fill"></i> }
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="nombreRol">Rol (No se puede cambiar)</label>
+            <input type="text" id="nombreRol" formControlName="nombreRol" class="form-select" [disabled]="true">
+          </div>
+        </fieldset>
+
+        @if (userForm.get('nombreRol')?.value === 'ROL_DOCENTE' || userForm.get('nombreRol')?.value ===
+        'ROL_ESTUDIANTE') {
+        <fieldset class="form-section">
+          <legend>Datos Específicos del Rol</legend>
+
+          @if (userForm.get('nombreRol')?.value === 'ROL_DOCENTE') {
+          <div class="form-group">
+            <label for="especialidad">Especialidad</label>
+            <input type="text" id="especialidad" formControlName="especialidad">
+          </div>
+          }
+
+          @if (userForm.get('nombreRol')?.value === 'ROL_ESTUDIANTE') {
+          <div class="form-group">
+            <label for="universidadPostular">Universidad</label>
+            <input type="text" id="universidadPostular" formControlName="universidadPostular">
+          </div>
+
+          <div class="form-group">
+            <label for="carreraPostular">Carrera</label>
+            <input type="text" id="carreraPostular" formControlName="carreraPostular">
+          </div>
+
+          <div class="form-group">
+            <label for="colegioProcedencia">Colegio</label>
+            <input type="text" id="colegioProcedencia" formControlName="colegioProcedencia">
+          </div>
+          }
+        </fieldset>
+        }
+      </div>
+    </div> @if (successMessage) {
+    <div class="server-success-msg">{{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+    <div class="server-error-msg">{{ errorMessage }}</div>
+    }
+    <button type="submit" [disabled]="userForm.invalid || userForm.pristine || isLoading" class="btn-save">
+      Guardar Cambios
+    </button>
+  </form>
+  }
+</div>

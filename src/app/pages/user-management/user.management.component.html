@@ -1,0 +1,180 @@
+<div class="admin-form-container">
+  <h2>Crear Nuevo Usuario</h2>
+  <p>Crear una cuenta (Docente, Coordinador o Admin).</p>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="admin-form">
+    <div class="row">
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Datos Personales</legend>
+          <div class="form-group">
+            <label for="nombres">Nombres</label>
+            <input type="text" id="nombres" formControlName="nombres">
+            @if (userForm.get('nombres')?.invalid && userForm.get('nombres')?.touched) {
+            <div class="error-msg">Nombres son requeridos.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="apellidos">Apellidos</label>
+            <input type="text" id="apellidos" formControlName="apellidos">
+            @if (userForm.get('apellidos')?.invalid && userForm.get('apellidos')?.touched) {
+            <div class="error-msg">Apellidos son requeridos.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="dni">DNI</label>
+            <input type="text" id="dni" formControlName="dni">
+            @if (userForm.get('dni')?.invalid && userForm.get('dni')?.touched) {
+            <div class="error-msg">DNI debe tener 8 dígitos.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" formControlName="telefono">
+            @if (userForm.get('telefono')?.invalid && userForm.get('telefono')?.touched) {
+            <div class="error-msg">Teléfono es requerido.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="fechaNacimiento">Fecha de Nacimiento</label>
+            <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento">
+            @if (userForm.get('fechaNacimiento')?.invalid && userForm.get('fechaNacimiento')?.touched) {
+            <div class="error-msg">Apellidos son requeridos.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="sexo">Sexo</label>
+            <select id="sexo" formControlName="sexo" class="form-select">...</select>
+            @if (userForm.get('sexo')?.invalid && userForm.get('sexo')?.touched) {
+            <div class="error-msg">Apellidos son requeridos.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="estadoCivil">Estado Civil</label>
+            <select id="estadoCivil" formControlName="estadoCivil" class="form-select">...</select>
+            @if (userForm.get('estadoCivil')?.invalid && userForm.get('estadoCivil')?.touched) {
+            <div class="error-msg">Apellidos son requeridos.</div>
+            }
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Datos de Usuario y Rol</legend>
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" formControlName="email">
+          </div>
+          <div class="form-group">
+            <label for="password">Contraseña Temporal</label>
+            <input type="password" id="password" formControlName="password">
+          </div>
+          <div class="form-group">
+            <label for="nombreRol">Rol del Usuario</label>
+            <select id="nombreRol" formControlName="nombreRol" class="form-select">
+              @for (rol of rolesDisponibles; track rol) {
+              <option [value]="rol">{{ rol }}</option>
+              }
+            </select>
+          </div>
+        </fieldset>
+
+        @if (userForm.get('nombreRol')?.value === 'ROL_DOCENTE' || userForm.get('nombreRol')?.value ===
+        'ROL_ESTUDIANTE') {
+        <fieldset class="form-section">
+          <legend>Datos Específicos del Rol</legend>
+
+          @if (userForm.get('nombreRol')?.value === 'ROL_DOCENTE') {
+          <div class="form-group">
+            <label for="especialidad">Especialidad</label>
+            <input type="text" id="especialidad" formControlName="especialidad">
+          </div>
+          }
+
+          @if (userForm.get('nombreRol')?.value === 'ROL_ESTUDIANTE') {
+          <div class="form-group">
+            <label for="universidadPostular">Universidad</label>
+            <input type="text" id="universidadPostular" formControlName="universidadPostular">
+          </div>
+          <div class="form-group">
+            <label for="carreraPostular">Carrera</label>
+            <input type="text" id="carreraPostular" formControlName="carreraPostular">
+          </div>
+          <div class="form-group">
+            <label for="colegioProcedencia">Colegio</label>
+            <input type="text" id="colegioProcedencia" formControlName="colegioProcedencia">
+          </div>
+          }
+        </fieldset>
+        }
+        <button type="submit" [disabled]="userForm.invalid" class="btn-crear">
+          Crear Usuario
+        </button>
+      </div>
+
+    </div>
+
+    @if (formSuccessMessage) {
+    <div class="server-success-msg">{{ formSuccessMessage }}</div>
+    }
+    @if (formErrorMessage) {
+    <div class="server-error-msg">{{ formErrorMessage }}</div>
+    }
+  </form>
+</div>
+
+<div class="admin-panel-container all-users-panel">
+  <h2>Todos los Usuarios Registrados</h2>
+
+  @if (tableErrorMessage) {
+  <div class="server-error-msg">{{ tableErrorMessage }}</div>
+  }
+
+  @if (todosLosUsuarios.length === 0 && !tableErrorMessage) {
+  <p class="empty-msg">No se encontraron usuarios registrados.</p>
+  }
+  @else {
+  <table class="panel-table">
+    <thead>
+      <tr>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Estado (Cuenta)</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of todosLosUsuarios; track usuario.id) {
+      <tr>
+        <td>{{ usuario.nombres }}</td>
+        <td>{{ usuario.apellidos }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.rolNombre }}</td>
+        <td>
+          @if (usuario.enabled) {
+          <span class="status-validated">Activo</span>
+          } @else {
+          <span class="status-pending">Pendiente</span>
+          }
+        </td>
+        <td>
+          <button 
+          class="btn-edit" 
+          [routerLink]="['/gestion-usuarios/editar', usuario.id]"> 
+            Editar
+          </button>
+          <button (click)="onDesactivar(usuario.id)" class="btn-delete" [disabled]="!usuario.enabled"> @if
+            (usuario.enabled) {
+            <span>Desactivar</span> } @else {
+            <span>Desactivado</span> }
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</div>

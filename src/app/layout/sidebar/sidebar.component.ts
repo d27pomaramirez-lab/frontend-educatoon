@@ -1,4 +1,3 @@
-// en src/app/layout/sidebar/sidebar.component.ts
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -46,7 +45,6 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  // Esta función es llamada por el botón de hamburguesa
   onToggle(): void {
     this.toggleRequest.emit();
   }

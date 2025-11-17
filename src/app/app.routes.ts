@@ -7,6 +7,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { CoordinadorPanelComponent } from './pages/coordinador-panel/coordinador.panel.component';
 import { PublicLayoutComponent } from './layout/public-layout/public.layout.component';
 import { AdminLayoutComponent } from './layout/admin-layout/admin.layout.component';
+import { UserManagementComponent } from './pages/user-management/user.management.component';
+import { EditUserComponent } from './pages/edit-user/edit.user.component';
 import { authGuard } from './core/auth.guard';
 import { roleGuard } from './core/role.guard';
 
@@ -40,6 +42,20 @@ export const routes: Routes = [
         component: CoordinadorPanelComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_COORDINADOR'] }
+      },
+      {
+        path: 'gestion-usuarios',
+        component: UserManagementComponent,
+        canActivate: [authGuard, roleGuard], 
+        data: {
+          roles: ['ROL_ADMINISTRADOR']
+        }
+      },
+      {
+        path: 'gestion-usuarios/editar/:id',
+        component: EditUserComponent,
+        canActivate: [authGuard, roleGuard], 
+        data: { roles: ['ROL_ADMINISTRADOR'] }
       }
     ]
   },
