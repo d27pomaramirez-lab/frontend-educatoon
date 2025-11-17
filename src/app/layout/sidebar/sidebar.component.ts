@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit {
   @Output() toggleRequest = new EventEmitter<void>();
 
   isLoggedIn = false;
-  userEmail: string | null = null;
+  userFullName: string | null = null;
   isAdmin = false;
   isCoordinador = false;
 
@@ -32,13 +32,13 @@ export class SidebarComponent implements OnInit {
     this.storageService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
       if (status) {
-        const usuario = this.storageService.getUser();
-        this.userEmail = usuario.email;
+        const usuario = this.storageService.getUser(); 
+        this.userFullName = `${usuario.nombres} ${usuario.apellidos}`;
         const rol = usuario.authorities[0]?.authority;
         this.isAdmin = (rol === 'ROL_ADMINISTRADOR');
         this.isCoordinador = (rol === 'ROL_COORDINADOR');
       } else {
-        this.userEmail = null;
+        this.userFullName = null;
         this.isAdmin = false;
         this.isCoordinador = false;
       }

@@ -15,7 +15,7 @@ import { StorageService } from '../../services/storage.service';
 })
 export class HeaderComponent implements OnInit {
     isLoggedIn = false;
-    userEmail: string | null = null;
+    userFullName: string | null = null;
     isAdmin = false;
     isCoordinador = false;
 
@@ -30,14 +30,13 @@ export class HeaderComponent implements OnInit {
 
         if (status) {
           const usuario = this.storageService.getUser();
-          this.userEmail = usuario.email;
+          this.userFullName = `${usuario.nombres} ${usuario.apellidos}`;
           
-          const rol = usuario.authorities[0]?.authority;
-          
+          const rol = usuario.authorities[0]?.authority;          
           this.isAdmin = (rol === 'ROL_ADMINISTRADOR');
           this.isCoordinador = (rol === 'ROL_COORDINADOR');
         } else {
-          this.userEmail = null;
+          this.userFullName = null;
           this.isAdmin = false;
           this.isCoordinador = false;
         }

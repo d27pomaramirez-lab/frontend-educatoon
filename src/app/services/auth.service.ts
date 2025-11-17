@@ -7,6 +7,8 @@ interface LoginResponse {
   token: string;
   email: string;
   authorities: any[];
+  nombres: string;    
+  apellidos: string;
 }
 
 export interface RegistroEstudianteRequest {

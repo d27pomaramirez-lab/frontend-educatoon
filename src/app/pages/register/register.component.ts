@@ -19,6 +19,7 @@ export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  showPassword = false;
 
   constructor(
     private authService: AuthService,
@@ -66,4 +67,11 @@ export class RegisterComponent {
       });
     }
   }
+
+  togglePasswordVisibility(event: Event): void {
+    event.preventDefault();
+    this.showPassword = !this.showPassword;
+  }
+
+
 }

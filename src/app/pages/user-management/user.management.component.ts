@@ -24,6 +24,7 @@ export class UserManagementComponent implements OnInit {
 
   todosLosUsuarios: UsuarioPendienteDTO[] = [];
   tableErrorMessage: string | null = null;
+  showPassword = false;
 
   constructor(private usuarioService: UsuarioService) {
     this.userForm = new FormGroup({
@@ -98,4 +99,11 @@ export class UserManagementComponent implements OnInit {
       });
     }
   }
+
+  togglePasswordVisibility(event: Event): void {
+    event.preventDefault();
+    this.showPassword = !this.showPassword;
+  }
+
+  
 }

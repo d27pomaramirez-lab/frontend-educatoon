@@ -1,9 +1,8 @@
-/* Solo imports esenciales */
+
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import '@fortawesome/fontawesome-free/css/all.css';
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-/* Variables de colores */
 :root {
   --educatoon-celeste: #6EC1E4;
   --educatoon-celeste-claro: #87CEEB;
@@ -15,12 +14,25 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding-top: 80px; /* Ajustado para header fijo */
+  padding-top: 80px;
   background: #f8f9fa;
 }
 
-/* Asegurar que el contenido esté por debajo del header */
 main {
   position: relative;
   z-index: 1;
+}
+
+.btn .fa-solid {
+  margin-right: 0.5rem;
+}
+
+.input-group .btn-outline-secondary {
+  min-width: 42px; 
+  border-color: #ccc; 
+}
+
+.input-group .btn-outline-secondary .fa-solid {
+  margin-right: 0; 
+  vertical-align: middle;
 }
