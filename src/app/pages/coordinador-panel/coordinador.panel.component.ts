@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsuarioService, UsuarioPendienteDTO } from '../../services/usuario.service';
+import { UsuarioService} from '../../services/usuario.service';
+import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
 
 @Component({
   selector: 'app-coordinador-panel',
@@ -12,7 +13,7 @@ import { UsuarioService, UsuarioPendienteDTO } from '../../services/usuario.serv
   styleUrl: './coordinador.panel.component.css',
 })
 export class CoordinadorPanelComponent {
-    usuariosPendientes: UsuarioPendienteDTO[] = [];
+    usuariosPendientes: UsuarioPendienteResponse[] = [];
     errorMessage: string | null = null;
     successMessage: string | null = null;
 

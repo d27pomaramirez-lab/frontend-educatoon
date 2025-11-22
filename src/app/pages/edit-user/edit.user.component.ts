@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { UsuarioService, ActualizarUsuarioRequest, UsuarioPendienteDTO } from '../../services/usuario.service';
+import { UsuarioService} from '../../services/usuario.service';
+import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
+import { ActualizarUsuarioRequest } from '../../dto/request/ActualizarUsuarioRequest';
 
 @Component({
   selector: 'app-edit-user',
@@ -66,7 +68,7 @@ export class EditUserComponent implements OnInit {
     }
   }
 
-  preRellenarFormulario(usuario: UsuarioPendienteDTO): void {
+  preRellenarFormulario(usuario: UsuarioPendienteResponse): void {
     this.userForm.patchValue({
       nombres: usuario.nombres,
       apellidos: usuario.apellidos,

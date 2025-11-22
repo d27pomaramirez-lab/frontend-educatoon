@@ -17,16 +17,23 @@
   <ul class="sidebar-nav">
     <li>
       <a routerLink="/dashboard" routerLinkActive="active">
-        <i class="bi bi-house-door-fill"></i>
+        <i class="bi bi-house-door-fill me-2.5"></i>
         @if (!isCollapsed) { <span class="link-text">Dashboard</span> }
       </a>
     </li>
 
     @if (isCoordinador) {
     <li>
-      <a routerLink="/coordinador" routerLinkActive="active">
+      <a routerLink="/coordinador" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"> 
         <i class="bi bi-clipboard-check-fill"></i>
-        @if (!isCollapsed) { <span class="link-text">Panel Coordinador</span> }
+        @if (!isCollapsed) { <span class="link-text">Validar Documentos</span> }
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/coordinador/asesorias" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) { <span class="link-text">Gestionar Asesorías</span> }
       </a>
     </li>
     }
@@ -35,16 +42,16 @@
     <li>
       <a routerLink="/admin" routerLinkActive="active">
         <i class="bi bi-check-circle-fill"></i>
-        @if (!isCollapsed) { 
-          <span class="link-text">Aprobaciones</span> }
+        @if (!isCollapsed) {
+        <span class="link-text">Aprobaciones</span> }
       </a>
     </li>
 
     <li>
       <a routerLink="/gestion-usuarios" routerLinkActive="active">
         <i class="bi bi-people-fill"></i>
-        @if (!isCollapsed) { 
-          <span class="link-text">Gestión de Usuarios</span> }
+        @if (!isCollapsed) {
+        <span class="link-text">Gestión de Usuarios</span> }
       </a>
     </li>
     }

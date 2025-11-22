@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule} from '@angular/router';
 import { StorageService } from '../../services/storage.service';
 
 @Component({
@@ -10,7 +10,8 @@ import { StorageService } from '../../services/storage.service';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -35,16 +36,16 @@ export class LoginComponent {
       this.errorMessage = null;
       
       if (this.loginForm.valid) {
-        console.log('Enviando datos:', this.loginForm.value);
+        //console.log('Enviando datos:', this.loginForm.value);
 
         this.authService.login(this.loginForm.value).subscribe({          
           next: (response) => {
-            console.log('¡Login exitoso!', response);
+            //console.log('¡Login exitoso!', response);
             this.storageService.saveSession(response, response.token);            
             this.router.navigate(['/dashboard']);
           },        
           error: (err) => {
-            console.error('Error en el login:', err);            
+            //console.error('Error en el login:', err);            
             if (err.status === 401 || err.status === 403) {
               this.errorMessage = 'Correo o contraseña incorrectos.';
             } else {

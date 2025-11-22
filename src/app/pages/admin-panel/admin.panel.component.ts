@@ -2,7 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UsuarioService, AdminCrearUsuarioRequest, UsuarioPendienteDTO } from '../../services/usuario.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
 
 @Component({
   selector: 'app-admin-panel',
@@ -15,7 +16,7 @@ import { UsuarioService, AdminCrearUsuarioRequest, UsuarioPendienteDTO } from '.
 })
 export class AdminPanelComponent implements OnInit{
 
-  usuariosPendientes: UsuarioPendienteDTO[] = [];
+  usuariosPendientes: UsuarioPendienteResponse[] = [];
   tableErrorMessage: string | null = null;
   tableSuccessMessage: string | null = null;
 

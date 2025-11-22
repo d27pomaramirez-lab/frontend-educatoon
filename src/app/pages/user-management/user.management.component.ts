@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { UsuarioService, AdminCrearUsuarioRequest, UsuarioPendienteDTO } from '../../services/usuario.service';
+import { UsuarioService } from '../../services/usuario.service';
 import { RouterModule } from '@angular/router';
+import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
+import { AdminCrearUsuarioRequest } from '../../dto/request/AdminCrearUsuarioRequest';
 
 @Component({
   selector: 'app-user-management',
@@ -22,7 +24,7 @@ export class UserManagementComponent implements OnInit {
   formSuccessMessage: string | null = null;
   rolesDisponibles = ['ROL_DOCENTE', 'ROL_COORDINADOR', 'ROL_ADMINISTRADOR'];
 
-  todosLosUsuarios: UsuarioPendienteDTO[] = [];
+  todosLosUsuarios: UsuarioPendienteResponse[] = [];
   tableErrorMessage: string | null = null;
   showPassword = false;
 

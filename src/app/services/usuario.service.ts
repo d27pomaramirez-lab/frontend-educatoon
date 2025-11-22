@@ -2,57 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BASE_URL } from '../../utils/constants';
-
-export interface AdminCrearUsuarioRequest {
-  nombres: string;
-  apellidos: string;
-  dni: string;
-  telefono: string;
-  sexo: string;                
-  estadoCivil: string;        
-  fechaNacimiento: Date;
-  email: string;
-  password: string;
-  nombreRol: string;
-  especialidad?: string;
-  carreraPostular?: string;     
-  universidadPostular?: string;
-  colegioProcedencia?: string;
-}
-
-export interface UsuarioPendienteDTO {
-  id: string;
-  email: string;
-  rolNombre: string;
-  enabled: boolean;
-  nombres: string;
-  apellidos: string;
-  dni: string;               
-  telefono: string;
-  sexo: string;
-  estadoCivil: string;      
-  fechaNacimiento: Date;   
-  documentosValidados: boolean;
-  carreraPostular: string;   
-  universidadPostular: string; 
-  colegioProcedencia: string;  
-  especialidad?: string;       
-}
-export interface ActualizarUsuarioRequest {
-  email: string;
-  password?: string;
-  nombres: string;
-  apellidos: string;
-  dni: string;
-  telefono: string;
-  sexo: string;
-  estadoCivil: string;
-  fechaNacimiento: Date;
-  carreraPostular?: string;
-  universidadPostular?: string;
-  colegioProcedencia?: string;
-  especialidad?: string;
-}
+import { AdminCrearUsuarioRequest } from '../dto/request/AdminCrearUsuarioRequest';
+import { UsuarioPendienteResponse } from '../dto/response/UsuarioPendienteResponse';
+import { ActualizarUsuarioRequest } from '../dto/request/ActualizarUsuarioRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -69,8 +21,8 @@ export class UsuarioService {
       );
     }
 
-    getUsuariosPendientes(): Observable<UsuarioPendienteDTO[]> {
-      return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/admin/usuarios/pendientes`);
+    getUsuariosPendientes(): Observable<UsuarioPendienteResponse[]> {
+      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/pendientes`);
     }
 
     aprobarUsuario(id: string): Observable<string> {
@@ -87,12 +39,12 @@ export class UsuarioService {
       );
     }
 
-    getUsuariosPendientesParaCoordinador(): Observable<UsuarioPendienteDTO[]> {
-      return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/coordinador/pendientes`);
+    getUsuariosPendientesParaCoordinador(): Observable<UsuarioPendienteResponse[]> {
+      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/pendientes`);
     }
 
-    getTodosLosUsuarios(): Observable<UsuarioPendienteDTO[]> {
-      return this.http.get<UsuarioPendienteDTO[]>(`${BASE_URL}/admin/usuarios/todos`);
+    getTodosLosUsuarios(): Observable<UsuarioPendienteResponse[]> {
+      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/todos`);
     }
 
     desactivarUsuario(id: string): Observable<string> {
@@ -102,8 +54,8 @@ export class UsuarioService {
       );
     }
 
-    getUsuarioById(id: string): Observable<UsuarioPendienteDTO> {
-      return this.http.get<UsuarioPendienteDTO>(`${BASE_URL}/admin/usuarios/${id}`);
+    getUsuarioById(id: string): Observable<UsuarioPendienteResponse> {
+      return this.http.get<UsuarioPendienteResponse>(`${BASE_URL}/admin/usuarios/${id}`);
     }
 
     actualizarUsuario(id: string, data: ActualizarUsuarioRequest): Observable<string> {
@@ -112,6 +64,10 @@ export class UsuarioService {
         data,
         { responseType: 'text' }
       );
+    }
+
+    getUsuariosParaCoordinador(): Observable<UsuarioPendienteResponse[]> {
+      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/usuarios`);
     }
 
 

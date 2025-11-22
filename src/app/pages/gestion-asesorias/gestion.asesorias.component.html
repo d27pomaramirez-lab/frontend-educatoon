@@ -1,0 +1,162 @@
+<div class="admin-panel-container">
+  <h2>Programar Nueva Asesoría</h2>
+  <p>Agenda una sesión de refuerzo para un estudiante.</p>
+
+  <form [formGroup]="asesoriaForm" (ngSubmit)="onSubmit()" class="admin-form">
+    
+    <div class="row">
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Participantes</legend>
+          
+          <div class="form-group">
+            <label for="estudianteId">Estudiante</label>
+            <select id="estudianteId" formControlName="estudianteId" class="form-select">
+              <option value="">[Seleccione un Estudiante]</option>
+              @for (est of listaEstudiantes; track est.id) {
+                <option [value]="est.id">{{ est.nombres }} {{ est.apellidos }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="docenteId">Docente</label>
+            <select id="docenteId" formControlName="docenteId" class="form-select">
+              <option value="">[Seleccione un Docente]</option>
+              @for (doc of listaDocentes; track doc.id) {
+                <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cursoId">Curso</label>
+            <select id="cursoId" formControlName="cursoId" class="form-select">
+              <option value="">[Seleccione un Curso]</option>
+              @for (curso of listaCursos; track curso.id) {
+                <option [value]="curso.id">{{ curso.nombre }}</option>
+              }
+            </select>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Detalles de la Sesión</legend>
+          
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" formControlName="fecha">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="hora">Hora</label>
+                <input type="time" id="hora" formControlName="hora">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="duracionMinutos">Duración (minutos)</label>
+            <input type="number" id="duracionMinutos" formControlName="duracionMinutos">
+          </div>
+
+          <div class="form-group">
+            <label for="modalidad">Modalidad</label>
+            <select id="modalidad" formControlName="modalidad" class="form-select" (change)="onModalidadChange()">
+              <option value="VIRTUAL">Virtual</option>
+              <option value="PRESENCIAL">Presencial</option>
+            </select>
+          </div>
+
+          @if (asesoriaForm.get('modalidad')?.value === 'VIRTUAL') {
+            <div class="form-group">
+              <label for="enlaceReunion">Enlace de Reunión</label>
+              <input type="text" id="enlaceReunion" formControlName="enlaceReunion" placeholder="https://meet.google.com/...">
+            </div>
+          }
+
+          @if (asesoriaForm.get('modalidad')?.value === 'PRESENCIAL') {
+            <div class="form-group">
+              <label for="lugarPresencial">Lugar / Aula</label>
+              <input type="text" id="lugarPresencial" formControlName="lugarPresencial" placeholder="Ej. Aula 301">
+            </div>
+          }
+        </fieldset>
+      </div>
+    </div> <fieldset class="form-section">
+      <legend>Contenido Académico</legend>
+      <div class="form-group">
+        <label for="tema">Tema a Tratar</label>
+        <input type="text" id="tema" formControlName="tema" placeholder="Ej. Ecuaciones de segundo grado">
+      </div>
+      <div class="form-group">
+        <label for="areasRefuerzo">Áreas de Refuerzo (Opcional)</label>
+        <textarea id="areasRefuerzo" formControlName="areasRefuerzo" rows="2" class="form-control"></textarea>
+      </div>
+    </fieldset>
+
+    @if (formSuccessMessage) {
+      <div class="server-success-msg">{{ formSuccessMessage }}</div>
+    }
+    @if (formErrorMessage) {
+      <div class="server-error-msg">{{ formErrorMessage }}</div>
+    }
+
+    <button type="submit" [disabled]="asesoriaForm.invalid" class="btn-save">
+      Programar Asesoría
+    </button>
+
+  </form>
+</div>
+
+<div class="admin-panel-container all-users-panel">
+  <h2>Asesorías Programadas</h2>
+
+  @if (tableErrorMessage) {
+    <div class="server-error-msg">{{ tableErrorMessage }}</div>
+  }
+
+  @if (listaAsesorias.length === 0) {
+    <p class="empty-msg">No hay asesorías registradas.</p>
+  } @else {
+    <div class="table-responsive">
+      <table class="approval-table">
+        <thead>
+          <tr>
+            <th>Fecha y Hora</th>
+            <th>Estudiante</th>
+            <th>Docente</th>
+            <th>Tema</th>
+            <th>Modalidad</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (asesoria of listaAsesorias; track asesoria.id) {
+            <tr>
+              <td>{{ asesoria.fecha | date:'dd/MM/yyyy h:mm a' }}</td>
+              <td>{{ asesoria.nombreEstudiante }}</td>
+              <td>{{ asesoria.nombreDocente }}</td>
+              <td>{{ asesoria.tema }}</td>
+              <td>
+                @if (asesoria.modalidad === 'VIRTUAL') {
+                  <span class="badge-virtual">Virtual</span>
+                } @else {
+                  <span class="badge-presencial">Presencial</span>
+                }
+              </td>
+              <td>
+                <span class="status-pending">{{ asesoria.estado }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

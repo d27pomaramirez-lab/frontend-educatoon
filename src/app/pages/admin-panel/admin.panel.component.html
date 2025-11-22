@@ -1,5 +1,6 @@
-<div class="approval-panel">
+<div class="admin-panel-container">
   <h2>Solicitudes Pendientes</h2>
+  <p>Lista de estudiantes registrados que esperan aprobación para acceder al sistema.</p>
 
   @if (tableSuccessMessage) {
     <div class="server-success-msg">{{ tableSuccessMessage }}</div>
@@ -10,48 +11,55 @@
 
   @if (usuariosPendientes.length === 0) {
     <p class="empty-msg">No hay solicitudes pendientes de aprobación.</p>
-  }
+  } 
   @else {
-    <table class="approval-table">
-      <thead>
-        <tr>
-          <th>Nombres</th>
-          <th>Apellidos</th>
-          <th>Email</th>
-          <th>Teléfono</th>
-          <th>Sexo</th>
-          <th>Rol</th>
-          <th>Docs. Validados</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (usuario of usuariosPendientes; track usuario.id) {
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
           <tr>
-            <td>{{ usuario.nombres }}</td>
-            <td>{{ usuario.apellidos }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{{ usuario.telefono }}</td>
-            <td>{{ usuario.sexo }}</td>
-            <td>{{ usuario.rolNombre }}</td>
-            <td>
-              @if (usuario.documentosValidados) {
-                <span class="status-validated">Validado</span>
-              } @else {
-                <span class="status-pending">Pendiente</span>
-              }
-            </td>
-            <td>
-              <button 
-                (click)="onAprobar(usuario.id)" 
-                class="btn-approve"
-                [disabled]="!usuario.documentosValidados">
-                <i class="fa-solid fa-check"></i> Aprobar
-              </button>
-            </td>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Sexo</th>
+            <th>Rol</th>
+            <th>Docs. Validados</th>
+            <th>Acción</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosPendientes; track usuario.id) {
+            <tr>
+              <td>{{ usuario.nombres }}</td>
+              <td>{{ usuario.apellidos }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.telefono }}</td>
+              <td>{{ usuario.sexo || '-' }}</td> <td>
+                <span class="role-badge">{{ usuario.rolNombre }}</span>
+              </td>
+              <td>
+                @if (usuario.documentosValidados) {
+                  <span class="status-validated">
+                    <i class="fa-solid fa-check-circle"></i> Validado
+                  </span>
+                } @else {
+                  <span class="status-pending">
+                    <i class="fa-solid fa-clock"></i> Pendiente
+                  </span>
+                }
+              </td>
+              <td>
+                <button 
+                  (click)="onAprobar(usuario.id)" 
+                  class="btn-approve"
+                  [disabled]="!usuario.documentosValidados">
+                  <i class="fa-solid fa-check"></i> Aprobar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </div>

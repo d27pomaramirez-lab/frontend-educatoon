@@ -11,6 +11,7 @@ import { UserManagementComponent } from './pages/user-management/user.management
 import { EditUserComponent } from './pages/edit-user/edit.user.component';
 import { authGuard } from './core/auth.guard';
 import { roleGuard } from './core/role.guard';
+import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.asesorias.component';
 
 export const routes: Routes = [   
 
@@ -36,13 +37,7 @@ export const routes: Routes = [
         component: AdminPanelComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ADMINISTRADOR'] }
-      },
-      {
-        path: 'coordinador',
-        component: CoordinadorPanelComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ROL_COORDINADOR'] }
-      },
+      },      
       {
         path: 'gestion-usuarios',
         component: UserManagementComponent,
@@ -56,6 +51,18 @@ export const routes: Routes = [
         component: EditUserComponent,
         canActivate: [authGuard, roleGuard], 
         data: { roles: ['ROL_ADMINISTRADOR'] }
+      },
+      {
+        path: 'coordinador',
+        component: CoordinadorPanelComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
+      },
+      {
+        path: 'coordinador/asesorias',
+        component: GestionAsesoriasComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
       }
     ]
   },

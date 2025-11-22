@@ -1,43 +1,90 @@
-.approval-panel {
-  margin-top: 2rem;
+
+:host {
+  display: block;
+  width: 100%;
 }
 
-.approval-panel h2 {
+.admin-panel-container {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 95%;
+  max-width: 1400px; 
+  margin: 2rem auto; 
+}
+
+.admin-panel-container h2 {
   margin-top: 0;
-  text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.5rem;
 }
 
-.empty-msg {
-  text-align: center;
-  color: #777;
+.admin-panel-container p {
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
 }
 
-.approval-table {
+.table-responsive {
+  overflow-x: auto;
+}
+
+.panel-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
-.approval-table th,
-.approval-table td {
-  border: 1px solid #eee;
-  padding: 0.75rem;
-  text-align: left;
-  word-wrap: break-word;
-}
-
-.approval-table th {
+.panel-table th {
   background-color: #f8f9fa;
+  color: #495057;
   font-weight: 600;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.panel-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+  color: #333;
 }
 
 .status-validated {
-  color: #28a745;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35em 0.65em;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-radius: 4px;
 }
 
 .status-pending {
-  color: #dc3545;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35em 0.65em;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #842029;
+  background-color: #f8d7da;
+  border-radius: 4px;
+}
+
+.role-badge {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
@@ -45,33 +92,49 @@
   padding: 0.4rem 0.8rem;
   border: none;
   border-radius: 4px;
-  background-color: #28a745;
+  background-color: #198754;
   color: white;
   font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-approve:hover:not(:disabled) {
+  background-color: #157347;
 }
 
 .btn-approve:disabled {
-  background-color: #ccc;
+  background-color: #e9ecef;
+  color: #adb5bd;
   cursor: not-allowed;
 }
 
-.server-success-msg,
-.server-error-msg {
-  border-radius: 4px;
-  padding: 0.75rem;
+.empty-msg {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.server-success-msg, .server-error-msg {
+  padding: 1rem;
+  border-radius: 6px;
   margin-bottom: 1.5rem;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .server-success-msg {
-  color: #155724;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
 }
 
 .server-error-msg {
-  color: #e63946;
-  background-color: #fbebee;
-  border: 1px solid #e63946;
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
 }
