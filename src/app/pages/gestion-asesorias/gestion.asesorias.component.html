@@ -3,12 +3,12 @@
   <p>Agenda una sesión de refuerzo para un estudiante.</p>
 
   <form [formGroup]="asesoriaForm" (ngSubmit)="onSubmit()" class="admin-form">
-    
+
     <div class="row">
       <div class="col-md-6">
         <fieldset class="form-section">
           <legend>Participantes</legend>
-          
+
           <div class="form-group">
             <label for="estudianteId">Estudiante</label>
             <select id="estudianteId" formControlName="estudianteId" class="form-select">
@@ -44,30 +44,30 @@
       <div class="col-md-6">
         <fieldset class="form-section">
           <legend>Detalles de la Sesión</legend>
-          
+
           <div class="row">
             <div class="col-6">
               <div class="form-group">
                 <label for="fecha">Fecha</label>
-                <input type="date" id="fecha" formControlName="fecha">
+                <input type="date" id="fecha" formControlName="fecha" class="form-control">
               </div>
             </div>
             <div class="col-6">
               <div class="form-group">
                 <label for="hora">Hora</label>
-                <input type="time" id="hora" formControlName="hora">
+                <input type="time" id="hora" formControlName="hora" class="form-control">
               </div>
             </div>
           </div>
 
           <div class="form-group">
             <label for="duracionMinutos">Duración (minutos)</label>
-            <input type="number" id="duracionMinutos" formControlName="duracionMinutos">
+            <input type="number" id="duracionMinutos" formControlName="duracionMinutos" class="form-control">
           </div>
 
           <div class="form-group">
             <label for="modalidad">Modalidad</label>
-            <select id="modalidad" formControlName="modalidad" class="form-select" (change)="onModalidadChange()">
+            <select id="modalidad" formControlName="modalidad" class="form-select" (change)="onModalidadChangeCreacion()">
               <option value="VIRTUAL">Virtual</option>
               <option value="PRESENCIAL">Presencial</option>
             </select>
@@ -76,23 +76,25 @@
           @if (asesoriaForm.get('modalidad')?.value === 'VIRTUAL') {
             <div class="form-group">
               <label for="enlaceReunion">Enlace de Reunión</label>
-              <input type="text" id="enlaceReunion" formControlName="enlaceReunion" placeholder="https://meet.google.com/...">
+              <input type="text" id="enlaceReunion" formControlName="enlaceReunion" class="form-control">
             </div>
           }
 
           @if (asesoriaForm.get('modalidad')?.value === 'PRESENCIAL') {
             <div class="form-group">
               <label for="lugarPresencial">Lugar / Aula</label>
-              <input type="text" id="lugarPresencial" formControlName="lugarPresencial" placeholder="Ej. Aula 301">
+              <input type="text" id="lugarPresencial" formControlName="lugarPresencial" class="form-control">
             </div>
           }
         </fieldset>
       </div>
-    </div> <fieldset class="form-section">
+    </div> 
+
+    <fieldset class="form-section">
       <legend>Contenido Académico</legend>
       <div class="form-group">
         <label for="tema">Tema a Tratar</label>
-        <input type="text" id="tema" formControlName="tema" placeholder="Ej. Ecuaciones de segundo grado">
+        <input type="text" id="tema" formControlName="tema" class="form-control">
       </div>
       <div class="form-group">
         <label for="areasRefuerzo">Áreas de Refuerzo (Opcional)</label>
@@ -100,16 +102,14 @@
       </div>
     </fieldset>
 
-    @if (formSuccessMessage) {
-      <div class="server-success-msg">{{ formSuccessMessage }}</div>
-    }
-    @if (formErrorMessage) {
-      <div class="server-error-msg">{{ formErrorMessage }}</div>
-    }
+    @if (formSuccessMessage) { <div class="server-success-msg">{{ formSuccessMessage }}</div> }
+    @if (formErrorMessage) { <div class="server-error-msg">{{ formErrorMessage }}</div> }
 
-    <button type="submit" [disabled]="asesoriaForm.invalid" class="btn-save">
-      Programar Asesoría
-    </button>
+    <div class="d-flex gap-2">
+      <button type="submit" [disabled]="asesoriaForm.invalid" class="btn-save flex-grow-1">
+        <span><i class="fa-solid fa-calendar-plus me-1"></i> Programar Asesoría</span>
+      </button>
+    </div>
 
   </form>
 </div>
@@ -117,15 +117,13 @@
 <div class="admin-panel-container all-users-panel">
   <h2>Asesorías Programadas</h2>
 
-  @if (tableErrorMessage) {
-    <div class="server-error-msg">{{ tableErrorMessage }}</div>
-  }
+  @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
 
   @if (listaAsesorias.length === 0) {
     <p class="empty-msg">No hay asesorías registradas.</p>
   } @else {
     <div class="table-responsive">
-      <table class="approval-table">
+      <table class="panel-table">
         <thead>
           <tr>
             <th>Fecha y Hora</th>
@@ -134,6 +132,7 @@
             <th>Tema</th>
             <th>Modalidad</th>
             <th>Estado</th>
+            <th>Acciones</th> 
           </tr>
         </thead>
         <tbody>
@@ -151,7 +150,25 @@
                 }
               </td>
               <td>
-                <span class="status-pending">{{ asesoria.estado }}</span>
+                @if (asesoria.estado === 'REALIZADA') {
+                  <span class="status-validated">Realizada</span>
+                  } @if(asesoria.estado === "PROGRAMADA"){
+                    <span class="status-pending">Programada</span>
+                  }@else {
+                    <span class="status-canceled">Cancelada</span>
+                  }
+              </td>
+              <td>
+                @if (asesoria.estado === 'PROGRAMADA') {
+                  <button (click)="onEditar(asesoria)" class="btn-icon btn-icon-edit" title="Editar">
+                    <i class="fa-solid fa-pencil-alt"></i>
+                  </button>
+                  <button (click)="onEliminar(asesoria.id)" class="btn-icon btn-icon-delete" title="Cancelar">
+                    <i class="fa-solid fa-trash-alt"></i>
+                  </button>
+                } @else {
+                  <span class="text-muted small"></span>
+                }
               </td>
             </tr>
           }
@@ -160,3 +177,117 @@
     </div>
   }
 </div>
+
+@if (mostrarModalEdicion && asesoriaEnEdicion) {
+  <div class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Asesoría Programada</h3>
+        <button type="button" class="btn-close" (click)="cerrarModalEdicion()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form [formGroup]="asesoriaEditForm" (ngSubmit)="onSubmitEdicion()" class="admin-form">
+        <div class="modal-body">
+          
+          <fieldset class="form-section mb-3">
+            <legend>Información Fija</legend>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Estudiante</label>
+                  <input type="text" class="form-control" [value]="asesoriaEnEdicion.nombreEstudiante" disabled>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Docente</label>
+                  <input type="text" class="form-control" [value]="asesoriaEnEdicion.nombreDocente" disabled>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Curso</label>
+                  <input type="text" class="form-control" [value]=" " disabled>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          
+          <fieldset class="form-section">
+            <legend>Modificar Detalles</legend>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="fechaEdit">Fecha</label>
+                      <input type="date" id="fechaEdit" formControlName="fecha" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="horaEdit">Hora</label>
+                      <input type="time" id="horaEdit" formControlName="hora" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="duracionMinutosEdit">Duración (minutos)</label>
+                  <input type="number" id="duracionMinutosEdit" formControlName="duracionMinutos" class="form-control">
+                </div>
+
+                <div class="form-group">
+                  <label for="modalidadEdit">Modalidad</label>
+                  <select id="modalidadEdit" formControlName="modalidad" class="form-select">
+                    <option value="VIRTUAL">Virtual</option>
+                    <option value="PRESENCIAL">Presencial</option>
+                  </select>
+                </div>
+
+                @if (asesoriaEditForm.get('modalidad')?.value === 'VIRTUAL') {
+                  <div class="form-group">
+                    <label for="enlaceReunionEdit">Enlace de Reunión</label>
+                    <input type="text" id="enlaceReunionEdit" formControlName="enlaceReunion" class="form-control">
+                  </div>
+                }
+
+                @if (asesoriaEditForm.get('modalidad')?.value === 'PRESENCIAL') {
+                  <div class="form-group">
+                    <label for="lugarPresencialEdit">Lugar / Aula</label>
+                    <input type="text" id="lugarPresencialEdit" formControlName="lugarPresencial" class="form-control">
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="temaEdit">Tema a Tratar</label>
+                  <input type="text" id="temaEdit" formControlName="tema" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="areasRefuerzoEdit">Áreas de Refuerzo (Opcional)</label>
+                  <textarea id="areasRefuerzoEdit" formControlName="areasRefuerzo" rows="2" class="form-control"></textarea>
+                </div>
+              </div>
+            </div> 
+          </fieldset>
+
+          @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
+          @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
+        </div>
+
+        <div class="modal-footer d-flex justify-content-end gap-2">
+          <button type="button" class="btn-secondary" (click)="cerrarModalEdicion()">
+            <i class="fa-solid fa-xmark me-1"></i> Cancelar
+          </button>
+          <button type="submit" [disabled]="asesoriaEditForm.invalid" class="btn-save flex-grow-0">
+            <i class="fa-solid fa-save me-1"></i> Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
