@@ -12,6 +12,7 @@ import { EditUserComponent } from './pages/edit-user/edit.user.component';
 import { authGuard } from './core/auth.guard';
 import { roleGuard } from './core/role.guard';
 import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.asesorias.component';
+import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
 
 export const routes: Routes = [   
 
@@ -32,6 +33,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { 
+        path: 'perfil/:id',  // ← Agregar esta ruta
+        component: PerfilComponent 
+      },
       { 
         path: 'admin', 
         component: AdminPanelComponent,

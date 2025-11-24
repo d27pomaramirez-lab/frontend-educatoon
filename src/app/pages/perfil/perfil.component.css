@@ -1,0 +1,21 @@
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-group-vertical .btn {
+  margin-bottom: 0.5rem;
+}
+
+.foto-perfil img {
+  border: 3px solid #dee2e6;
+}
+
+.badge {
+  font-size: 0.875em;
+}

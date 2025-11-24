@@ -10,9 +10,24 @@
     </button>
   </div>
 
-  @if (!isCollapsed) {
-  <span class="user-email">{{ userFullName }}</span>
-  }
+  <!-- Sección de Perfil del Usuario -->
+  <div class="user-profile-section" (click)="goToPerfil()" style="cursor: pointer;">
+    @if (userProfileImage) {
+      <img [src]="userProfileImage" alt="Foto de perfil" class="profile-image">
+    } @else {
+      <div class="profile-placeholder">
+        <i class="bi bi-person-circle"></i>
+      </div>
+    }
+    
+    @if (!isCollapsed) {
+      <span class="user-email">{{ userFullName }}</span>
+      <button class="btn-profile">
+        <i class="bi bi-person me-1"></i>
+        Ver Perfil
+      </button>
+    }
+  </div>
 
   <ul class="sidebar-nav">
     <li>
