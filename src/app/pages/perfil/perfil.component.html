@@ -1,11 +1,11 @@
 <div class="container mt-4" *ngIf="!isLoading && perfil">
   <div class="row">
-    <!-- Columna Izquierda - Foto de Perfil -->
+    <!-- Columna Izquierda - Foto de Perfil (sin cambios) -->
     <div class="col-md-4">
       <div class="card">
         <div class="card-body text-center">
           <div class="foto-perfil mb-3">
-            <img [src]="fotoUrl || 'assets/default-avatar.png'" 
+            <img [src]="fotoUrl" 
                  class="rounded-circle"
                  alt="Foto de perfil"
                  style="width: 200px; height: 200px; object-fit: cover;">
@@ -17,7 +17,8 @@
             <button class="btn btn-outline-primary mb-2" (click)="fileInput.click()">
               <i class="bi bi-camera me-2"></i>Cambiar Foto
             </button>
-            <button *ngIf="fotoUrl" class="btn btn-outline-danger" (click)="eliminarFoto()">
+            <button *ngIf="fotoUrl && !fotoUrl.includes('default-avatar.png')" 
+                    class="btn btn-outline-danger" (click)="eliminarFoto()">
               <i class="bi bi-trash me-2"></i>Eliminar Foto
             </button>
           </div>
@@ -30,10 +31,17 @@
       <!-- Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Mi Perfil</h2>
-        <button class="btn btn-outline-secondary" (click)="toggleEdit()">
-          <i class="bi bi-pencil me-2"></i>
-          {{ isEditing ? 'Cancelar' : 'Editar' }}
+        <button *ngIf="!isEditing" class="btn btn-outline-primary" (click)="toggleEdit()">
+          <i class="bi bi-pencil me-2"></i>Editar Perfil
         </button>
+        <div *ngIf="isEditing" class="btn-group">
+          <button class="btn btn-success" (click)="guardarCambios()">
+            <i class="bi bi-check me-2"></i>Guardar
+          </button>
+          <button class="btn btn-secondary" (click)="cancelarEdicion()">
+            <i class="bi bi-x me-2"></i>Cancelar
+          </button>
+        </div>
       </div>
 
       <!-- Información Personal -->
@@ -44,6 +52,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
+              <!-- Campos NO editables -->
               <div class="mb-3">
                 <label class="form-label"><strong>Nombres</strong></label>
                 <p>{{ perfil.nombres }}</p>
@@ -56,16 +65,44 @@
                 <label class="form-label"><strong>DNI</strong></label>
                 <p>{{ perfil.dni }}</p>
               </div>
-            </div>
-            <div class="col-md-6">
               <div class="mb-3">
                 <label class="form-label"><strong>Email</strong></label>
                 <p>{{ perfil.email }}</p>
               </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Campos EDITABLES -->
               <div class="mb-3">
                 <label class="form-label"><strong>Teléfono</strong></label>
-                <p>{{ perfil.telefono || 'No especificado' }}</p>
+                <input *ngIf="isEditing" type="text" class="form-control" 
+                       [(ngModel)]="perfilEditado.telefono"
+                       placeholder="Ingrese su teléfono">
+                <p *ngIf="!isEditing">{{ perfil.telefono || 'No especificado' }}</p>
               </div>
+              
+              <div class="mb-3">
+                <label class="form-label"><strong>Sexo</strong></label>
+                <select *ngIf="isEditing" class="form-select" [(ngModel)]="perfilEditado.sexo">
+                  <option value="">Seleccionar</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                  <option value="Otro">Otro</option>
+                </select>
+                <p *ngIf="!isEditing">{{ perfil.sexo || 'No especificado' }}</p>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label"><strong>Estado Civil</strong></label>
+                <select *ngIf="isEditing" class="form-select" [(ngModel)]="perfilEditado.estadoCivil">
+                  <option value="">Seleccionar</option>
+                  <option value="Soltero">Soltero</option>
+                  <option value="Casado">Casado</option>
+                  <option value="Divorciado">Divorciado</option>
+                  <option value="Viudo">Viudo</option>
+                </select>
+                <p *ngIf="!isEditing">{{ perfil.estadoCivil || 'No especificado' }}</p>
+              </div>
+              
               <div class="mb-3">
                 <label class="form-label"><strong>Rol</strong></label>
                 <p><span class="badge bg-primary">{{ perfil.rol }}</span></p>
@@ -75,7 +112,7 @@
         </div>
       </div>
 
-      <!-- Información de Estudiante -->
+      <!-- Información de Estudiante (EDITABLE) -->
       <div *ngIf="perfil.rol === 'ROL_ESTUDIANTE'" class="card mt-3">
         <div class="card-header">
           <h5 class="mb-0">Información de Estudiante</h5>
@@ -89,7 +126,10 @@
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>Carrera</strong></label>
-                <p>{{ perfil.carreraPostular }}</p>
+                <input *ngIf="isEditing" type="text" class="form-control" 
+                       [(ngModel)]="perfilEditado.carreraPostular"
+                       placeholder="Ingrese la carrera">
+                <p *ngIf="!isEditing">{{ perfil.carreraPostular || 'No especificado' }}</p>
               </div>
             </div>
             <div class="col-md-6">
@@ -99,18 +139,24 @@
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>Universidad</strong></label>
-                <p>{{ perfil.universidadPostular }}</p>
+                <input *ngIf="isEditing" type="text" class="form-control" 
+                       [(ngModel)]="perfilEditado.universidadPostular"
+                       placeholder="Ingrese la universidad">
+                <p *ngIf="!isEditing">{{ perfil.universidadPostular || 'No especificado' }}</p>
               </div>
             </div>
           </div>
           <div class="mb-3">
             <label class="form-label"><strong>Colegio de Procedencia</strong></label>
-            <p>{{ perfil.colegioProcedencia }}</p>
+            <input *ngIf="isEditing" type="text" class="form-control" 
+                   [(ngModel)]="perfilEditado.colegioProcedencia"
+                   placeholder="Ingrese el colegio de procedencia">
+            <p *ngIf="!isEditing">{{ perfil.colegioProcedencia || 'No especificado' }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Información de Docente -->
+      <!-- Información de Docente (EDITABLE) -->
       <div *ngIf="perfil.rol === 'ROL_DOCENTE'" class="card mt-3">
         <div class="card-header">
           <h5 class="mb-0">Información de Docente</h5>
@@ -118,18 +164,13 @@
         <div class="card-body">
           <div class="mb-3">
             <label class="form-label"><strong>Especialidad</strong></label>
-            <p>{{ perfil.especialidad }}</p>
+            <input *ngIf="isEditing" type="text" class="form-control" 
+                   [(ngModel)]="perfilEditado.especialidad"
+                   placeholder="Ingrese la especialidad">
+            <p *ngIf="!isEditing">{{ perfil.especialidad || 'No especificado' }}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-<!-- Loading -->
-<div *ngIf="isLoading" class="text-center mt-5">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Cargando...</span>
-  </div>
-  <p class="mt-2">Cargando perfil...</p>
 </div>

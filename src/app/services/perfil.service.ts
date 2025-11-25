@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PerfilResponse } from '../dto/response/PerfilResponse';
 import { BASE_URL } from '../../utils/constants';
+import { PerfilUpdateDTO } from '../dto/request/PerrfilUpdateDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,10 @@ export class PerfilService {
   // Obtener perfil por ID (mantener por si acaso)
   getPerfil(usuarioId: string): Observable<PerfilResponse> {
     return this.http.get<PerfilResponse>(`${this.apiUrl}/${usuarioId}`);
+  }
+
+  actualizarPerfil(email: string, datos: PerfilUpdateDTO): Observable<PerfilResponse> {
+    return this.http.put<PerfilResponse>(`${this.apiUrl}/by-email/${email}`, datos);
   }
 
   // Subir foto por EMAIL

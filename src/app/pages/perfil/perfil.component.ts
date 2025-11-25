@@ -3,11 +3,13 @@ import { PerfilResponse } from '../../dto/response/PerfilResponse';
 import { PerfilService } from '../../services/perfil.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { PerfilUpdateDTO } from '../../dto/request/PerrfilUpdateDTO';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-perfil.component',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
 })
@@ -17,6 +19,7 @@ export class PerfilComponent implements OnInit {
   fotoUrl?: string;
   isLoading = true;
   isEditing = false;
+  perfilEditado: PerfilUpdateDTO = {};
 
   constructor(private route: ActivatedRoute,
     private perfilService: PerfilService) {}
@@ -33,6 +36,9 @@ export class PerfilComponent implements OnInit {
         this.perfil = perfil;
         if (perfil.fotoPerfil) {
           this.fotoUrl = this.perfilService.getFotoUrl(perfil.fotoPerfil);
+        }
+        else {
+          this.fotoUrl = 'assets/images/default-avatar.png';
         }
         this.isLoading = false;
       },
@@ -74,13 +80,39 @@ export class PerfilComponent implements OnInit {
     }
   }
 
-    toggleEdit() {
+  toggleEdit() {
     this.isEditing = !this.isEditing;
+    if (this.isEditing) {
+      // Copiar datos actuales al formulario de edición
+      this.perfilEditado = {
+        telefono: this.perfil.telefono,
+        sexo: this.perfil.sexo,
+        estadoCivil: this.perfil.estadoCivil,
+        fechaNacimiento: this.perfil.fechaNacimiento,
+        carreraPostular: this.perfil.carreraPostular,
+        universidadPostular: this.perfil.universidadPostular,
+        colegioProcedencia: this.perfil.colegioProcedencia,
+        especialidad: this.perfil.especialidad
+      };
+    }
   }
 
   guardarCambios() {
-    // Aquí puedes implementar la actualización de datos del perfil
-    console.log('Guardar cambios:', this.perfil);
+    this.perfilService.actualizarPerfil(this.userEmail, this.perfilEditado).subscribe({
+      next: (perfilActualizado) => {
+        this.perfil = perfilActualizado;
+        this.isEditing = false;
+        alert('Perfil actualizado exitosamente');
+      },
+      error: (error) => {
+        console.error('Error actualizando perfil:', error);
+        alert('Error al actualizar el perfil');
+      }
+    });
+  }
+
+  cancelarEdicion() {
     this.isEditing = false;
+    this.perfilEditado = {};
   }
 }
