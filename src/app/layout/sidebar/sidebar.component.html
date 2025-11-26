@@ -51,6 +51,13 @@
         @if (!isCollapsed) { <span class="link-text">Gestionar Asesorías</span> }
       </a>
     </li>
+
+    <li>
+      <a routerLink="/coordinador/secciones" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) { <span class="link-text">Gestionar Secciones</span> }
+      </a>
+    </li>
     }
 
     @if (isAdmin) {

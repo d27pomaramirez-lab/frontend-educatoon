@@ -1,0 +1,268 @@
+/* Estilos generales para los contenedores de paneles */
+.admin-panel-container {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 95%;
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+}
+
+.admin-panel-container h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.admin-panel-container p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Estilos para la tabla de secciones */
+.all-users-panel {
+  padding-top: 20px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.panel-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.panel-table thead th {
+  background-color: #f8f9fa;
+  padding: 12px 15px;
+  color: #495057;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.panel-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.panel-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.panel-table tbody td {
+  padding: 15px;
+  vertical-align: middle;
+  color: #495057;
+}
+
+.panel-table td:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Ajusta este valor para más o menos espacio */
+}
+
+/* Estilos para los botones de acción (Editar y Eliminar) */
+.btn-icon-edit, .btn-icon-delete {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+  color: white;
+  margin: 0;
+  transition: background-color 0.2s ease-in-out; /* Transición suave */
+}
+
+.btn-icon-edit { 
+  background-color: #ffc107; 
+  color: #000; 
+}
+
+.btn-icon-edit:hover {
+  background-color: #e0a800;
+}
+
+.btn-icon-delete { 
+  background-color: #dc3545; 
+}
+
+.btn-icon-delete:hover {
+  background-color: #c82333;
+}
+
+.btn-icon-delete:disabled { 
+  background-color: #e9ecef; 
+  color: #adb5bd; 
+}
+
+/* Mensaje para cuando no hay datos */
+.empty-msg {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+/* Estilos para el Modal de Edición */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 600px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.btn-close {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #dee2e6;
+  margin-top: 20px;
+}
+
+.form-section {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem 1.25rem; 
+  margin-bottom: 1.5rem;
+  background-color: #fcfcfc;
+}
+
+.form-section legend {
+  float: none;
+  width: auto;
+  padding: 0 0.5rem;
+  margin-left: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0d6efd;
+  margin-bottom: 0.5rem;
+}
+
+/* Estilos para los grupos de formulario y etiquetas */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Estilos para los campos de entrada y selección */
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus, 
+.form-select:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Estilos para los botones */
+.btn-save,
+.btn-secondary {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #0b5ed7;
+}
+
+.btn-save:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Estilos para mensajes de éxito y error */
+.server-success-msg, .server-error-msg {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.server-success-msg {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.server-error-msg {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}

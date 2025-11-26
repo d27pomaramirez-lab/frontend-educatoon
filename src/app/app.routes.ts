@@ -12,6 +12,7 @@ import { EditUserComponent } from './pages/edit-user/edit.user.component';
 import { authGuard } from './core/auth.guard';
 import { roleGuard } from './core/role.guard';
 import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.asesorias.component';
+import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.secciones.component'; 
 import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
 
 export const routes: Routes = [   
@@ -66,6 +67,12 @@ export const routes: Routes = [
       {
         path: 'coordinador/asesorias',
         component: GestionAsesoriasComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
+      },
+      {
+        path: 'coordinador/secciones',
+        component: GestionSeccionesComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_COORDINADOR'] }
       }

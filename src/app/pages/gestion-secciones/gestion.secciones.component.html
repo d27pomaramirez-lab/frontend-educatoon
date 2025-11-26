@@ -1,0 +1,148 @@
+<div class="admin-panel-container">
+  <h2>Registro de Sección</h2>
+  <p>Define una nueva sección para un curso, asignando un docente y capacidad.</p>
+
+  <form [formGroup]="seccionForm" (ngSubmit)="onSubmit()" class="admin-form">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="curso">Nombre del Curso</label>
+          <input type="text" id="curso" formControlName="curso" class="form-control" placeholder="Ej: Ciencia">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="docente">Docente</label>
+          <select id="docente" formControlName="docente" class="form-select">
+            <option value="">[Seleccionar Docente]</option>
+            @for (doc of listaDocentes; track doc.id) {
+              <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="aula">Aula</label>
+          <input type="text" id="aula" formControlName="aula" class="form-control" placeholder="Ej: A-101">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="capacidad">Capacidad</label>
+          <input type="number" id="capacidad" formControlName="capacidad" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    @if (formSuccessMessage) { <div class="server-success-msg">{{ formSuccessMessage }}</div> }
+    @if (formErrorMessage) { <div class="server-error-msg">{{ formErrorMessage }}</div> }
+
+    <div class="d-flex">
+      <button type="submit" [disabled]="seccionForm.invalid" class="btn-save flex-grow-1">
+        <i class="fa-solid fa-plus me-1"></i> Crear Sección
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="admin-panel-container all-users-panel">
+  <h2>Secciones Registradas</h2>
+
+  @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
+
+  @if (listaSecciones.length === 0) {
+    <p class="empty-msg">No hay secciones registradas.</p>
+  } @else {
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Curso</th>
+            <th>Docente</th>
+            <th>Aula</th>
+            <th>Capacidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (seccion of listaSecciones; track seccion.id) {
+            <tr>
+              <td>{{ seccion.codigoSeccion }}</td> 
+              <td>{{ seccion.curso }}</td>
+              <td>{{ seccion.docente }}</td>
+              <td>{{ seccion.aula }}</td>
+              <td>{{ seccion.capacidad }}</td>
+              <td>
+                <button (click)="onEditar(seccion)" class="btn-icon btn-icon-edit" title="Editar">
+                  <i class="fa-solid fa-pencil-alt"></i>
+                </button>
+                <button (click)="onEliminar(seccion.id)" class="btn-icon btn-icon-delete" title="Eliminar">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (mostrarModalEdicion && seccionEnEdicion) {
+  <div class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Sección</h3>
+        <button (click)="cerrarModalEdicion()" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="seccionEditForm" (ngSubmit)="onSubmitEdicion()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="cursoEdit">Nombre del Curso</label>
+                <input type="text" id="cursoEdit" formControlName="curso" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="docenteEdit">Docente</label>
+                <select id="docenteEdit" formControlName="docente" class="form-select">
+                  @for (doc of listaDocentes; track doc.id) {
+                    <option [value]="doc.nombres + ' ' + doc.apellidos">{{ doc.nombres }} {{ doc.apellidos }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="aulaEdit">Aula</label>
+                <input type="text" id="aulaEdit" formControlName="aula" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="capacidadEdit">Capacidad</label>
+                <input type="number" id="capacidadEdit" formControlName="capacidad" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
+          @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
+
+          <div class="modal-footer">
+            <button type="button" (click)="cerrarModalEdicion()" class="btn-secondary">Cancelar</button>
+            <button type="submit" [disabled]="seccionEditForm.invalid" class="btn-save">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
