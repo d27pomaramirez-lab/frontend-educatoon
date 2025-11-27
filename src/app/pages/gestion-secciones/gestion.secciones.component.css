@@ -1,4 +1,9 @@
-/* Estilos generales para los contenedores de paneles */
+:host {
+  display: block;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
 .admin-panel-container {
   background-color: #ffffff;
   padding: 1.5rem;
@@ -184,7 +189,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Estilos para los grupos de formulario y etiquetas */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -196,7 +200,6 @@
   color: #495057;
 }
 
-/* Estilos para los campos de entrada y selección */
 .form-control,
 .form-select {
   width: 100%;
@@ -206,6 +209,7 @@
   border-radius: 5px;
   background-color: #fff;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  height: auto;
 }
 
 .form-control:focus, 
@@ -227,6 +231,8 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: block;
+  margin-top: 1rem;
 }
 
 .btn-save:hover:not(:disabled) {

@@ -105,8 +105,8 @@
     @if (formSuccessMessage) { <div class="server-success-msg">{{ formSuccessMessage }}</div> }
     @if (formErrorMessage) { <div class="server-error-msg">{{ formErrorMessage }}</div> }
 
-    <div class="d-flex gap-2">
-      <button type="submit" [disabled]="asesoriaForm.invalid" class="btn-save flex-grow-1">
+    <div class="d-flex">
+      <button type="submit" [disabled]="asesoriaForm.invalid" class="btn-save btn-small">
         <span><i class="fa-solid fa-calendar-plus me-1"></i> Programar Asesoría</span>
       </button>
     </div>

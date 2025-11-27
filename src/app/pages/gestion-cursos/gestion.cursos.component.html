@@ -1,0 +1,166 @@
+<div class="admin-panel-container">
+  <h2>Crear Nuevo Curso</h2>
+  <p>Gestión de asignaturas y su estado en el sistema.</p>
+
+  <form [formGroup]="cursoForm" (ngSubmit)="onSubmit()" class="admin-form">
+    <div class="row">
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Detalles del Curso</legend>
+          
+          <div class="form-group">
+            <label for="nombre">Nombre del Curso</label>
+            <input type="text" id="nombre" formControlName="nombre" class="form-control">
+            @if (cursoForm.get('nombre')?.invalid && cursoForm.get('nombre')?.touched) {
+              <div class="error-msg">Nombre es requerido (máx. 100 caracteres).</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="ciclo">Ciclo / Nivel</label>
+            <input type="text" id="ciclo" formControlName="ciclo" class="form-control">
+            @if (cursoForm.get('ciclo')?.invalid && cursoForm.get('ciclo')?.touched) {
+              <div class="error-msg">Ciclo es requerido (máx. 50 caracteres).</div>
+            }
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col-md-6">
+        <fieldset class="form-section">
+          <legend>Descripción</legend>
+          
+          <div class="form-group h-100">
+            <label for="descripcion">Descripción (Opcional)</label>
+            <textarea id="descripcion" formControlName="descripcion" rows="4" class="form-control h-100"></textarea>
+            @if (cursoForm.get('descripcion')?.invalid && cursoForm.get('descripcion')?.touched) {
+              <div class="error-msg">Máximo 255 caracteres.</div>
+            }
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    @if (formSuccessMessage) { <div class="server-success-msg">{{ formSuccessMessage }}</div> }
+    @if (formErrorMessage) { <div class="server-error-msg">{{ formErrorMessage }}</div> }
+
+    <div class="d-flex"> <button type="submit" [disabled]="cursoForm.invalid" class="btn-save btn-small"> 
+      <span><i class="fa-solid fa-plus me-1"></i> Crear Curso</span>
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<div class="admin-panel-container all-users-panel">
+  <h2>Cursos Registrados</h2>
+
+  @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
+
+  @if (listaCursos.length === 0) {
+    <p class="empty-msg">No hay cursos registrados.</p>
+  } @else {
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ciclo</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (curso of listaCursos; track curso.id) {
+            <tr>
+              <td>{{ curso.nombre }}</td>
+              <td>{{ curso.ciclo }}</td>
+              <td>{{ curso.descripcion || 'N/A' }}</td>
+              <td>
+                @if (curso.estado) {
+                  <span class="status-validated">Activo</span>
+                } @else {
+                  <span class="status-canceled">Inactivo</span>
+                }
+              </td>
+              <td>
+                <button (click)="onEditar(curso)" class="btn-icon btn-icon-edit" title="Editar">
+                  <i class="fas fa-pencil-alt"></i>
+                </button>
+                <button 
+                  (click)="onCambiarEstado(curso.id, curso.nombre, curso.estado)" 
+                  [ngClass]="curso.estado ? 'btn-icon-delete' : 'btn-icon-activate'" 
+                  class="btn-icon" 
+                  [title]="curso.estado ? 'Desactivar Curso' : 'Activar Curso'">
+                  <i [class]="curso.estado ? 'fa-solid fa-trash-alt' : 'fa-solid fa-check'"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+
+@if (mostrarModalEdicion && cursoEnEdicion) {
+    <div class="modal-backdrop">
+        <div class="modal-content" style="max-width: 600px;"> <div class="modal-header">
+                <h3>Editar Curso: {{ cursoEnEdicion.nombre }}</h3>
+                <button type="button" class="btn-close" (click)="cerrarModalEdicion()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form [formGroup]="cursoEditForm" (ngSubmit)="onSubmitEdicion()" class="admin-form">
+                <div class="modal-body">
+
+                    <fieldset class="form-section mb-4">
+                        <legend>Información Fija</legend>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Estado Actual</label>
+                                    <input type="text" class="form-control" [value]="cursoEnEdicion.estado ? 'Activo' : 'Inactivo'" disabled>
+                                </div>
+                            </div>                            
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset class="form-section">
+                        <legend>Datos Editables</legend>
+                        <div class="form-group">
+                            <label for="nombreEdit">Nombre del Curso</label>
+                            <input type="text" id="nombreEdit" formControlName="nombre" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cicloEdit">Ciclo / Nivel</label>
+                            <input type="text" id="cicloEdit" formControlName="ciclo" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcionEdit">Descripción</label>
+                            <textarea id="descripcionEdit" formControlName="descripcion" rows="3" class="form-control"></textarea>
+                        </div>
+                    </fieldset>
+
+
+                    @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
+                    @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary btn-small" (click)="cerrarModalEdicion()">
+                        <i class="fa-solid fa-xmark me-1"></i> Cancelar
+                    </button>
+                    <button type="submit" [disabled]="cursoEditForm.invalid" class="btn-save btn-small">
+                        <i class="fa-solid fa-save me-1"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+}

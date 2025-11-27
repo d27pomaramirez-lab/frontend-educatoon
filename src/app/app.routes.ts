@@ -14,6 +14,7 @@ import { roleGuard } from './core/role.guard';
 import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.asesorias.component';
 import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.secciones.component'; 
 import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
+import { GestionCursosComponent } from './pages/gestion-cursos/gestion.cursos.component';
 
 export const routes: Routes = [   
 
@@ -35,7 +36,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { 
-        path: 'perfil/:id',  // ← Agregar esta ruta
+        path: 'perfil/:id',
         component: PerfilComponent 
       },
       { 
@@ -75,7 +76,13 @@ export const routes: Routes = [
         component: GestionSeccionesComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_COORDINADOR'] }
-      }
+      },
+      {
+        path: 'coordinador/cursos',
+        component: GestionCursosComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
+      },
     ]
   },
 
