@@ -5,6 +5,7 @@ import { CursoRequest } from '../dto/request/CursoRequest';
 import { CursoResponse } from '../dto/response/CursoResponse';
 import { Observable } from 'rxjs';
 import { ActualizarCursoRequest } from '../dto/request/ActualizarCursoRequest';
+import { CursoComboboxResponse } from '../dto/response/CursoComboBoxResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +30,9 @@ export class CursoService {
   cambiarEstado(id: string, activo: boolean): Observable<string> {
     return this.http.put(`${this.apiUrl}/cancelar/${id}?activo=${activo}`, null, 
       { responseType: 'text' });
+  }
+
+  listarCursosParaCombobox(): Observable<CursoComboboxResponse[]> {
+    return this.http.get<CursoComboboxResponse[]>(`${this.apiUrl}`);
   }
 }

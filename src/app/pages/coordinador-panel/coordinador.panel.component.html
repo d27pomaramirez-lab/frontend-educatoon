@@ -28,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (usuario of usuariosPendientes; track usuario.id) {
+          @for (usuario of usuariosPaginadas; track usuario.id) {
             <tr>
               <td>{{ usuario.nombres }}</td>
               <td>{{ usuario.apellidos }}</td>
@@ -62,5 +62,11 @@
         </tbody>
       </table>
     </div>
+    
+    <app-pagination
+        [totalPaginas]="totalPaginas"
+        [paginaActual]="paginaActual"
+        (irAPagina)="aplicarPaginacion($event)">
+    </app-pagination>
   }
 </div>

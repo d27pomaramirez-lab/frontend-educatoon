@@ -24,6 +24,8 @@ export class SidebarComponent implements OnInit {
   userProfileImage: string | null = null;
   isAdmin = false;
   isCoordinador = false;
+  isDocente = false;
+  isEstudiante = false;
   userEmail: string | null = null;
 
   constructor(
@@ -43,6 +45,8 @@ export class SidebarComponent implements OnInit {
         const rol = usuario.authorities[0]?.authority;
         this.isAdmin = (rol === 'ROL_ADMINISTRADOR');
         this.isCoordinador = (rol === 'ROL_COORDINADOR');
+        this.isDocente = (rol === 'ROL_DOCENTE');
+        this.isEstudiante = (rol === 'ROL_ESTUDIANTE');
         
         // Cargar foto de perfil
         this.cargarFotoPerfil();
@@ -52,6 +56,8 @@ export class SidebarComponent implements OnInit {
         this.userEmail = null;
         this.isAdmin = false;
         this.isCoordinador = false;
+        this.isDocente = false;
+        this.isEstudiante = false;
       }
     });
   }
@@ -61,21 +67,17 @@ export class SidebarComponent implements OnInit {
       this.perfilService.getPerfilByEmail(this.userEmail).subscribe({
         next: (perfil) => {
           if (perfil.fotoPerfil) {
-            // Si tiene foto, usar la del servidor
             this.userProfileImage = this.perfilService.getFotoUrl(perfil.fotoPerfil);
           } else {
-            // Si no tiene foto, usar imagen por defecto
             this.userProfileImage = 'assets/images/default-avatar.png';
           }
         },
         error: (error) => {
           console.error('Error cargando foto de perfil:', error);
-          // En caso de error, usar imagen por defecto
           this.userProfileImage = 'assets/images/default-avatar.png';
         }
       });
     } else {
-      // Si no hay email, usar imagen por defecto
       this.userProfileImage = 'assets/images/default-avatar.png';
     }
   }

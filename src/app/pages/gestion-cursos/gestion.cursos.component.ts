@@ -1,4 +1,5 @@
-import { CommonModule } from '@angular/common';
+import { PaginationService } from './../../services/pagination.service';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CursoResponse } from '../../dto/response/CursoResponse';
@@ -7,11 +8,12 @@ import { CursoRequest } from '../../dto/request/CursoRequest';
 import { ActualizarCursoRequest } from '../../dto/request/ActualizarCursoRequest';
 import Swal from 'sweetalert2';
 import { SweetAlertResult } from 'sweetalert2';
+import { PaginationComponent } from '../../../utils/pagination.component';
 
 @Component({
   selector: 'app-gestion-cursos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PaginationComponent],
   templateUrl: './gestion.cursos.component.html',
   styleUrl: './gestion.cursos.component.css',
 })
@@ -29,9 +31,16 @@ export class GestionCursosComponent implements OnInit {
   editFormErrorMessage: string | null = null;
   editFormSuccessMessage: string | null = null;
 
+  // Variables de Paginación
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
+  totalPaginas: number = 0;
+  cursosPaginadas: CursoResponse[] = [];
+
   constructor(
     private fb: FormBuilder,
-    private cursoService: CursoService
+    private cursoService: CursoService,
+    private paginationService: PaginationService
   ) {
     this.cursoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.maxLength(100)]],
@@ -53,7 +62,10 @@ export class GestionCursosComponent implements OnInit {
   cargarCursos(): void {
     this.tableErrorMessage = null;
     this.cursoService.listarCursos().subscribe({
-      next: (data) => this.listaCursos = data,
+      next: (data) => {
+        this.listaCursos = data;
+        this.aplicarPaginacion(this.paginaActual);
+      },
       error: (err) => this.tableErrorMessage = 'Error al cargar la lista de cursos.'
     });
   }
@@ -76,6 +88,18 @@ export class GestionCursosComponent implements OnInit {
       },
       error: (err) => this.formErrorMessage = err.error || 'Error al crear el curso.'
     });
+  }
+
+  // Método unificado para aplicar y actualizar la paginación
+  aplicarPaginacion(pagina: number): void {
+    const { data, totalPages } = this.paginationService.getPaginatedData(
+      this.listaCursos,
+      pagina,
+      this.elementosPorPagina
+    );
+    this.cursosPaginadas = data;
+    this.totalPaginas = totalPages;
+    this.paginaActual = pagina;
   }
 
   onEditar(curso: CursoResponse): void {

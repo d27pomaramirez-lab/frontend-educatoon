@@ -14,6 +14,8 @@ import { ActualizarAsesoriaRequest } from '../dto/request/ActualizarAsesoriaRequ
 
 export class AsesoriaService {
     private apiUrl = `${BASE_URL}/coordinador/asesorias`;
+    private docenteApiUrl = `${BASE_URL}/docente/asesorias`;
+    private estudianteApiUrl = `${BASE_URL}/estudiante`;
 
     constructor(private http: HttpClient) { }
 
@@ -39,4 +41,19 @@ export class AsesoriaService {
       );
     }
     
+    listarAsesoriasDocente(): Observable<AsesoriaResponse[]> {
+        return this.http.get<AsesoriaResponse[]>(this.docenteApiUrl);
+    }
+
+    cambiarEstadoDocente(id: string, nuevoEstado: 'REALIZADA' | 'CANCELADA'): Observable<string> {
+        return this.http.put(
+            `${this.docenteApiUrl}/estado/${id}?nuevoEstado=${nuevoEstado}`, 
+            null, 
+            { responseType: 'text' }
+        );
+    }
+
+    listarAsesoriasEstudiante(): Observable<AsesoriaResponse[]> {
+      return this.http.get<AsesoriaResponse[]>(`${this.estudianteApiUrl}/asesorias`);
+    }
 }

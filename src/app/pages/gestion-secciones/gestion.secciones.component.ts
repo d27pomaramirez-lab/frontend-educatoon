@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeccionService } from '../../services/seccion.service';
 import { SeccionResponse } from '../../dto/response/SeccionResponse';
@@ -7,11 +7,14 @@ import { SeccionRequest } from '../../dto/request/SeccionRequest';
 import { UsuarioService } from '../../services/usuario.service';
 import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
 import Swal from 'sweetalert2';
+import { PaginationComponent } from '../../../utils/pagination.component';
+import { PaginationService } from '../../services/pagination.service';
+
 
 @Component({
   selector: 'app-gestion-secciones',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PaginationComponent],
   templateUrl: './gestion.secciones.component.html',
   styleUrl: './gestion.secciones.component.css'
 })
@@ -22,7 +25,7 @@ export class GestionSeccionesComponent implements OnInit {
 
   listaSecciones: SeccionResponse[] = [];
   listaDocentes: UsuarioPendienteResponse[] = [];
-  
+
   seccionEnEdicion: SeccionResponse | null = null;
   mostrarModalEdicion = false;
 
@@ -32,10 +35,17 @@ export class GestionSeccionesComponent implements OnInit {
   editFormSuccessMessage: string | null = null;
   tableErrorMessage: string | null = null;
 
+  // Variables de Paginación
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
+  totalPaginas: number = 0;
+  seccionesPaginadas: SeccionResponse[] = [];
+
   constructor(
     private fb: FormBuilder,
     private seccionService: SeccionService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private paginationService: PaginationService
   ) {
     this.seccionForm = this.fb.group({
       curso: ['', Validators.required],
@@ -62,12 +72,25 @@ export class GestionSeccionesComponent implements OnInit {
     this.seccionService.listarSecciones().subscribe({
       next: (data) => {
         this.listaSecciones = data;
+        this.aplicarPaginacion(this.paginaActual);
       },
       error: (err) => {
         this.tableErrorMessage = 'Error al cargar las secciones.';
         console.error(err);
       }
     });
+  }
+
+  // Método unificado para aplicar y actualizar la paginación
+  aplicarPaginacion(pagina: number): void {
+    const { data, totalPages } = this.paginationService.getPaginatedData(
+      this.listaSecciones,
+      pagina,
+      this.elementosPorPagina
+    );
+    this.seccionesPaginadas = data;
+    this.totalPaginas = totalPages;
+    this.paginaActual = pagina;
   }
 
   cargarDocentes(): void {

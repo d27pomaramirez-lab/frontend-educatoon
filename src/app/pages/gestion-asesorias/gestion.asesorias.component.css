@@ -72,6 +72,11 @@ input[type="time"] {
   height: auto;
 }
 
+.form-select.scrollable-list{
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: #86b7fe;
@@ -337,4 +342,38 @@ textarea.form-control {
 .btn-icon {
   margin: 0.2rem; 
   border-radius: 2px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 0.5rem;
+}
+
+.btn-pagination {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.btn-pagination:hover:not([disabled]) {
+    background-color: #e0e0e0;
+}
+
+.btn-pagination[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-page-number.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
 }

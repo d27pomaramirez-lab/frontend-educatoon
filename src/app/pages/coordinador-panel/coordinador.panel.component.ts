@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { UsuarioService} from '../../services/usuario.service';
 import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
+import { PaginationComponent } from '../../../utils/pagination.component';
+import { PaginationService } from '../../services/pagination.service';
 
 @Component({
   selector: 'app-coordinador-panel',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule, PaginationComponent
   ],
   templateUrl: './coordinador.panel.component.html',
   styleUrl: './coordinador.panel.component.css',
@@ -17,8 +19,17 @@ export class CoordinadorPanelComponent {
     errorMessage: string | null = null;
     successMessage: string | null = null;
 
-    constructor(private usuarioService: UsuarioService) {}
+    // Variables de Paginación
+      paginaActual: number = 1;
+      elementosPorPagina: number = 10;
+      totalPaginas: number = 0;
+      usuariosPaginadas: UsuarioPendienteResponse[] = [];
 
+    constructor(
+      private usuarioService: UsuarioService,
+      private paginationService: PaginationService
+    ) {}
+    
     ngOnInit(): void {
       this.cargarPendientes();
     }
@@ -28,6 +39,7 @@ export class CoordinadorPanelComponent {
       this.usuarioService.getUsuariosPendientesParaCoordinador().subscribe({
         next: (data) => {
           this.usuariosPendientes = data;
+          this.aplicarPaginacion(this.paginaActual);
         },
         error: (err) => {
           this.errorMessage = 'Error al cargar usuarios pendientes.';
@@ -35,6 +47,18 @@ export class CoordinadorPanelComponent {
         }
       });
     }
+
+     // Método unificado para aplicar y actualizar la paginación
+  aplicarPaginacion(pagina: number): void {
+    const { data, totalPages } = this.paginationService.getPaginatedData(
+      this.usuariosPendientes,
+      pagina,
+      this.elementosPorPagina
+    );
+    this.usuariosPaginadas = data;
+    this.totalPaginas = totalPages;
+    this.paginaActual = pagina;
+  }
 
     onValidar(id: string): void {
       this.successMessage = null;

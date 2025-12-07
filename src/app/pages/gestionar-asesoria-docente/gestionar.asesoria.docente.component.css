@@ -1,0 +1,181 @@
+:host {
+    display: block;
+    width: 100%;    
+}
+
+.admin-panel-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    width: 95%;
+    max-width: 1400px;
+    margin: 2rem auto;
+}
+
+.admin-panel-container h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.admin-panel-container p {
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}
+
+.all-users-panel {
+    margin-top: 1rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.panel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.panel-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.panel-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+    color: #212529;
+}
+
+.badge-virtual {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+    padding: 0.35em 0.65em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 700;
+}
+
+.badge-presencial {
+    background-color: #fad7fd;
+    color: #7a0485;
+    padding: 0.35em 0.65em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 700;
+}
+
+.status-pending, 
+.status-validated,
+.status-canceled,
+.status-completed {
+    padding: 0.25em 0.6em;
+    font-size: 0.75em;
+    font-weight: 700;
+    border-radius: 6px; 
+    display: inline-block;
+}
+
+.status-pending {
+    color: #856404;
+    background-color: #fff3cd;
+}
+
+.status-validated {
+    color: #0f5132;
+    background-color: #d1e7dd;
+}
+
+.status-canceled {
+    color: #842029;
+    background-color: #f8d7da; 
+}
+
+.empty-msg {
+    text-align: center;
+    color: #777;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+.server-success-msg, .server-error-msg {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+.server-success-msg { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+.server-error-msg { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+
+
+.btn-approve,
+.btn-cancel {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-right: 0.4rem;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-approve {
+    background-color: #28a745;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+}
+
+.btn-approve:hover {
+    opacity: 0.8;
+}
+
+.btn-cancel:hover {
+    opacity: 0.8;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 0.5rem;
+}
+
+.btn-pagination {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.btn-pagination:hover:not([disabled]) {
+    background-color: #e0e0e0;
+}
+
+.btn-pagination[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-page-number.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}

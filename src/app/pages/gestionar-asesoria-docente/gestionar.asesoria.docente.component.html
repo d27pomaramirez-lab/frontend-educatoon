@@ -1,0 +1,71 @@
+<div class="admin-panel-container all-users-panel">
+  <h2>Mis Asesorías Asignadas</h2>
+  <p>Revise el detalle y actualice el estado de las sesiones de refuerzo programadas con estudiantes.</p>
+
+  @if (successMessage) { <div class="server-success-msg">{{ successMessage }}</div> }
+  @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
+
+  @if (listaAsesorias.length === 0) {
+    <p class="empty-msg">No tiene asesorías asignadas o programadas.</p>
+  } @else {
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
+          <tr>
+            <th>Fecha y Hora</th>
+            <th>Estudiante</th>
+            <th>Tema</th>
+            <th>Modalidad</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (asesoria of asesoriasPaginadas; track asesoria.id) {
+            <tr>
+              <td>{{ asesoria.fecha | date:'dd/MM/yyyy h:mm a' }}</td>
+              <td>{{ asesoria.nombreEstudiante }}</td>
+              <td>{{ asesoria.tema }}</td>
+              <td>
+                @if (asesoria.modalidad === 'VIRTUAL') {
+                  <span class="badge-virtual">Virtual</span>
+                } @else {
+                  <span class="badge-presencial">Presencial</span>
+                }
+              </td>
+              <td>{{ asesoria.ubicacion }}</td>
+              <td>
+                @if (asesoria.estado === 'REALIZADA') {
+                    <span class="status-validated">Realizada</span>
+                } @else if(asesoria.estado === "PROGRAMADA"){
+                    <span class="status-pending">Programada</span>
+                } @else {
+                    <span class="status-canceled">Cancelada</span>
+                }
+              </td>
+              
+              <td>
+                @if (asesoria.estado === 'PROGRAMADA') {
+                  <button (click)="onCambiarEstado(asesoria.id, 'REALIZADA')" class="btn-approve" title="Marcar como Realizada">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button (click)="onCambiarEstado(asesoria.id, 'CANCELADA')" class="btn-cancel" title="Cancelar Asesoría">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    
+    <app-pagination
+        [totalPaginas]="totalPaginas"
+        [paginaActual]="paginaActual"
+        (irAPagina)="aplicarPaginacion($event)">
+    </app-pagination>
+    
+    }
+</div>

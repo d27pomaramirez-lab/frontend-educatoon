@@ -1,0 +1,57 @@
+<div class="admin-panel-container all-users-panel">
+  <h2>Mis Asesorías Programadas</h2>
+  <p>Revise el detalle de todas las sesiones de refuerzo programadas con sus docentes.</p>
+
+  @if (successMessage) { <div class="server-success-msg">{{ successMessage }}</div> }
+  @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
+
+  @if (listaAsesorias.length === 0) {
+    <p class="empty-msg">No tiene asesorías registradas.</p>
+  } @else {
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
+          <tr>
+            <th>Fecha y Hora</th>
+            <th>Docente</th>
+            <th>Tema</th>
+            <th>Modalidad</th>
+            <th>Ubicación/Enlace</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (asesoria of asesoriasPaginadas; track asesoria.id) {
+            <tr>
+              <td>{{ asesoria.fecha | date:'dd/MM/yyyy h:mm a' }}</td>
+              <td>{{ asesoria.nombreDocente }}</td> <td>{{ asesoria.tema }}</td>
+              <td>
+                @if (asesoria.modalidad === 'VIRTUAL') {
+                  <span class="badge-virtual">Virtual</span>
+                } @else {
+                  <span class="badge-presencial">Presencial</span>
+                }
+              </td>
+              <td>{{ asesoria.ubicacion }}</td>
+              <td>
+                @if (asesoria.estado === 'REALIZADA') {
+                    <span class="status-validated">Realizada</span>
+                } @else if(asesoria.estado === "PROGRAMADA"){
+                    <span class="status-pending">Programada</span>
+                } @else {
+                    <span class="status-canceled">Cancelada</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+        [totalPaginas]="totalPaginas"
+        [paginaActual]="paginaActual"
+        (irAPagina)="aplicarPaginacion($event)">
+    </app-pagination>
+  }
+</div>

@@ -1,5 +1,6 @@
+import { CursoService } from './../../services/curso.service';
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, formatDate } from '@angular/common';
+import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { UsuarioService } from '../../services/usuario.service';
 import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
@@ -7,11 +8,15 @@ import { AsesoriaResponse } from '../../dto/response/AsesoriaResponse';
 import { AsesoriaService } from '../../services/asesoria.service';
 import { CrearAsesoriaRequest } from '../../dto/request/CrearAsesoriaRequest';
 import { ActualizarAsesoriaRequest } from '../../dto/request/ActualizarAsesoriaRequest';
+import { PaginationService } from '../../services/pagination.service';
+import { PaginationComponent } from '../../../utils/pagination.component';
+import { CursoComboboxResponse } from '../../dto/response/CursoComboBoxResponse';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-gestion-asesorias',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DatePipe, PaginationComponent, NgSelectModule],
   templateUrl: './gestion.asesorias.component.html',
   styleUrl: './gestion.asesorias.component.css',
 })
@@ -30,14 +35,22 @@ export class GestionAsesoriasComponent implements OnInit {
 
   listaEstudiantes: UsuarioPendienteResponse[] = [];
   listaDocentes: UsuarioPendienteResponse[] = [];
-  listaCursos: any[] = [];
+  listaCursos: CursoComboboxResponse[] = [];
 
   listaAsesorias: AsesoriaResponse[] = [];
   tableErrorMessage: string | null = null;
 
+  // Variables de Paginación
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
+  totalPaginas: number = 0;
+  asesoriasPaginadas: AsesoriaResponse[] = [];
+
   constructor(
     private asesoriaService: AsesoriaService,
     private usuarioService: UsuarioService,
+    private cursoService : CursoService,
+    private paginationService: PaginationService,
     private fb: FormBuilder
   ) {
     this.asesoriaForm = new FormGroup({
@@ -83,10 +96,7 @@ export class GestionAsesoriasComponent implements OnInit {
   ngOnInit(): void {
     this.cargarUsuariosParaCombos();
     this.cargarAsesorias();
-    
-    this.listaCursos = [
-      { id: 'a421024d-b9ab-46ab-80e6-fecb301abceb', nombre: 'Algebra' }
-    ];
+    this.cargarCursosParaCombo();
     
     this.onModalidadChangeCreacion(); 
     
@@ -105,11 +115,35 @@ export class GestionAsesoriasComponent implements OnInit {
     });
   }
 
+  cargarCursosParaCombo(): void {
+    this.cursoService.listarCursosParaCombobox().subscribe({
+      next: (cursos) => {
+        this.listaCursos = cursos.filter(c => c.estado === true);; 
+      },
+      error: (err) => console.error('Error cargando cursos', err)
+    });
+  }
+
   cargarAsesorias(): void {
     this.asesoriaService.listarAsesorias().subscribe({
-      next: (data) => this.listaAsesorias = data,
-      error: (err) => this.tableErrorMessage = 'Error al cargar la lista de asesorías.'
+      next: (data) => {
+        this.listaAsesorias = data;
+        this.aplicarPaginacion(this.paginaActual);
+      },
+      error: (err) => this.tableErrorMessage = 'Error al cargar la lista de asesorías.'    
     });
+  }
+
+// Método unificado para aplicar y actualizar la paginación
+  aplicarPaginacion(pagina: number): void {
+    const { data, totalPages } = this.paginationService.getPaginatedData(
+      this.listaAsesorias,
+      pagina,
+      this.elementosPorPagina
+    );
+    this.asesoriasPaginadas = data;
+    this.totalPaginas = totalPages;
+    this.paginaActual = pagina;
   }
 
   onSubmit(): void {

@@ -13,33 +13,28 @@
   <!-- Sección de Perfil del Usuario -->
   <div class="user-profile-section" (click)="goToPerfil()" style="cursor: pointer;">
     @if (userProfileImage) {
-      <img [src]="userProfileImage" alt="Foto de perfil" class="profile-image">
+    <img [src]="userProfileImage" alt="Foto de perfil" class="profile-image">
     } @else {
-      <div class="profile-placeholder">
-        <i class="bi bi-person-circle"></i>
-      </div>
+    <div class="profile-placeholder">
+      <i class="bi bi-person-circle"></i>
+    </div>
     }
-    
+
     @if (!isCollapsed) {
-      <span class="user-email">{{ userFullName }}</span>
-      <button class="btn-profile">
-        <i class="bi bi-person me-1"></i>
-        Ver Perfil
-      </button>
+    <span class="user-email">{{ userFullName }}</span>
+    <button class="btn-profile">
+      <i class="bi bi-person me-1"></i>
+      Ver Perfil
+    </button>
     }
   </div>
 
   <ul class="sidebar-nav">
-    <li>
-      <a routerLink="/dashboard" routerLinkActive="active">
-        <i class="bi bi-house-door-fill me-2.5"></i>
-        @if (!isCollapsed) { <span class="link-text">Dashboard</span> }
-      </a>
-    </li>
 
+    <!--SECCIÓN DEL COORDINADOR-->
     @if (isCoordinador) {
     <li>
-      <a routerLink="/coordinador" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"> 
+      <a routerLink="/coordinador" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <i class="bi bi-clipboard-check-fill"></i>
         @if (!isCollapsed) { <span class="link-text">Validar Documentos</span> }
       </a>
@@ -62,12 +57,20 @@
     <li>
       <a routerLink="/coordinador/cursos" routerLinkActive="active">
         <i class="fa-solid fa-book me-2"></i>
-        @if (!isCollapsed) { <span class="link-text">Gestionar Cursoss</span> }
+        @if (!isCollapsed) { <span class="link-text">Gestionar Cursos</span> }
       </a>
     </li>
     }
 
+    <!--SECCIÓN DEL ADMINISTRADOR-->
     @if (isAdmin) {
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <i class="bi bi-house-door-fill me-2.5"></i>
+        @if (!isCollapsed) { <span class="link-text">Dashboard</span> }
+      </a>
+    </li>
+
     <li>
       <a routerLink="/admin" routerLinkActive="active">
         <i class="bi bi-check-circle-fill"></i>
@@ -83,7 +86,31 @@
         <span class="link-text">Gestión de Usuarios</span> }
       </a>
     </li>
+
     }
+
+    <!--SECCIÓN DEL DOCENTE-->
+    @if (isDocente) {
+    <li>
+      <a routerLink="/docente/asesorias" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) {
+        <span class="link-text">Ver Asesorias</span> }
+      </a>
+    </li>
+    }
+
+    <!--SECCIÓN DEL ESTUDIANTE-->
+    @if (isEstudiante) {
+    <li>
+      <a routerLink="/estudiante/asesorias" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) {
+        <span class="link-text">Ver Asesorias</span> }
+      </a>
+    </li>
+    }
+
   </ul>
 
   <div class="sidebar-footer">
@@ -92,4 +119,7 @@
       @if (!isCollapsed) { <span class="link-text">Cerrar Sesión</span> }
     </a>
   </div>
+
+
+
 </nav>

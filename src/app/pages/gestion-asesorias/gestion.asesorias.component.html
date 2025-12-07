@@ -11,32 +11,40 @@
 
           <div class="form-group">
             <label for="estudianteId">Estudiante</label>
-            <select id="estudianteId" formControlName="estudianteId" class="form-select">
-              <option value="">[Seleccione un Estudiante]</option>
-              @for (est of listaEstudiantes; track est.id) {
-                <option [value]="est.id">{{ est.nombres }} {{ est.apellidos }}</option>
-              }
-            </select>
+            <ng-select [items]="listaEstudiantes" bindValue="id" placeholder="[Seleccione Estudiante]"
+              notFoundText="No se encontraron estudiantes" formControlName="estudianteId">
+
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.nombres }} {{ item.apellidos }}
+              </ng-template>
+
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                {{ item.nombres }} {{ item.apellidos }}
+              </ng-template>
+
+            </ng-select>
           </div>
 
           <div class="form-group">
             <label for="docenteId">Docente</label>
-            <select id="docenteId" formControlName="docenteId" class="form-select">
-              <option value="">[Seleccione un Docente]</option>
-              @for (doc of listaDocentes; track doc.id) {
-                <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
-              }
-            </select>
+            <ng-select [items]="listaDocentes" bindValue="id" placeholder="[Seleccione Docente]"
+              notFoundText="No se encontraron docentes" formControlName="docenteId">
+
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.nombres }} {{ item.apellidos }}
+              </ng-template>
+
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                {{ item.nombres }} {{ item.apellidos }}
+              </ng-template>
+
+            </ng-select>
           </div>
 
           <div class="form-group">
             <label for="cursoId">Curso</label>
-            <select id="cursoId" formControlName="cursoId" class="form-select">
-              <option value="">[Seleccione un Curso]</option>
-              @for (curso of listaCursos; track curso.id) {
-                <option [value]="curso.id">{{ curso.nombre }}</option>
-              }
-            </select>
+            <ng-select [items]="listaCursos" bindLabel="nombre" bindValue="id" placeholder="[Seleccione Curso]"
+              notFoundText="No se encontraron cursos" formControlName="cursoId"> </ng-select>
           </div>
         </fieldset>
       </div>
@@ -67,28 +75,29 @@
 
           <div class="form-group">
             <label for="modalidad">Modalidad</label>
-            <select id="modalidad" formControlName="modalidad" class="form-select" (change)="onModalidadChangeCreacion()">
+            <select id="modalidad" formControlName="modalidad" class="form-select"
+              (change)="onModalidadChangeCreacion()">
               <option value="VIRTUAL">Virtual</option>
               <option value="PRESENCIAL">Presencial</option>
             </select>
           </div>
 
           @if (asesoriaForm.get('modalidad')?.value === 'VIRTUAL') {
-            <div class="form-group">
-              <label for="enlaceReunion">Enlace de Reunión</label>
-              <input type="text" id="enlaceReunion" formControlName="enlaceReunion" class="form-control">
-            </div>
+          <div class="form-group">
+            <label for="enlaceReunion">Enlace de Reunión</label>
+            <input type="text" id="enlaceReunion" formControlName="enlaceReunion" class="form-control">
+          </div>
           }
 
           @if (asesoriaForm.get('modalidad')?.value === 'PRESENCIAL') {
-            <div class="form-group">
-              <label for="lugarPresencial">Lugar / Aula</label>
-              <input type="text" id="lugarPresencial" formControlName="lugarPresencial" class="form-control">
-            </div>
+          <div class="form-group">
+            <label for="lugarPresencial">Lugar / Aula</label>
+            <input type="text" id="lugarPresencial" formControlName="lugarPresencial" class="form-control">
+          </div>
           }
         </fieldset>
       </div>
-    </div> 
+    </div>
 
     <fieldset class="form-section">
       <legend>Contenido Académico</legend>
@@ -120,174 +129,178 @@
   @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
 
   @if (listaAsesorias.length === 0) {
-    <p class="empty-msg">No hay asesorías registradas.</p>
+  <p class="empty-msg">No hay asesorías registradas.</p>
   } @else {
-    <div class="table-responsive">
-      <table class="panel-table">
-        <thead>
-          <tr>
-            <th>Fecha y Hora</th>
-            <th>Estudiante</th>
-            <th>Docente</th>
-            <th>Tema</th>
-            <th>Modalidad</th>
-            <th>Estado</th>
-            <th>Acciones</th> 
-          </tr>
-        </thead>
-        <tbody>
-          @for (asesoria of listaAsesorias; track asesoria.id) {
-            <tr>
-              <td>{{ asesoria.fecha | date:'dd/MM/yyyy h:mm a' }}</td>
-              <td>{{ asesoria.nombreEstudiante }}</td>
-              <td>{{ asesoria.nombreDocente }}</td>
-              <td>{{ asesoria.tema }}</td>
-              <td>
-                @if (asesoria.modalidad === 'VIRTUAL') {
-                  <span class="badge-virtual">Virtual</span>
-                } @else {
-                  <span class="badge-presencial">Presencial</span>
-                }
-              </td>
-              <td>
-                @if (asesoria.estado === 'REALIZADA') {
-                  <span class="status-validated">Realizada</span>
-                  } @if(asesoria.estado === "PROGRAMADA"){
-                    <span class="status-pending">Programada</span>
-                  }@else {
-                    <span class="status-canceled">Cancelada</span>
-                  }
-              </td>
-              <td>
-                @if (asesoria.estado === 'PROGRAMADA') {
-                  <button (click)="onEditar(asesoria)" class="btn-icon btn-icon-edit" title="Editar">
-                    <i class="fa-solid fa-pencil-alt"></i>
-                  </button>
-                  <button (click)="onEliminar(asesoria.id)" class="btn-icon btn-icon-delete" title="Cancelar">
-                    <i class="fa-solid fa-trash-alt"></i>
-                  </button>
-                } @else {
-                  <span class="text-muted small"></span>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="table-responsive">
+    <table class="panel-table">
+      <thead>
+        <tr>
+          <th>Fecha y Hora</th>
+          <th>Estudiante</th>
+          <th>Docente</th>
+          <th>Tema</th>
+          <th>Modalidad</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (asesoria of asesoriasPaginadas; track asesoria.id) {
+        <tr>
+          <td>{{ asesoria.fecha | date:'dd/MM/yyyy h:mm a' }}</td>
+          <td>{{ asesoria.nombreEstudiante }}</td>
+          <td>{{ asesoria.nombreDocente }}</td>
+          <td>{{ asesoria.tema }}</td>
+          <td>
+            @if (asesoria.modalidad === 'VIRTUAL') {
+            <span class="badge-virtual">Virtual</span>
+            } @else {
+            <span class="badge-presencial">Presencial</span>
+            }
+          </td>
+          <td>
+            @if (asesoria.estado === 'REALIZADA') {
+            <span class="status-validated">Realizada</span>
+            } @else if(asesoria.estado === "PROGRAMADA"){
+            <span class="status-pending">Programada</span>
+            }@else {
+            <span class="status-canceled">Cancelada</span>
+            }
+          </td>
+          <td>
+            @if (asesoria.estado === 'PROGRAMADA') {
+            <button (click)="onEditar(asesoria)" class="btn-icon btn-icon-edit" title="Editar">
+              <i class="fa-solid fa-pencil-alt"></i>
+            </button>
+            <button (click)="onEliminar(asesoria.id)" class="btn-icon btn-icon-delete" title="Cancelar">
+              <i class="fa-solid fa-trash-alt"></i>
+            </button>
+            } @else {
+            <span class="text-muted small"></span>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <app-pagination [totalPaginas]="totalPaginas" [paginaActual]="paginaActual" (irAPagina)="aplicarPaginacion($event)">
+  </app-pagination>
   }
 </div>
 
 @if (mostrarModalEdicion && asesoriaEnEdicion) {
-  <div class="modal-backdrop">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Editar Asesoría Programada</h3>
-        <button type="button" class="btn-close" (click)="cerrarModalEdicion()">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Editar Asesoría Programada</h3>
+      <button type="button" class="btn-close" (click)="cerrarModalEdicion()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
 
-      <form [formGroup]="asesoriaEditForm" (ngSubmit)="onSubmitEdicion()" class="admin-form">
-        <div class="modal-body">
-          
-          <fieldset class="form-section mb-3">
-            <legend>Información Fija</legend>
-            <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Estudiante</label>
-                  <input type="text" class="form-control" [value]="asesoriaEnEdicion.nombreEstudiante" disabled>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Docente</label>
-                  <input type="text" class="form-control" [value]="asesoriaEnEdicion.nombreDocente" disabled>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Curso</label>
-                  <input type="text" class="form-control" [value]=" " disabled>
-                </div>
+    <form [formGroup]="asesoriaEditForm" (ngSubmit)="onSubmitEdicion()" class="admin-form">
+      <div class="modal-body">
+
+        <fieldset class="form-section mb-3">
+          <legend>Información Fija</legend>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Estudiante</label>
+                <input type="text" class="form-control" [value]="asesoriaEnEdicion.nombreEstudiante" disabled>
               </div>
             </div>
-          </fieldset>
-          
-          <fieldset class="form-section">
-            <legend>Modificar Detalles</legend>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="fechaEdit">Fecha</label>
-                      <input type="date" id="fechaEdit" formControlName="fecha" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="horaEdit">Hora</label>
-                      <input type="time" id="horaEdit" formControlName="hora" class="form-control">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="duracionMinutosEdit">Duración (minutos)</label>
-                  <input type="number" id="duracionMinutosEdit" formControlName="duracionMinutos" class="form-control">
-                </div>
-
-                <div class="form-group">
-                  <label for="modalidadEdit">Modalidad</label>
-                  <select id="modalidadEdit" formControlName="modalidad" class="form-select">
-                    <option value="VIRTUAL">Virtual</option>
-                    <option value="PRESENCIAL">Presencial</option>
-                  </select>
-                </div>
-
-                @if (asesoriaEditForm.get('modalidad')?.value === 'VIRTUAL') {
-                  <div class="form-group">
-                    <label for="enlaceReunionEdit">Enlace de Reunión</label>
-                    <input type="text" id="enlaceReunionEdit" formControlName="enlaceReunion" class="form-control">
-                  </div>
-                }
-
-                @if (asesoriaEditForm.get('modalidad')?.value === 'PRESENCIAL') {
-                  <div class="form-group">
-                    <label for="lugarPresencialEdit">Lugar / Aula</label>
-                    <input type="text" id="lugarPresencialEdit" formControlName="lugarPresencial" class="form-control">
-                  </div>
-                }
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Docente</label>
+                <input type="text" class="form-control" [value]="asesoriaEnEdicion.nombreDocente" disabled>
               </div>
-              
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="temaEdit">Tema a Tratar</label>
-                  <input type="text" id="temaEdit" formControlName="tema" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Curso</label>
+                <input type="text" class="form-control" [value]=" " disabled>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Modificar Detalles</legend>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="fechaEdit">Fecha</label>
+                    <input type="date" id="fechaEdit" formControlName="fecha" class="form-control">
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="areasRefuerzoEdit">Áreas de Refuerzo (Opcional)</label>
-                  <textarea id="areasRefuerzoEdit" formControlName="areasRefuerzo" rows="2" class="form-control"></textarea>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="horaEdit">Hora</label>
+                    <input type="time" id="horaEdit" formControlName="hora" class="form-control">
+                  </div>
                 </div>
               </div>
-            </div> 
-          </fieldset>
 
-          @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
-          @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
-        </div>
+              <div class="form-group">
+                <label for="duracionMinutosEdit">Duración (minutos)</label>
+                <input type="number" id="duracionMinutosEdit" formControlName="duracionMinutos" class="form-control">
+              </div>
 
-        <div class="modal-footer d-flex justify-content-end gap-2">
-          <button type="button" class="btn-secondary" (click)="cerrarModalEdicion()">
-            <i class="fa-solid fa-xmark me-1"></i> Cancelar
-          </button>
-          <button type="submit" [disabled]="asesoriaEditForm.invalid" class="btn-save flex-grow-0">
-            <i class="fa-solid fa-save me-1"></i> Guardar Cambios
-          </button>
-        </div>
-      </form>
-    </div>
+              <div class="form-group">
+                <label for="modalidadEdit">Modalidad</label>
+                <select id="modalidadEdit" formControlName="modalidad" class="form-select">
+                  <option value="VIRTUAL">Virtual</option>
+                  <option value="PRESENCIAL">Presencial</option>
+                </select>
+              </div>
+
+              @if (asesoriaEditForm.get('modalidad')?.value === 'VIRTUAL') {
+              <div class="form-group">
+                <label for="enlaceReunionEdit">Enlace de Reunión</label>
+                <input type="text" id="enlaceReunionEdit" formControlName="enlaceReunion" class="form-control">
+              </div>
+              }
+
+              @if (asesoriaEditForm.get('modalidad')?.value === 'PRESENCIAL') {
+              <div class="form-group">
+                <label for="lugarPresencialEdit">Lugar / Aula</label>
+                <input type="text" id="lugarPresencialEdit" formControlName="lugarPresencial" class="form-control">
+              </div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="temaEdit">Tema a Tratar</label>
+                <input type="text" id="temaEdit" formControlName="tema" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="areasRefuerzoEdit">Áreas de Refuerzo (Opcional)</label>
+                <textarea id="areasRefuerzoEdit" formControlName="areasRefuerzo" rows="2"
+                  class="form-control"></textarea>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
+        @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
+      </div>
+
+      <div class="modal-footer d-flex justify-content-end gap-2">
+        <button type="button" class="btn-secondary" (click)="cerrarModalEdicion()">
+          <i class="fa-solid fa-xmark me-1"></i> Cancelar
+        </button>
+        <button type="submit" [disabled]="asesoriaEditForm.invalid" class="btn-save flex-grow-0">
+          <i class="fa-solid fa-save me-1"></i> Guardar Cambios
+        </button>
+      </div>
+    </form>
   </div>
+</div>
 }

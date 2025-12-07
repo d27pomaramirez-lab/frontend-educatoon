@@ -72,7 +72,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (curso of listaCursos; track curso.id) {
+          @for (curso of cursosPaginadas; track curso.id) {
             <tr>
               <td>{{ curso.nombre }}</td>
               <td>{{ curso.ciclo }}</td>
@@ -101,6 +101,12 @@
         </tbody>
       </table>
     </div>
+  
+    <app-pagination
+        [totalPaginas]="totalPaginas"
+        [paginaActual]="paginaActual"
+        (irAPagina)="aplicarPaginacion($event)">
+    </app-pagination>
   }
 </div>
 

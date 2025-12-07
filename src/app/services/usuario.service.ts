@@ -11,64 +11,78 @@ import { ActualizarUsuarioRequest } from '../dto/request/ActualizarUsuarioReques
 })
 export class UsuarioService {
 
-    //private apiUrl = `${BASE_URL}/admin/usuarios`;
+  //private apiUrl = `${BASE_URL}/admin/usuarios`;
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    crearUsuario(data: AdminCrearUsuarioRequest): Observable<string> {
-      return this.http.post(`${BASE_URL}/admin/usuarios/crear`, data, { 
-        responseType: 'text' }
-      );
+  crearUsuario(data: AdminCrearUsuarioRequest): Observable<string> {
+    return this.http.post(`${BASE_URL}/admin/usuarios/crear`, data, {
+      responseType: 'text'
     }
-
-    getUsuariosPendientes(): Observable<UsuarioPendienteResponse[]> {
-      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/pendientes`);
-    }
-
-    aprobarUsuario(id: string): Observable<string> {
-      return this.http.post(
-        `${BASE_URL}/admin/usuarios/aprobar/${id}`,
-        null,
-        { responseType: 'text' }
-      );
-    }
-
-    validarDocumentos(id: string): Observable<string> {
-      return this.http.post(`${BASE_URL}/coordinador/validar-documentos/${id}`, null, { 
-        responseType: 'text'}
-      );
-    }
-
-    getUsuariosPendientesParaCoordinador(): Observable<UsuarioPendienteResponse[]> {
-      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/pendientes`);
-    }
-
-    getTodosLosUsuarios(): Observable<UsuarioPendienteResponse[]> {
-      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/todos`);
-    }
-
-    desactivarUsuario(id: string): Observable<string> {
-      return this.http.delete(
-        `${BASE_URL}/admin/usuarios/desactivar/${id}`, 
-        { responseType: 'text' }
-      );
-    }
-
-    getUsuarioById(id: string): Observable<UsuarioPendienteResponse> {
-      return this.http.get<UsuarioPendienteResponse>(`${BASE_URL}/admin/usuarios/${id}`);
-    }
-
-    actualizarUsuario(id: string, data: ActualizarUsuarioRequest): Observable<string> {
-      return this.http.put(
-        `${BASE_URL}/admin/usuarios/actualizar/${id}`,
-        data,
-        { responseType: 'text' }
-      );
-    }
-
-    getUsuariosParaCoordinador(): Observable<UsuarioPendienteResponse[]> {
-      return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/usuarios`);
-    }
-
-
+    );
   }
+
+  getUsuariosPendientes(): Observable<UsuarioPendienteResponse[]> {
+    return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/pendientes`);
+  }
+
+  aprobarUsuario(id: string): Observable<string> {
+    return this.http.post(
+      `${BASE_URL}/admin/usuarios/aprobar/${id}`,
+      null,
+      { responseType: 'text' }
+    );
+  }
+
+  validarDocumentos(id: string): Observable<string> {
+    return this.http.post(`${BASE_URL}/coordinador/validar-documentos/${id}`, null, {
+      responseType: 'text'
+    }
+    );
+  }
+
+  getUsuariosPendientesParaCoordinador(): Observable<UsuarioPendienteResponse[]> {
+    return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/pendientes`);
+  }
+
+  getTodosLosUsuarios(): Observable<UsuarioPendienteResponse[]> {
+    return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/todos`);
+  }
+
+  cambiarEstado(id: string): Observable<string> {
+    return this.http.delete(
+      `${BASE_URL}/admin/usuarios/estado/${id}`,
+      { responseType: 'text' }
+    );
+  }
+
+  activarUsuario(id: string): Observable<string> {
+    return this.http.put(`${BASE_URL}/admin/usuarios/estado/${id}?enabled=true`,
+       {},
+        { responseType: 'text' });
+  }
+
+  desactivarUsuario(id: string): Observable<string> {
+    return this.http.put(`${BASE_URL}/admin/usuarios/estado/${id}?enabled=false`,
+       {},
+        { responseType: 'text' });
+  }
+
+  getUsuarioById(id: string): Observable<UsuarioPendienteResponse> {
+    return this.http.get<UsuarioPendienteResponse>(`${BASE_URL}/admin/usuarios/${id}`);
+  }
+
+  actualizarUsuario(id: string, data: ActualizarUsuarioRequest): Observable<string> {
+    return this.http.put(
+      `${BASE_URL}/admin/usuarios/actualizar/${id}`,
+      data,
+      { responseType: 'text' }
+    );
+  }
+
+  getUsuariosParaCoordinador(): Observable<UsuarioPendienteResponse[]> {
+    return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/usuarios`);
+  }
+
+
+}

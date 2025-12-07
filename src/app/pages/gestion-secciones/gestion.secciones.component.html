@@ -69,7 +69,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (seccion of listaSecciones; track seccion.id) {
+          @for (seccion of seccionesPaginadas; track seccion.id) {
             <tr>
               <td>{{ seccion.codigoSeccion }}</td> 
               <td>{{ seccion.curso }}</td>
@@ -89,6 +89,12 @@
         </tbody>
       </table>
     </div>
+
+    <app-pagination
+        [totalPaginas]="totalPaginas"
+        [paginaActual]="paginaActual"
+        (irAPagina)="aplicarPaginacion($event)">
+    </app-pagination>
   }
 </div>
 

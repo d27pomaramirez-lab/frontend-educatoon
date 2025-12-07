@@ -1,15 +1,16 @@
 // en src/app/pages/admin-panel/admin-panel.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { CommonModule, DatePipe } from '@angular/common';
 import { UsuarioService } from '../../services/usuario.service';
 import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
+import { PaginationService } from '../../services/pagination.service';
+import { PaginationComponent } from '../../../utils/pagination.component';
 
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule, PaginationComponent
   ],
   templateUrl: './admin.panel.component.html',
   styleUrl: './admin.panel.component.css'
@@ -20,7 +21,16 @@ export class AdminPanelComponent implements OnInit{
   tableErrorMessage: string | null = null;
   tableSuccessMessage: string | null = null;
 
-  constructor(private usuarioService: UsuarioService) {
+  // Variables de Paginación
+    paginaActual: number = 1;
+    elementosPorPagina: number = 10;
+    totalPaginas: number = 0;
+    usuariosPaginados: UsuarioPendienteResponse[] = [];
+
+  constructor(
+    private usuarioService: UsuarioService,
+    private paginationService: PaginationService
+  ) {
 
   }
 
@@ -34,12 +44,24 @@ export class AdminPanelComponent implements OnInit{
     this.usuarioService.getUsuariosPendientes().subscribe({
       next: (data) => {
         this.usuariosPendientes = data;
+        this.aplicarPaginacion(this.paginaActual);
       },
       error: (err) => {
         this.tableErrorMessage = 'Error al cargar usuarios pendientes.';
         console.error(err);
       }
     });
+  }
+
+  aplicarPaginacion(pagina: number): void {
+    const { data, totalPages } = this.paginationService.getPaginatedData(
+      this.usuariosPendientes,
+      pagina,
+      this.elementosPorPagina
+    );
+    this.usuariosPaginados = data;
+    this.totalPaginas = totalPages;
+    this.paginaActual = pagina;
   }
 
   onAprobar(id: string): void {

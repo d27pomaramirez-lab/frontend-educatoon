@@ -1,3 +1,4 @@
+import { GestionarAsesoriaDocenteComponent } from './pages/gestionar-asesoria-docente/gestionar.asesoria.docente.component';
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component'; 
 import { LoginComponent } from './pages/login/login.component';
@@ -15,6 +16,7 @@ import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.ase
 import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.secciones.component'; 
 import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
 import { GestionCursosComponent } from './pages/gestion-cursos/gestion.cursos.component';
+import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
 
 export const routes: Routes = [   
 
@@ -82,6 +84,18 @@ export const routes: Routes = [
         component: GestionCursosComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_COORDINADOR'] }
+      },
+      {
+        path: 'docente/asesorias',
+        component: GestionarAsesoriaDocenteComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_DOCENTE'] }
+      },
+      {
+        path: 'estudiante/asesorias',
+        component: GestionarAsesoriaEstudianteComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ESTUDIANTE'] }
       },
     ]
   },

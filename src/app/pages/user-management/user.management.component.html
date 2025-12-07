@@ -45,7 +45,8 @@
           <div class="form-group">
             <label for="sexo">Sexo</label>
             <select id="sexo" formControlName="sexo" class="form-select">
-              <option value="">[Seleccionar]</option> <option value="Masculino">Masculino</option>
+              <option value="">[Seleccionar]</option>
+              <option value="Masculino">Masculino</option>
               <option value="Femenino">Femenino</option>
             </select>
             @if (userForm.get('sexo')?.invalid && userForm.get('sexo')?.touched) {
@@ -55,7 +56,8 @@
           <div class="form-group">
             <label for="estadoCivil">Estado Civil</label>
             <select id="estadoCivil" formControlName="estadoCivil" class="form-select">
-              <option value="">[Seleccionar]</option> <option value="Soltero(a)">Soltero(a)</option>
+              <option value="">[Seleccionar]</option>
+              <option value="Soltero(a)">Soltero(a)</option>
               <option value="Casado(a)">Casado(a)</option>
               <option value="Viudo(a)">Viudo(a)</option>
               <option value="Divorciado(a)">Divorciado(a)</option>
@@ -109,7 +111,9 @@
           @if (userForm.get('nombreRol')?.value === 'ROL_DOCENTE') {
           <div class="form-group">
             <label for="especialidad">Especialidad</label>
-            <input type="text" id="especialidad" formControlName="especialidad">
+            <ng-select id="especialidad" formControlName="especialidad" [items]="listaCursos" bindLabel="nombre"
+              bindValue="nombre" placeholder="Seleccione la Especialidad">
+            </ng-select>
           </div>
           }
 
@@ -169,7 +173,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (usuario of todosLosUsuarios; track usuario.id) {
+        @for (usuario of usuariosPaginadas; track usuario.id) {
         <tr>
           <td>{{ usuario.nombres }}</td>
           <td>{{ usuario.apellidos }}</td>
@@ -186,151 +190,166 @@
             <button class="btn-edit" (click)="onEditar(usuario)" title="Editar Usuario">
               <i class="fa-solid fa-pencil"></i>
             </button>
-            <button (click)="onDesactivar(usuario.id)" class="btn-delete" [disabled]="!usuario.enabled" title="Desactivar Usuario">
+            <button (click)="onDesactivar(usuario.id)" class="btn-delete" [disabled]="!usuario.enabled"
+              title="Desactivar Usuario">
               @if (usuario.enabled) {
               <span><i class="fa-solid fa-user-slash"></i></span> }
               @else {
-              <span><i class="fa-solid fa-user-check"></i></span> }
+              <span><i class="fa-solid fa-user-check"></i></span>
+               }
             </button>
+            @if (!usuario.enabled) {
+              <button class="btn-active" (click)="onActivar(usuario.id)" title="Activar Usuario">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            }
           </td>
         </tr>
         }
       </tbody>
     </table>
   </div>
+
+  <app-pagination [totalPaginas]="totalPaginas" [paginaActual]="paginaActual" (irAPagina)="aplicarPaginacion($event)">
+  </app-pagination>
   }
 </div>
 
 
 @if (mostrarModalEdicion && usuarioEnEdicion) {
-  <div class="modal-backdrop">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Editar Usuario: {{ usuarioEnEdicion.nombres }} {{ usuarioEnEdicion.apellidos }}</h3>
-        <button type="button" class="btn-close" (click)="cerrarModalEdicion()">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Editar Usuario: {{ usuarioEnEdicion.nombres }} {{ usuarioEnEdicion.apellidos }}</h3>
+      <button type="button" class="btn-close" (click)="cerrarModalEdicion()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
 
-      <form [formGroup]="userEditForm" (ngSubmit)="onSubmitEdicion()" class="admin-form">
-        <div class="modal-body">
-          
-          <fieldset class="form-section mb-3">
-            <legend>Información Fija (No Editable)</legend>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Rol</label>
-                  <input type="text" class="form-control" [value]="usuarioEnEdicion.rolNombre" disabled>
-                </div>
-                <div class="form-group">
-                  <label>DNI</label>
-                  <input type="text" class="form-control" [value]="usuarioEnEdicion.dni" disabled>
-                </div>
+    <form [formGroup]="userEditForm" (ngSubmit)="onSubmitEdicion()" class="admin-form">
+      <div class="modal-body">
+
+        <fieldset class="form-section mb-3">
+          <legend>Información Fija (No Editable)</legend>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Rol</label>
+                <input type="text" class="form-control" [value]="usuarioEnEdicion.rolNombre" disabled>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Email</label>
-                  <input type="email" class="form-control" [value]="usuarioEnEdicion.email" disabled>
-                </div>
-                <div class="form-group">
-                  <label>Cuenta Activa</label>
-                  <input type="text" class="form-control" [value]="usuarioEnEdicion.enabled ? 'SÍ' : 'NO'" disabled>
-                </div>
+              <div class="form-group">
+                <label>DNI</label>
+                <input type="text" class="form-control" [value]="usuarioEnEdicion.dni" disabled>
               </div>
             </div>
-          </fieldset>
-          
-          <fieldset class="form-section">
-            <legend>Modificar Datos Personales</legend>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="nombresEdit">Nombres</label>
-                  <input type="text" id="nombresEdit" formControlName="nombres" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="apellidosEdit">Apellidos</label>
-                  <input type="text" id="apellidosEdit" formControlName="apellidos" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="telefonoEdit">Teléfono</label>
-                  <input type="text" id="telefonoEdit" formControlName="telefono" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="fechaNacimientoEdit">Fecha de Nacimiento</label>
-                  <input type="date" id="fechaNacimientoEdit" formControlName="fechaNacimiento" class="form-control">
-                </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" [value]="usuarioEnEdicion.email" disabled>
               </div>
-              
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="sexoEdit">Sexo</label>
-                  <select id="sexoEdit" formControlName="sexo" class="form-select">
-                    <option value="Masculino">Masculino</option>
-                    <option value="Femenino">Femenino</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="estadoCivilEdit">Estado Civil</label>
-                  <select id="estadoCivilEdit" formControlName="estadoCivil" class="form-select">
-                    <option value="Soltero(a)">Soltero(a)</option>
-                    <option value="Casado(a)">Casado(a)</option>
-                    <option value="Viudo(a)">Viudo(a)</option>
-                    <option value="Divorciado(a)">Divorciado(a)</option>
-                  </select>
-                </div>
+              <div class="form-group">
+                <label>Cuenta Activa</label>
+                <input type="text" class="form-control" [value]="usuarioEnEdicion.enabled ? 'SÍ' : 'NO'" disabled>
               </div>
-            </div> 
-          </fieldset>
-          
-          @if (usuarioEnEdicion.rolNombre === 'ROL_DOCENTE' || usuarioEnEdicion.rolNombre === 'ROL_ESTUDIANTE') {
-            <fieldset class="form-section mt-3">
-              <legend>Datos Específicos del Rol</legend>
-              
-              @if (usuarioEnEdicion.rolNombre === 'ROL_DOCENTE') {
-                <div class="form-group">
-                  <label for="especialidadEdit">Especialidad</label>
-                  <input type="text" id="especialidadEdit" formControlName="especialidad" class="form-control">
-                </div>
-              }
+            </div>
+          </div>
+        </fieldset>
 
-              @if (usuarioEnEdicion.rolNombre === 'ROL_ESTUDIANTE') {
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="universidadPostularEdit">Universidad</label>
-                            <input type="text" id="universidadPostularEdit" formControlName="universidadPostular" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="carreraPostularEdit">Carrera</label>
-                            <input type="text" id="carreraPostularEdit" formControlName="carreraPostular" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="colegioProcedenciaEdit">Colegio</label>
-                            <input type="text" id="colegioProcedenciaEdit" formControlName="colegioProcedencia" class="form-control">
-                        </div>
-                    </div>
-                </div>
-              }
-            </fieldset>
+        <fieldset class="form-section">
+          <legend>Modificar Datos Personales</legend>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="nombresEdit">Nombres</label>
+                <input type="text" id="nombresEdit" formControlName="nombres" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="apellidosEdit">Apellidos</label>
+                <input type="text" id="apellidosEdit" formControlName="apellidos" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="telefonoEdit">Teléfono</label>
+                <input type="text" id="telefonoEdit" formControlName="telefono" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="fechaNacimientoEdit">Fecha de Nacimiento</label>
+                <input type="date" id="fechaNacimientoEdit" formControlName="fechaNacimiento" class="form-control">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="sexoEdit">Sexo</label>
+                <select id="sexoEdit" formControlName="sexo" class="form-select">
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="estadoCivilEdit">Estado Civil</label>
+                <select id="estadoCivilEdit" formControlName="estadoCivil" class="form-select">
+                  <option value="Soltero(a)">Soltero(a)</option>
+                  <option value="Casado(a)">Casado(a)</option>
+                  <option value="Viudo(a)">Viudo(a)</option>
+                  <option value="Divorciado(a)">Divorciado(a)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        @if (usuarioEnEdicion.rolNombre === 'ROL_DOCENTE' || usuarioEnEdicion.rolNombre === 'ROL_ESTUDIANTE') {
+        <fieldset class="form-section mt-3">
+          <legend>Datos Específicos del Rol</legend>
+
+          @if (usuarioEnEdicion.rolNombre === 'ROL_DOCENTE') {
+          <div class="form-group">
+            <label for="especialidadEdit">Especialidad</label>
+            <ng-select id="especialidadEdit" formControlName="especialidad" [items]="listaCursos" bindLabel="nombre"
+              bindValue="nombre" placeholder="Seleccione la Especialidad"
+              [disabled]="!userEditForm.get('especialidad')?.enabled">
+            </ng-select>
+          </div>
           }
 
-          @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
-          @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
-        </div>
+          @if (usuarioEnEdicion.rolNombre === 'ROL_ESTUDIANTE') {
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="universidadPostularEdit">Universidad</label>
+                <input type="text" id="universidadPostularEdit" formControlName="universidadPostular"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="carreraPostularEdit">Carrera</label>
+                <input type="text" id="carreraPostularEdit" formControlName="carreraPostular" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="colegioProcedenciaEdit">Colegio</label>
+                <input type="text" id="colegioProcedenciaEdit" formControlName="colegioProcedencia"
+                  class="form-control">
+              </div>
+            </div>
+          </div>
+          }
+        </fieldset>
+        }
 
-        <div class="modal-footer d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-secondary" (click)="cerrarModalEdicion()">
-            <i class="fa-solid fa-xmark me-1"></i> Cancelar
-          </button>
-          <button type="submit" [disabled]="userEditForm.invalid" class="btn-save flex-grow-0">
-            <i class="fa-solid fa-save me-1"></i> Guardar Cambios
-          </button>
-        </div>
-      </form>
-    </div>
+        @if (editFormSuccessMessage) { <div class="server-success-msg">{{ editFormSuccessMessage }}</div> }
+        @if (editFormErrorMessage) { <div class="server-error-msg">{{ editFormErrorMessage }}</div> }
+      </div>
+
+      <div class="modal-footer d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModalEdicion()">
+          <i class="fa-solid fa-xmark me-1"></i> Cancelar
+        </button>
+        <button type="submit" [disabled]="userEditForm.invalid" class="btn-save flex-grow-0">
+          <i class="fa-solid fa-save me-1"></i> Guardar Cambios
+        </button>
+      </div>
+    </form>
   </div>
+</div>
 }
