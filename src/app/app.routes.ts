@@ -16,6 +16,9 @@ import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.ase
 import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.secciones.component'; 
 import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
 import { GestionCursosComponent } from './pages/gestion-cursos/gestion.cursos.component';
+import { GestionMatriculasComponent } from './pages/gestion-matriculas/gestion-matriculas.component';
+import { RegistroPruebasComponent } from './pages/registro-pruebas/registro-pruebas.component';
+import { ReporteAsignacionesComponent } from './pages/reporte-asignaciones/reporte-asignaciones.component';
 import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
 
 export const routes: Routes = [   
@@ -97,6 +100,24 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ROL_ESTUDIANTE'] }
       },
+      {
+        path: 'gestion-matriculas',
+        component: GestionMatriculasComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ADMINISTRADOR', 'ROL_COORDINADOR'] }
+      },
+      {
+        path: 'registro-pruebas',
+        component: RegistroPruebasComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
+      },
+      {
+        path: 'reporte-asignaciones',
+        component: ReporteAsignacionesComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ADMINISTRADOR', 'ROL_COORDINADOR'] }
+      }
     ]
   },
 

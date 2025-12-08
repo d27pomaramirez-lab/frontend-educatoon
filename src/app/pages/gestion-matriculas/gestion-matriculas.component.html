@@ -1,0 +1,423 @@
+<div class="container mt-4">
+  <!-- Mensajes -->
+  <div *ngIf="mensajeError" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ mensajeError }}
+    <button type="button" class="btn-close" (click)="mensajeError = ''"></button>
+  </div>
+  
+  <div *ngIf="mensajeExito" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ mensajeExito }}
+    <button type="button" class="btn-close" (click)="mensajeExito = ''"></button>
+  </div>
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-journal-text me-2"></i>Gestión de Matrículas
+    </h2>
+    <div class="text-muted">
+      <i class="bi bi-calendar me-1"></i>
+      Período Actual: <strong>{{ periodoAcademicoActual }}</strong>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 1: NUEVA MATRÍCULA -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-journal-plus me-2"></i>Nueva Matrícula
+      </h5>
+    </div>
+    
+    <div class="card-body">
+      <!-- Paso 1: Buscar Estudiante -->
+      <div class="mb-4">
+        <h6 class="text-muted mb-3">
+          <span class="badge bg-primary rounded-circle me-2">1</span>
+          Buscar Estudiante
+        </h6>
+        
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control" placeholder="Ingrese código, nombre o apellido del estudiante..."
+                 [formControl]="buscarEstudianteControl"
+                 [class.is-invalid]="!estudianteSeleccionado && buscarEstudianteControl.value">
+          
+          <button class="btn btn-outline-secondary" type="button" 
+                  (click)="buscarEstudianteControl.setValue(''); estudiantesEncontrados = []"
+                  title="Limpiar búsqueda">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        
+        <!-- Resultados de búsqueda -->
+        <div *ngIf="estudiantesEncontrados.length > 0" class="mt-2">
+          <div class="list-group">
+            <a *ngFor="let estudiante of estudiantesEncontrados" 
+               href="javascript:void(0)" 
+               class="list-group-item list-group-item-action"
+               (click)="seleccionarEstudiante(estudiante)">
+              <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">
+                  <span class="badge bg-primary me-2">{{ estudiante.codigoEstudiante }}</span>
+                  {{ estudiante.nombreCompleto }}
+                </h6>
+                <small *ngIf="estudiante.yaMatriculado" class="text-warning">
+                  <i class="bi bi-exclamation-triangle me-1"></i>Ya matriculado
+                </small>
+              </div>
+              <p class="mb-1">
+                <small class="text-muted">
+                  {{ estudiante.carreraPostular || 'Sin carrera' }} • 
+                  Matriculado: {{ estudiante.fechaMatricula | date:'dd/MM/yyyy' }}
+                  <span *ngIf="estudiante.documentosValidados" class="badge bg-success ms-2">
+                    <i class="bi bi-check"></i> Documentos validados
+                  </span>
+                </small>
+              </p>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Estudiante seleccionado -->
+        <div *ngIf="estudianteSeleccionado" class="alert alert-success mt-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="alert-heading mb-1">
+                <i class="bi bi-person-check me-2"></i>Estudiante seleccionado
+              </h6>
+              <div class="mb-1">
+                <strong>{{ estudianteSeleccionado.codigoEstudiante }}</strong> - 
+                {{ estudianteSeleccionado.nombreCompleto }}
+              </div>
+              <small class="text-muted">
+                {{ estudianteSeleccionado.carreraPostular || 'Sin carrera especificada' }}
+                <span *ngIf="estudianteSeleccionado.yaMatriculado" class="text-warning ms-2">
+                  (Ya matriculado en {{ estudianteSeleccionado.periodoMatriculado }})
+                </span>
+              </small>
+            </div>
+            <button class="btn btn-sm btn-outline-danger" 
+                    (click)="limpiarFormulario()"
+                    title="Cambiar estudiante">
+              <i class="bi bi-x-lg"></i> Cambiar
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Paso 2: Seleccionar Cursos (solo si hay estudiante seleccionado) -->
+      <div *ngIf="estudianteSeleccionado">
+        <h6 class="text-muted mb-3">
+          <span class="badge bg-primary rounded-circle me-2">2</span>
+          Seleccionar Cursos 
+          <span class="badge bg-secondary ms-2">{{ seccionesSeleccionadas.length }} seleccionados</span>
+        </h6>
+        
+        <!-- Advertencia de conflictos -->
+        <div *ngIf="hayConflictosHorario" class="alert alert-warning alert-dismissible fade show">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>¡Atención!</strong> Hay conflictos de horario entre las secciones seleccionadas.
+          <button type="button" class="btn-close" (click)="hayConflictosHorario = false"></button>
+        </div>
+        
+        <!-- Tabla de secciones disponibles -->
+        <div class="table-responsive mb-4">
+          <table class="table table-hover table-sm">
+            <thead class="table-light">
+              <tr>
+                <th width="5%"></th>
+                <th width="15%">Código</th>
+                <th width="25%">Curso</th>
+                <th width="20%">Horario</th>
+                <th width="15%">Aula / Docente</th>
+                <th width="10%">Cupos</th>
+                <th width="10%">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let seccion of seccionesFiltradas" 
+                  [class.table-success]="isSeccionSeleccionada(seccion)">
+                <td class="text-center">
+                  <input type="checkbox" class="form-check-input"
+                         [checked]="isSeccionSeleccionada(seccion)"
+                         [disabled]="seccion.cuposDisponibles <= 0"
+                         (change)="toggleSeccion(seccion)">
+                </td>
+                <td>
+                  <span class="badge bg-info">{{ seccion.codigoSeccion }}</span>
+                </td>
+                <td>
+                  <div class="fw-medium">{{ seccion.cursoNombre }}</div>
+                </td>
+                <td>
+                  <div *ngFor="let horario of seccion.horarios" class="mb-1">
+                    <small class="badge bg-light text-dark border">
+                      <i class="bi bi-calendar-event me-1"></i>
+                      {{ horario.diaSemana }} 
+                      {{ horario.horaInicio }}-{{ horario.horaFin }}
+                    </small>
+                  </div>
+                  <div *ngIf="seccion.horarios.length === 0">
+                    <small class="text-muted">Sin horario definido</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="mb-1">
+                    <small>
+                      <i class="bi bi-building me-1"></i>
+                      {{ seccion.aula || 'No asignada' }}
+                    </small>
+                  </div>
+                  <div>
+                    <small class="text-muted">
+                      <i class="bi bi-person me-1"></i>
+                      {{ seccion.docenteNombre }}
+                    </small>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" 
+                        [class.bg-success]="seccion.cuposDisponibles > 5"
+                        [class.bg-warning]="seccion.cuposDisponibles <= 5 && seccion.cuposDisponibles > 0"
+                        [class.bg-danger]="seccion.cuposDisponibles === 0">
+                    {{ seccion.cuposDisponibles }}/{{ seccion.capacidad }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm" 
+                          [class.btn-outline-success]="!isSeccionSeleccionada(seccion)"
+                          [class.btn-success]="isSeccionSeleccionada(seccion)"
+                          [disabled]="seccion.cuposDisponibles <= 0"
+                          (click)="toggleSeccion(seccion)"
+                          title="{{ isSeccionSeleccionada(seccion) ? 'Quitar' : 'Agregar' }}">
+                    <i class="bi" 
+                       [class.bi-plus]="!isSeccionSeleccionada(seccion)"
+                       [class.bi-check]="isSeccionSeleccionada(seccion)"></i>
+                  </button>
+                </td>
+              </tr>
+              
+              <!-- Sin resultados -->
+              <tr *ngIf="seccionesFiltradas.length === 0 && !isLoading">
+                <td colspan="7" class="text-center text-muted py-4">
+                  <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                  No hay secciones disponibles
+                </td>
+              </tr>
+              
+              <!-- Loading -->
+              <tr *ngIf="isLoading">
+                <td colspan="7" class="text-center py-4">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                  <small class="text-muted ms-2">Cargando secciones...</small>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Resumen y botón de crear -->
+        <div *ngIf="seccionesSeleccionadas.length > 0" class="alert alert-info">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h6 class="alert-heading mb-2">
+                <i class="bi bi-list-check me-2"></i>Resumen de selección
+              </h6>
+              <div class="mb-2">
+                <strong>Estudiante:</strong> {{ estudianteSeleccionado.nombreCompleto }}
+              </div>
+              <div class="mb-2">
+                <strong>Cursos seleccionados ({{ seccionesSeleccionadas.length }}):</strong>
+                <div class="mt-1">
+                  <span *ngFor="let seccion of seccionesSeleccionadas" 
+                        class="badge bg-primary me-2 mb-1">
+                    {{ seccion.codigoSeccion }} - {{ seccion.cursoNombre }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 text-end">
+              <button class="btn btn-primary btn-lg" 
+                      [disabled]="hayConflictosHorario || isLoading"
+                      (click)="crearMatricula()">
+                <span *ngIf="!isLoading">
+                  <i class="bi bi-check-circle me-1"></i>
+                  Crear Matrícula
+                </span>
+                <span *ngIf="isLoading">
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                  Procesando...
+                </span>
+              </button>
+              <div class="mt-2">
+                <small class="text-muted">
+                  <i class="bi bi-info-circle me-1"></i>
+                  {{ seccionesSeleccionadas.length }} cursos • 
+                  Período {{ periodoAcademicoActual }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: MATRÍCULAS EXISTENTES -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-list-check me-2"></i>
+          Matrículas Registradas
+          <span class="badge bg-primary ms-2">{{ matriculasFiltradas.length }}</span>
+        </h5>
+        
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" 
+                  (click)="cargarMatriculas()"
+                  [disabled]="isLoading">
+            <i class="bi bi-arrow-clockwise" *ngIf="!isLoading"></i>
+            <span class="spinner-border spinner-border-sm me-1" *ngIf="isLoading"></span>
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="card-body border-bottom">
+      <div class="row g-2">
+        <div class="col-md-3">
+          <input type="text" class="form-control form-control-sm" 
+                 [(ngModel)]="filtroEstudiante" 
+                 placeholder="Filtrar por estudiante..."
+                 (input)="filtrarMatriculas()">
+        </div>
+        <div class="col-md-3">
+          <select class="form-select form-select-sm" [(ngModel)]="filtroPeriodo" (change)="filtrarMatriculas()">
+            <option value="">Todos los períodos</option>
+            <option *ngFor="let periodo of getPeriodosAcademicos()" [value]="periodo">
+              {{ periodo }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select form-select-sm" [(ngModel)]="filtroEstado" (change)="filtrarMatriculas()">
+            <option value="">Todos los estados</option>
+            <option value="ACTIVA">Activa</option>
+            <option value="INACTIVA">Inactiva</option>
+            <option value="COMPLETADA">Completada</option>
+            <option value="SUSPENDIDA">Suspendida</option>
+          </select>
+        </div>
+        <div class="col-md-3 text-end">
+          <small class="text-muted">
+            Mostrando {{ matriculasFiltradas.length }} de {{ matriculas.length }}
+          </small>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tabla de matrículas -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th width="10%">Código</th>
+              <th width="20%">Estudiante</th>
+              <th width="10%">Período</th>
+              <th width="30%">Cursos Matriculados</th>
+              <th width="15%">Estado</th>
+              <th width="15%" class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let matricula of matriculasFiltradas" class="align-middle">
+              <td>
+                <span class="fw-semibold">{{ matricula.estudianteCodigo || 'N/A' }}</span>
+              </td>
+              <td>{{ matricula.estudianteNombre || 'N/A' }}</td>
+              <td>
+                <span class="badge bg-secondary">{{ matricula.periodoAcademico }}</span>
+              </td>
+              <td>
+                <div *ngIf="matricula.detalles && matricula.detalles.length > 0">
+                  <div *ngFor="let detalle of matricula.detalles" class="mb-1">
+                    <div class="d-flex align-items-center">
+                      <span class="badge bg-info me-2">{{ detalle.seccionCodigo }}</span>
+                      <span class="me-2">{{ detalle.cursoNombre }}</span>
+                      <small class="text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        {{ detalle.estado }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="!matricula.detalles || matricula.detalles.length === 0">
+                  <span class="text-muted">Sin cursos</span>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-success': matricula.estado === 'ACTIVA',
+                  'bg-secondary': matricula.estado === 'INACTIVA',
+                  'bg-warning': matricula.estado === 'SUSPENDIDA',
+                  'bg-info': matricula.estado === 'COMPLETADA'
+                }">
+                  {{ matricula.estado || 'DESCONOCIDO' }}
+                </span>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-info" title="Ver detalles">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" 
+                          title="Agregar curso"
+                          (click)="agregarCursoAMatricula(matricula)">
+                    <i class="bi bi-plus-circle"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" 
+                          title="Eliminar matrícula"
+                          (click)="eliminarMatricula(matricula.id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Sin resultados -->
+            <tr *ngIf="matriculasFiltradas.length === 0 && !isLoading">
+              <td colspan="6" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="bi bi-inbox display-6 d-block mb-3"></i>
+                  <h5>No hay matrículas registradas</h5>
+                  <p class="mb-0">Comience creando una nueva matrícula</p>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Loading -->
+            <tr *ngIf="isLoading">
+              <td colspan="6" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 mb-0">Cargando matrículas...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
