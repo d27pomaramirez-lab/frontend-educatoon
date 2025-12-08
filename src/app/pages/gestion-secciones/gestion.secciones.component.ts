@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeccionService } from '../../services/seccion.service';
+import { CursoService } from '../../services/curso.service';
+import { CursoResponse } from '../../dto/response/CursoResponse';
 import { SeccionResponse } from '../../dto/response/SeccionResponse';
 import { SeccionRequest } from '../../dto/request/SeccionRequest';
 import { UsuarioService } from '../../services/usuario.service';
@@ -25,6 +27,7 @@ export class GestionSeccionesComponent implements OnInit {
 
   listaSecciones: SeccionResponse[] = [];
   listaDocentes: UsuarioPendienteResponse[] = [];
+  listaCursos: CursoResponse[] = [];
 
   seccionEnEdicion: SeccionResponse | null = null;
   mostrarModalEdicion = false;
@@ -44,6 +47,7 @@ export class GestionSeccionesComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private seccionService: SeccionService,
+    private cursoService: CursoService,
     private usuarioService: UsuarioService,
     private paginationService: PaginationService
   ) {
@@ -65,6 +69,7 @@ export class GestionSeccionesComponent implements OnInit {
   ngOnInit(): void {
     this.cargarSecciones();
     this.cargarDocentes();
+    this.cargarCursos();
   }
 
   cargarSecciones(): void {
@@ -104,6 +109,17 @@ export class GestionSeccionesComponent implements OnInit {
     });
   }
 
+  cargarCursos(): void {
+    this.cursoService.listarCursos().subscribe({
+      next: (data) => {
+        this.listaCursos = data.filter(c => c.estado === true);
+      },
+      error: (err) => {
+        console.error('Error al cargar cursos', err);
+      }
+    })
+  }
+
   onSubmit(): void {
     this.formErrorMessage = null;
     this.formSuccessMessage = null;
@@ -126,11 +142,16 @@ export class GestionSeccionesComponent implements OnInit {
     this.seccionEnEdicion = seccion;
     this.editFormErrorMessage = null;
     this.editFormSuccessMessage = null;
+    const cursoEncontrado = this.listaCursos.find(c => c.nombre === seccion.curso);
+    const cursoId = cursoEncontrado ? cursoEncontrado.id : '';
+    const docenteEncontrado = this.listaDocentes.find(d => `${d.nombres} ${d.apellidos}` === seccion.docente);
+    const docenteId = docenteEncontrado ? docenteEncontrado.id : '';
+
     this.seccionEditForm.patchValue({
-      curso: seccion.curso,
+      curso: cursoId,
       capacidad: seccion.capacidad,
       aula: seccion.aula,
-      docente: seccion.docente
+      docente: docenteId
     });
     this.mostrarModalEdicion = true;
   }

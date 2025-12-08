@@ -7,18 +7,37 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="curso">Nombre del Curso</label>
-          <input type="text" id="curso" formControlName="curso" class="form-control" placeholder="Ej: Ciencia">
+          <select 
+            id="curso" 
+            formControlName="curso" 
+            class="form-select"
+            [class.is-invalid]="seccionForm.get('curso')?.invalid && seccionForm.get('curso')?.touched">
+            <option value="">[Seleccionar Curso]</option>
+            @for (curso of listaCursos; track curso.id) {
+              <option [value]="curso.id">{{ curso.nombre }}</option>
+            }
+          </select>
+          @if (seccionForm.get('curso')?.invalid && seccionForm.get('curso')?.touched) {
+            <div class="text-danger small mt-1">Seleccione un curso.</div>
+          }
         </div>
       </div>
       <div class="col-md-6">
         <div class="form-group">
           <label for="docente">Docente</label>
-          <select id="docente" formControlName="docente" class="form-select">
+          <select 
+            id="docente" 
+            formControlName="docente" 
+            class="form-select"
+            [class.is-invalid]="seccionForm.get('docente')?.invalid && seccionForm.get('docente')?.touched">
             <option value="">[Seleccionar Docente]</option>
             @for (doc of listaDocentes; track doc.id) {
               <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
             }
           </select>
+          @if (seccionForm.get('docente')?.invalid && seccionForm.get('docente')?.touched) {
+            <div class="text-danger small mt-1">Seleccione un docente.</div>
+          }
         </div>
       </div>
     </div>
@@ -26,13 +45,39 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="aula">Aula</label>
-          <input type="text" id="aula" formControlName="aula" class="form-control" placeholder="Ej: A-101">
-        </div>
+          <input 
+            type="text" 
+            id="aula" 
+            formControlName="aula" 
+            class="form-control" 
+            placeholder="Ej: A-101"
+            [class.is-invalid]="seccionForm.get('aula')?.invalid && seccionForm.get('aula')?.touched">
+        
+          @if (seccionForm.get('aula')?.invalid && seccionForm.get('aula')?.touched) {
+            <div class="text-danger small mt-1">
+              <i class="fa-solid fa-circle-exclamation me-1"></i>
+              El código de aula es obligatorio
+            </div>
+          }
+
+          </div>
       </div>
       <div class="col-md-6">
         <div class="form-group">
           <label for="capacidad">Capacidad</label>
-          <input type="number" id="capacidad" formControlName="capacidad" class="form-control">
+          <input 
+            type="number" 
+            id="capacidad" 
+            formControlName="capacidad" 
+            class="form-control"
+            [class.is-invalid]="seccionForm.get('capacidad')?.invalid && seccionForm.get('capacidad')?.touched">
+
+            @if (seccionForm.get('capacidad')?.hasError('required') && seccionForm.get('capacidad')?.touched) {
+            <div class="text-danger small mt-1">La capacidad es obligatoria.</div>
+            }
+            @if (seccionForm.get('capacidad')?.hasError('min') && seccionForm.get('capacidad')?.touched) {
+              <div class="text-danger small mt-1">La capacidad debe ser al menos 1.</div>
+            }
         </div>
       </div>
     </div>
@@ -111,15 +156,25 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for="cursoEdit">Nombre del Curso</label>
-                <input type="text" id="cursoEdit" formControlName="curso" class="form-control">
+                <select id="cursoEdit" formControlName="curso" class="form-select">
+                    <option value="">[Seleccionar Curso]</option>
+                    @for (curso of listaCursos; track curso.id) {
+                      <option [value]="curso.id">{{ curso.nombre }}</option>
+                    }
+                </select>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label for="docenteEdit">Docente</label>
-                <select id="docenteEdit" formControlName="docente" class="form-select">
+                <select 
+                  id="docenteEdit" 
+                  formControlName="docente" 
+                  class="form-select">
+                  <option value="">[Seleccionar Docente]</option> 
+                  
                   @for (doc of listaDocentes; track doc.id) {
-                    <option [value]="doc.nombres + ' ' + doc.apellidos">{{ doc.nombres }} {{ doc.apellidos }}</option>
+                    <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
                   }
                 </select>
               </div>
