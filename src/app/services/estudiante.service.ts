@@ -8,7 +8,7 @@ import { BASE_URL } from '../../utils/constants';
   providedIn: 'root'
 })
 export class EstudianteService {
-  private apiUrl = BASE_URL + '/estudiantes';
+  private apiUrl = BASE_URL + '/estudiante';
 
   constructor(private http: HttpClient) {}
 
