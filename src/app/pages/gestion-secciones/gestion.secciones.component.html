@@ -14,7 +14,7 @@
             [class.is-invalid]="seccionForm.get('curso')?.invalid && seccionForm.get('curso')?.touched">
             <option value="">[Seleccionar Curso]</option>
             @for (curso of listaCursos; track curso.id) {
-              <option [value]="curso.id">{{ curso.nombre }}</option>
+              <option [value]="curso.nombre">{{ curso.nombre }}</option>
             }
           </select>
           @if (seccionForm.get('curso')?.invalid && seccionForm.get('curso')?.touched) {
@@ -32,7 +32,7 @@
             [class.is-invalid]="seccionForm.get('docente')?.invalid && seccionForm.get('docente')?.touched">
             <option value="">[Seleccionar Docente]</option>
             @for (doc of listaDocentes; track doc.id) {
-              <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
+              <option [value]="doc.nombres + ' ' + doc.apellidos">{{ doc.nombres }} {{ doc.apellidos }}</option>
             }
           </select>
           @if (seccionForm.get('docente')?.invalid && seccionForm.get('docente')?.touched) {
@@ -95,6 +95,45 @@
 
 <div class="admin-panel-container all-users-panel">
   <h2>Secciones Registradas</h2>
+
+  <div class="search-container mb-4 p-3 bg-white rounded shadow-sm border">
+    <div class="row g-3 align-items-end">
+      
+      <!-- Filtro por Código -->
+      <div class="col-md-5">
+        <label class="form-label small text-muted">Buscar por Código</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fa-solid fa-barcode"></i></span>
+          <input type="text" class="form-control" placeholder="Ej: SEC-001" 
+                 [(ngModel)]="filtroCodigo" 
+                 (input)="filtroCurso=''" 
+                 (keyup.enter)="onBuscar()">
+        </div>
+      </div>
+      
+      <!-- Filtro por Curso -->
+      <div class="col-md-5">
+        <label class="form-label small text-muted">Buscar por Curso</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fa-solid fa-book"></i></span>
+          <input type="text" class="form-control" placeholder="Ej: Matemática" 
+                 [(ngModel)]="filtroCurso" 
+                 (input)="filtroCodigo=''" 
+                 (keyup.enter)="onBuscar()">
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="col-md-1 d-flex">
+        <button class="btn btn-primary w-100 me-1" (click)="onBuscar()" title="Buscar">
+          <i class="fa-solid fa-filter"></i>
+        </button>
+        <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()" title="Limpiar">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 
   @if (tableErrorMessage) { <div class="server-error-msg">{{ tableErrorMessage }}</div> }
 
@@ -159,7 +198,7 @@
                 <select id="cursoEdit" formControlName="curso" class="form-select">
                     <option value="">[Seleccionar Curso]</option>
                     @for (curso of listaCursos; track curso.id) {
-                      <option [value]="curso.id">{{ curso.nombre }}</option>
+                      <option [value]="curso.nombre">{{ curso.nombre }}</option>
                     }
                 </select>
               </div>
@@ -174,7 +213,7 @@
                   <option value="">[Seleccionar Docente]</option> 
                   
                   @for (doc of listaDocentes; track doc.id) {
-                    <option [value]="doc.id">{{ doc.nombres }} {{ doc.apellidos }}</option>
+                    <option [value]="doc.nombres + ' ' + doc.apellidos">{{ doc.nombres }} {{ doc.apellidos }}</option>
                   }
                 </select>
               </div>

@@ -20,6 +20,7 @@ import { GestionMatriculasComponent } from './pages/gestion-matriculas/gestion-m
 import { RegistroPruebasComponent } from './pages/registro-pruebas/registro-pruebas.component';
 import { ReporteAsignacionesComponent } from './pages/reporte-asignaciones/reporte-asignaciones.component';
 import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
+import { ProgresoAcademicoComponent } from './pages/progreso-academico/progreso.academico.component'; 
 
 export const routes: Routes = [   
 
@@ -117,7 +118,13 @@ export const routes: Routes = [
         component: ReporteAsignacionesComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ADMINISTRADOR', 'ROL_COORDINADOR'] }
-      }
+      },
+      {
+        path: 'estudiante/progreso-academico',
+        component: ProgresoAcademicoComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ESTUDIANTE'] }
+      },
     ]
   },
 

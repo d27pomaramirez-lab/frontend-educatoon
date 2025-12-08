@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { BASE_URL } from '../../utils/constants';
 import { SeccionResponse } from '../dto/response/SeccionResponse';
@@ -32,8 +32,26 @@ export class SeccionService {
     return this.http.put<SeccionResponse>(`${this.apiUrl2}/actualizar-seccion/${id}`, data);
   }
 
+  eliminarSeccionCoordinador(id: string): Observable<SeccionResponse> {
+    return this.http.delete<SeccionResponse>(`${this.apiUrl2}/eliminar-seccion/${id}`);
+  }
+
   eliminarSeccion(id: string): Observable<SeccionResponse> {
     return this.http.delete<SeccionResponse>(`${this.apiUrl}/eliminar-seccion/${id}`);
+  }
+
+  buscarSecciones(general?: string, codigo?: string, curso?: string): Observable<SeccionResponse[]> {
+    let params = new HttpParams();
+    // Si hay búsqueda general, tiene prioridad (según tu lógica de backend)
+    if (general) {
+        params = params.set('general', general);
+    } else {
+        // Si no hay general, enviamos los filtros específicos si existen
+        if (codigo) params = params.set('codigo', codigo);
+        if (curso) params = params.set('curso', curso);
+    }
+
+    return this.http.get<SeccionResponse[]>(`${this.apiUrl2}/buscar-secciones`, { params });
   }
 
     // NUEVO: Obtener secciones con horarios

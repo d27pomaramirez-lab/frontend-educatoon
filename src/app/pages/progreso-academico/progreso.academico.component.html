@@ -1,0 +1,84 @@
+<div class="admin-panel-container">
+  <h2>Progreso Académico</h2>
+  <p>Consulta el avance de tus cursos, notas parciales y estado actual.</p>
+
+  <!-- ... Mensajes de error y carga ... -->
+
+  @if (!isLoading && progresoList.length > 0) {
+    <div class="courses-grid">
+      @for (item of progresoList; track item.codigoSeccion) {
+        <div class="course-card">
+          <!-- Encabezado de la Tarjeta -->
+          <div class="card-header">
+            <div class="course-info">
+              <h3>{{ item.nombreCurso }}</h3>
+              <div class="teacher-info text-muted small mb-1">
+                <i class="fa-solid fa-chalkboard-user me-1"></i>
+                {{ item.nombreDocente || 'Docente no asignado' }}
+              </div>
+              <span class="section-badge">{{ item.codigoSeccion }}</span>
+            </div>
+            <span class="status-badge" [ngClass]="getEstadoClass(item.estado)">
+              {{ item.estado }}
+            </span>
+          </div>
+
+          <!-- Cuerpo de la Tarjeta: Notas -->
+          <div class="card-body">
+            <div class="grades-container">
+              <div class="grade-item">
+                <span class="grade-label">Parcial</span>
+                <span class="grade-value" [class.nota-aprobatoria]="item.notaParcial >= 10.5" [class.nota-desaprobatoria]="item.notaParcial < 10.5">
+                  {{ item.notaParcial | number:'1.1-2' }}
+                </span>
+              </div>
+              <div class="grade-item">
+                <span class="grade-label">Simulacros</span>
+                <span class="grade-value" [class.nota-aprobatoria]="item.promedioSimulacros >= 10.5" [class.nota-desaprobatoria]="item.promedioSimulacros < 10.5">
+                  {{ item.promedioSimulacros | number:'1.1-2' }}
+                </span>
+              </div>
+              <div class="grade-item">
+                <span class="grade-label">Final</span>
+                @if (item.notaFinal !== null && item.notaFinal !== undefined) {
+                  <span class="grade-value" [class.nota-aprobatoria]="item.notaFinal >= 10.5" [class.nota-desaprobatoria]="item.notaFinal < 10.5">
+                    {{ item.notaFinal | number:'1.1-2' }}
+                  </span>
+                } @else {
+                  <span class="grade-value text-muted">-</span>
+                }
+              </div>
+            </div>
+
+            <!-- Barra de Progreso -->
+            <div class="progress-section mt-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="small text-muted">Avance del curso</span>
+                <span class="small fw-bold">{{ item.avance }}%</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" [style.width.%]="item.avance"></div>
+              </div>
+            </div>
+            
+            <!-- Observaciones -->
+            <div class="observations mt-3">
+              <p class="small text-muted mb-0">
+                <i class="fa-regular fa-comment-dots me-1"></i>
+                {{ item.observaciones || 'Sin observaciones.' }}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Pie de Tarjeta -->
+          <div class="card-footer text-end">
+            <small class="text-muted">
+              <i class="fa-regular fa-calendar me-1"></i>
+              Actualizado: {{ item.ultimaActualizacion ? (item.ultimaActualizacion | date:'dd/MM/yyyy') : '-' }}
+            </small>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

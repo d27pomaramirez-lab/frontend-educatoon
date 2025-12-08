@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeccionService } from '../../services/seccion.service';
 import { CursoService } from '../../services/curso.service';
 import { CursoResponse } from '../../dto/response/CursoResponse';
@@ -16,7 +16,7 @@ import { PaginationService } from '../../services/pagination.service';
 @Component({
   selector: 'app-gestion-secciones',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PaginationComponent],
+  imports: [CommonModule, ReactiveFormsModule, PaginationComponent, FormsModule],
   templateUrl: './gestion.secciones.component.html',
   styleUrl: './gestion.secciones.component.css'
 })
@@ -125,6 +125,9 @@ export class GestionSeccionesComponent implements OnInit {
     this.formSuccessMessage = null;
     if (this.seccionForm.valid) {
       const request: SeccionRequest = this.seccionForm.value;
+      console.log('DATOS A ENVIAR AL BACKEND:', JSON.stringify(request, null, 2));
+
+      
       this.seccionService.registrarSeccion(request).subscribe({
         next: (response) => {
           this.formSuccessMessage = response;
@@ -142,16 +145,15 @@ export class GestionSeccionesComponent implements OnInit {
     this.seccionEnEdicion = seccion;
     this.editFormErrorMessage = null;
     this.editFormSuccessMessage = null;
-    const cursoEncontrado = this.listaCursos.find(c => c.nombre === seccion.curso);
-    const cursoId = cursoEncontrado ? cursoEncontrado.id : '';
-    const docenteEncontrado = this.listaDocentes.find(d => `${d.nombres} ${d.apellidos}` === seccion.docente);
-    const docenteId = docenteEncontrado ? docenteEncontrado.id : '';
+
+    const cursoEncontrado = this.listaCursos.find(c => c.id === seccion.curso || c.nombre === seccion.curso);
+    const nombreCurso = cursoEncontrado ? cursoEncontrado.nombre : seccion.curso;
 
     this.seccionEditForm.patchValue({
-      curso: cursoId,
+      curso: nombreCurso,         
       capacidad: seccion.capacidad,
       aula: seccion.aula,
-      docente: docenteId
+      docente: seccion.docente      
     });
     this.mostrarModalEdicion = true;
   }
@@ -160,6 +162,10 @@ export class GestionSeccionesComponent implements OnInit {
   onSubmitEdicion(): void {
     if (this.seccionEditForm.valid && this.seccionEnEdicion) {
       const request: SeccionRequest = this.seccionEditForm.value;
+
+      // IMPORTANTE: Mira la consola del navegador (F12) antes de que falle
+      console.log('DATOS A ENVIAR AL BACKEND:', JSON.stringify(request, null, 2));
+
       this.seccionService.actualizarSeccion(this.seccionEnEdicion.id, request).subscribe({
         next: (seccionActualizada) => {
           this.editFormSuccessMessage = 'Sección actualizada correctamente.';
@@ -186,7 +192,7 @@ export class GestionSeccionesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, se ejecuta la lógica de eliminación
-        this.seccionService.eliminarSeccion(id).subscribe({
+        this.seccionService.eliminarSeccionCoordinador(id).subscribe({
           next: () => {
             this.cargarSecciones();
             Swal.fire(
@@ -206,6 +212,45 @@ export class GestionSeccionesComponent implements OnInit {
       }
     });
   }
+
+  filtroGeneral: string = '';
+  filtroCodigo: string = '';
+  filtroCurso: string = '';
+
+  onBuscar(): void {
+    this.paginaActual = 1; // Resetear paginación
+    this.tableErrorMessage = null;
+
+    // Si todo está vacío, recargamos la lista completa
+    if (!this.filtroGeneral && !this.filtroCodigo && !this.filtroCurso) {
+      this.cargarSecciones();
+      return;
+    }
+
+    // Llamamos al servicio con los filtros
+    this.seccionService.buscarSecciones(this.filtroGeneral, this.filtroCodigo, this.filtroCurso)
+      .subscribe({
+        next: (data) => {
+          this.listaSecciones = data;
+          this.aplicarPaginacion(this.paginaActual);
+          if (data.length === 0) {
+            this.tableErrorMessage = 'No se encontraron resultados.';
+          }
+        },
+        error: (err) => {
+          console.error('Error buscando secciones:', err);
+          this.tableErrorMessage = 'Error al realizar la búsqueda.';
+        }
+      });
+  }
+
+  limpiarFiltros(): void {
+    this.filtroGeneral = '';
+    this.filtroCodigo = '';
+    this.filtroCurso = '';
+    this.cargarSecciones();
+  }
+
 
   cerrarModalEdicion(): void {
     this.mostrarModalEdicion = false;

@@ -1,0 +1,92 @@
+/* Grid Layout */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Card Styles */
+.course-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.course-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.section-badge {
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* Grades Grid */
+.grades-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.grade-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grade-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.grade-value {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  min-width: 50px;
+}
+
+/* Reutiliza tus estilos de .nota-aprobatoria, .nota-desaprobatoria, .progress-bar, etc. */
+.card-footer {
+  padding: 0.75rem 1rem;
+  background-color: #fff;
+  border-top: 1px solid #f1f3f5;
+  font-size: 0.8rem;
+}

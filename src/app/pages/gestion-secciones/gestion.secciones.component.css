@@ -306,3 +306,60 @@
     border-color: #007bff;
     font-weight: bold;
 }
+
+/* Estilos para la Barra de Búsqueda */
+.search-container {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  /* Asegura que no se salga del contenedor padre */
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+/* Ajuste para que los inputs no sean gigantes */
+.search-container .form-control {
+  height: 38px; /* Altura estándar de Bootstrap */
+}
+
+/* Corrección para el input group */
+.input-group {
+  display: flex; /* Asegura que el icono y el input estén en la misma línea */
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.input-group .form-control {
+  width: 1% !important;
+  flex: 1 1 auto;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group-text {
+  display: flex;
+  align-items: center;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+
+.search-container .form-label {
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.search-container .input-group-text {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+  color: #6c757d;
+}
+
+/* Ajuste para alinear verticalmente los botones con los inputs */
+.align-items-end {
+  align-items: flex-end !important;
+}
