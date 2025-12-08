@@ -17,6 +17,7 @@ import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.sec
 import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
 import { GestionCursosComponent } from './pages/gestion-cursos/gestion.cursos.component';
 import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
+import { ProgresoAcademicoComponent } from './pages/progreso-academico/progreso.academico.component'; 
 
 export const routes: Routes = [   
 
@@ -94,6 +95,12 @@ export const routes: Routes = [
       {
         path: 'estudiante/asesorias',
         component: GestionarAsesoriaEstudianteComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ESTUDIANTE'] }
+      },
+      {
+        path: 'estudiante/progreso-academico',
+        component: ProgresoAcademicoComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ESTUDIANTE'] }
       },

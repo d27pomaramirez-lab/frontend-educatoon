@@ -1,0 +1,73 @@
+<div class="admin-panel-container">
+  <h2>Progreso Académico</h2>
+  <p>Consulta el avance de tus cursos, notas parciales y estado actual.</p>
+
+  <!-- Mensajes de Error -->
+  @if (errorMessage) {
+    <div class="server-error-msg">{{ errorMessage }}</div>
+  }
+
+  <!-- Mensaje si no hay registros (devuelto por el backend) -->
+  @if (mensajeSinRegistros) {
+    <div class="alert-info-box">
+      <i class="fa-solid fa-circle-info me-2"></i>
+      {{ mensajeSinRegistros }}
+    </div>
+  }
+
+  <!-- Tabla de Progreso -->
+  @if (!isLoading && progresoList.length > 0) {
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
+          <tr>
+            <th>Curso</th>
+            <th>Sección</th>
+            <th>Nota Parcial</th>
+            <th>Avance</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Última Actualización</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of progresoList; track item.codigoSeccion) {
+            <tr>
+              <td class="fw-bold">{{ item.nombreCurso }}</td>
+              <td>{{ item.codigoSeccion }}</td>
+              <td class="text-center">
+                <span class="nota-badge" [class.nota-aprobatoria]="item.notaParcial >= 10.5" [class.nota-desaprobatoria]="item.notaParcial < 10.5">
+                  {{ item.notaParcial | number:'1.1-2' }}
+                </span>
+              </td>
+              <td>
+                <div class="progress-container">
+                  <div class="progress-bar" [style.width.%]="item.avance"></div>
+                  <span class="progress-text">{{ item.avance }}%</span>
+                </div>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getEstadoClass(item.estado)">
+                  {{ item.estado }}
+                </span>
+              </td>
+              <td class="text-muted small">{{ item.observaciones || '-' }}</td>
+              <td class="text-muted small">
+                <i class="fa-regular fa-calendar me-1"></i>
+                {{ item.ultimaActualizacion | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando tu progreso...</p>
+    </div>
+  }
+</div>
