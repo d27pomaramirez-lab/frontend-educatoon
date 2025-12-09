@@ -44,6 +44,13 @@ export class GestionSeccionesComponent implements OnInit {
   totalPaginas: number = 0;
   seccionesPaginadas: SeccionResponse[] = [];
 
+  // Variables para filtros de búsqueda
+  cursosFiltro: string[] = []; 
+  seccionesFiltro: string[] = []; 
+  
+  filtroCursoSeleccionado: string = '';
+  filtroSeccionSeleccionada: string = '';
+
   constructor(
     private fb: FormBuilder,
     private seccionService: SeccionService,
@@ -78,12 +85,33 @@ export class GestionSeccionesComponent implements OnInit {
       next: (data) => {
         this.listaSecciones = data;
         this.aplicarPaginacion(this.paginaActual);
+
+        // Extraer cursos únicos para el filtro
+        this.cursosFiltro = [...new Set(data.map(s => s.curso))].sort();
       },
       error: (err) => {
         this.tableErrorMessage = 'Error al cargar las secciones.';
         console.error(err);
       }
     });
+  }
+
+  // Cuando cambia el curso en el filtro
+  onFiltroCursoChange(): void {
+    this.filtroSeccionSeleccionada = ''; // Resetear sección
+    
+    if (this.filtroCursoSeleccionado) {
+      // Filtrar secciones que pertenecen al curso seleccionado
+      this.seccionesFiltro = this.listaSecciones
+        .filter(s => s.curso === this.filtroCursoSeleccionado)
+        .map(s => s.codigoSeccion)
+        .sort();
+    } else {
+      this.seccionesFiltro = [];
+    }
+    
+    // Ejecutar búsqueda automáticamente
+    this.onBuscar();
   }
 
   // Método unificado para aplicar y actualizar la paginación
@@ -221,34 +249,48 @@ export class GestionSeccionesComponent implements OnInit {
     this.paginaActual = 1; // Resetear paginación
     this.tableErrorMessage = null;
 
-    // Si todo está vacío, recargamos la lista completa
-    if (!this.filtroGeneral && !this.filtroCodigo && !this.filtroCurso) {
-      this.cargarSecciones();
+    // Si no hay filtros, mostrar todo (ya cargado en listaSecciones)
+    if (!this.filtroCursoSeleccionado && !this.filtroSeccionSeleccionada) {
+      this.seccionService.listarSecciones().subscribe(data => {
+          this.listaSecciones = data;
+          this.aplicarPaginacion(1);
+      });
       return;
     }
 
-    // Llamamos al servicio con los filtros
-    this.seccionService.buscarSecciones(this.filtroGeneral, this.filtroCodigo, this.filtroCurso)
-      .subscribe({
-        next: (data) => {
-          this.listaSecciones = data;
-          this.aplicarPaginacion(this.paginaActual);
-          if (data.length === 0) {
-            this.tableErrorMessage = 'No se encontraron resultados.';
-          }
-        },
-        error: (err) => {
-          console.error('Error buscando secciones:', err);
-          this.tableErrorMessage = 'Error al realizar la búsqueda.';
-        }
-      });
+
+    // Filtrado local (más rápido y eficiente para esta vista)
+    let resultados = this.listaSecciones;
+
+    if (this.filtroCursoSeleccionado) {
+      resultados = resultados.filter(s => s.curso === this.filtroCursoSeleccionado);
+    }
+
+    if (this.filtroSeccionSeleccionada) {
+      resultados = resultados.filter(s => s.codigoSeccion === this.filtroSeccionSeleccionada);
+    }
+
+    this.seccionesPaginadas = []; // Limpiar vista actual
+    
+    // Actualizar paginación con resultados filtrados
+    const { data, totalPages } = this.paginationService.getPaginatedData(
+      resultados,
+      this.paginaActual,
+      this.elementosPorPagina
+    );
+    this.seccionesPaginadas = data;
+    this.totalPaginas = totalPages;
+
+    if (resultados.length === 0) {
+      this.tableErrorMessage = 'No se encontraron resultados.';
+    }
   }
 
   limpiarFiltros(): void {
-    this.filtroGeneral = '';
-    this.filtroCodigo = '';
-    this.filtroCurso = '';
-    this.cargarSecciones();
+    this.filtroCursoSeleccionado = '';
+    this.filtroSeccionSeleccionada = '';
+    this.seccionesFiltro = [];
+    this.cargarSecciones(); // Recargar todo
   }
 
 

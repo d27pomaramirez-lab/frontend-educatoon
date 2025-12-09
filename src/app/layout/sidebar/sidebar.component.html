@@ -62,6 +62,13 @@
     </li>
 
     <li>
+      <a routerLink="/coordinador/notas" routerLinkActive="active">
+        <i class="fa-solid fa-clipboard-list me-2"></i>
+        @if (!isCollapsed) { <span class="link-text">Gestionar Notas</span> }
+      </a>
+    </li>
+
+    <li>
       <a routerLink="/gestion-matriculas" routerLinkActive="active">
         <i class="bi bi-journal-check me-2"></i>
         @if (!isCollapsed) { <span class="link-text">Gestión de Matrículas</span> }

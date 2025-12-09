@@ -99,37 +99,43 @@
   <div class="search-container mb-4 p-3 bg-white rounded shadow-sm border">
     <div class="row g-3 align-items-end">
       
-      <!-- Filtro por Código -->
+      <!-- Filtro por Curso (Izquierda) -->
       <div class="col-md-5">
-        <label class="form-label small text-muted">Buscar por Código</label>
+        <label class="form-label small text-muted">Filtrar por Curso</label>
         <div class="input-group">
-          <span class="input-group-text bg-light"><i class="fa-solid fa-barcode"></i></span>
-          <input type="text" class="form-control" placeholder="Ej: SEC-001" 
-                 [(ngModel)]="filtroCodigo" 
-                 (input)="filtroCurso=''" 
-                 (keyup.enter)="onBuscar()">
+          <span class="input-group-text bg-light"><i class="fa-solid fa-book"></i></span>
+          <select class="form-select" 
+                  [(ngModel)]="filtroCursoSeleccionado" 
+                  (change)="onFiltroCursoChange()">
+            <option value="">-- Todos los cursos --</option>
+            <option *ngFor="let curso of cursosFiltro" [value]="curso">
+              {{ curso }}
+            </option>
+          </select>
         </div>
       </div>
       
-      <!-- Filtro por Curso -->
+      <!-- Filtro por Sección (Derecha - Dependiente) -->
       <div class="col-md-5">
-        <label class="form-label small text-muted">Buscar por Curso</label>
+        <label class="form-label small text-muted">Filtrar por Sección</label>
         <div class="input-group">
-          <span class="input-group-text bg-light"><i class="fa-solid fa-book"></i></span>
-          <input type="text" class="form-control" placeholder="Ej: Matemática" 
-                 [(ngModel)]="filtroCurso" 
-                 (input)="filtroCodigo=''" 
-                 (keyup.enter)="onBuscar()">
+          <span class="input-group-text bg-light"><i class="fa-solid fa-barcode"></i></span>
+          <select class="form-select" 
+                  [(ngModel)]="filtroSeccionSeleccionada" 
+                  (change)="onBuscar()"
+                  [disabled]="!filtroCursoSeleccionado">
+            <option value="">-- Todas las secciones --</option>
+            <option *ngFor="let codigo of seccionesFiltro" [value]="codigo">
+              {{ codigo }}
+            </option>
+          </select>
         </div>
       </div>
 
       <!-- Botones -->
-      <div class="col-md-1 d-flex">
-        <button class="btn btn-primary w-100 me-1" (click)="onBuscar()" title="Buscar">
-          <i class="fa-solid fa-filter"></i>
-        </button>
-        <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()" title="Limpiar">
-          <i class="fa-solid fa-rotate-left"></i>
+      <div class="col-md-2 d-flex">
+        <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()" title="Limpiar Filtros">
+          <i class="fa-solid fa-rotate-left me-1"></i> Limpiar
         </button>
       </div>
     </div>

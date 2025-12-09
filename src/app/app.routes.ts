@@ -20,6 +20,7 @@ import { RegistroPruebasComponent } from './pages/registro-pruebas/registro-prue
 import { ReporteAsignacionesComponent } from './pages/reporte-asignaciones/reporte-asignaciones.component';
 import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
 import { ProgresoAcademicoComponent } from './pages/progreso-academico/progreso.academico.component'; 
+import { RegistroNotasComponent } from './pages/registro-notas/registro.notas.component';
 
 export const routes: Routes = [   
 
@@ -79,6 +80,12 @@ export const routes: Routes = [
       {
         path: 'coordinador/cursos',
         component: GestionCursosComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR'] }
+      },
+      {
+        path: 'coordinador/notas',
+        component: RegistroNotasComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_COORDINADOR'] }
       },
