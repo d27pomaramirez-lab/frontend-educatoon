@@ -1,0 +1,54 @@
+<div class="card shadow p-4">
+    <h2><i class="fas fa-upload me-2"></i> Subir Materiales de Estudio</h2>
+    <hr>
+
+    <form [formGroup]="materialForm" (ngSubmit)="onSubmit()">
+
+        <div *ngIf="successMessage" class="alert alert-success mt-3" role="alert">
+            {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+            {{ errorMessage }}
+        </div>
+
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del Material</label>
+            <input type="text" id="nombre" formControlName="nombre" class="form-control"
+                [class.is-invalid]="materialForm.get('nombre')?.invalid && materialForm.get('nombre')?.touched">
+            <div class="invalid-feedback" *ngIf="materialForm.get('nombre')?.hasError('required')">
+                El nombre es obligatorio.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" formControlName="descripcion" class="form-control"
+                [class.is-invalid]="materialForm.get('descripcion')?.invalid && materialForm.get('descripcion')?.touched"></textarea>
+            <div class="invalid-feedback" *ngIf="materialForm.get('descripcion')?.hasError('required')">
+                La descripción es obligatoria.
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="archivo" class="form-label">Seleccionar Archivo (Max 50MB)</label>
+            <input type="file" id="archivo" class="form-control" (change)="onFileSelected($event)"
+                [class.is-invalid]="materialForm.get('archivo')?.invalid && materialForm.get('archivo')?.touched">
+            <div class="invalid-feedback"
+                *ngIf="materialForm.get('archivo')?.hasError('required') && materialForm.get('archivo')?.touched">
+                Debe seleccionar un archivo.
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" (click)="onCancel()">
+                <i class="fas fa-times me-1"></i> Cancelar
+            </button>
+
+            <button type="submit" class="btn btn-success" [disabled]="materialForm.invalid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!isLoading" class="fas fa-save me-1"></i>
+                {{ isLoading ? 'Subiendo...' : 'Registrar Material' }}
+            </button>
+        </div>
+    </form>
+</div>

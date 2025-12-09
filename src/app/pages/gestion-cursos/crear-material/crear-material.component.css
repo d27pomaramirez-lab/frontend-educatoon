@@ -1,0 +1,110 @@
+/* Reutilizar estilos de contenedor y tarjeta */
+.card {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    /* Aumentar un poco el padding */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 650px;
+    /* Tamaño adecuado para un formulario de subida */
+    margin: 2rem auto;
+    /* Centrar en la vista */
+    font-size: 0.9rem;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+/* Reutilizar estilos de Inputs y Textareas */
+.form-control,
+.form-select,
+input[type="file"],
+/* Asegura que el input de tipo file también se estilice */
+textarea.form-control {
+    width: 100%;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    height: auto;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Reutilizar estilos de Botones */
+.btn-success,
+.btn-secondary {
+    border: none;
+    padding: 0.6rem 1.5rem;
+    /* Adaptar el padding a la vista de formulario */
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #1e7e34;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #5a6268;
+}
+
+.btn-success:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Estilos para los mensajes de éxito/error (Alerts) */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+/* Estilos de utilidades para el layout de los botones */
+.d-flex {
+    display: flex;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
