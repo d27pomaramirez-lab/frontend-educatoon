@@ -11,7 +11,11 @@ import { MatriculaDTO } from '../../dto/response/MatriculaDTO';
 import { CrearMatriculaRequest } from '../../dto/request/CrearMatriculaRequest';
 import { CommonModule } from '@angular/common';
 import { DetalleMatriculaDTO } from '../../dto/response/DetalleMatriculaDTO';
-
+interface SeccionAgrupada {
+  cursoNombre: string;
+  secciones: SeccionConHorariosDTO[];
+  seleccionada?: SeccionConHorariosDTO | null;
+}
 @Component({
   selector: 'app-gestion-matriculas',
   imports: [CommonModule, FormsModule,ReactiveFormsModule],
@@ -29,6 +33,7 @@ export class GestionMatriculasComponent implements OnInit, OnDestroy {
   periodoAcademicoActual = this.getPeriodoActual();
   
   // Secciones
+  seccionesAgrupadas: SeccionAgrupada[] = [];
   seccionesDisponibles: SeccionConHorariosDTO[] = [];
   seccionesSeleccionadas: SeccionConHorariosDTO[] = [];
   seccionesFiltradas: SeccionConHorariosDTO[] = [];
@@ -68,6 +73,206 @@ export class GestionMatriculasComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
   
+    cursosExpandidos: number[] = []; // Índices de cursos expandidos
+  expandirPrimerCurso = true; // Para expandir el primer curso automáticamente
+  
+  // ... (resto del código)
+  
+  private agruparSeccionesPorCurso(secciones: SeccionConHorariosDTO[]): void {
+    // Crear un mapa para agrupar por curso
+    const gruposMap = new Map<string, SeccionAgrupada>();
+    
+    secciones.forEach(seccion => {
+      const clave = `${seccion.cursoNombre}`;
+      
+      if (!gruposMap.has(clave)) {
+        gruposMap.set(clave, {
+          cursoNombre: seccion.cursoNombre,
+          secciones: [],
+          seleccionada: null
+        });
+      }
+      
+      gruposMap.get(clave)!.secciones.push(seccion);
+    });
+    
+    // Convertir a array y ordenar
+    this.seccionesAgrupadas = Array.from(gruposMap.values())
+      .sort((a, b) => a.cursoNombre.localeCompare(b.cursoNombre));
+    
+    // Inicializar acordeones
+    this.inicializarAcordeones();
+    
+    // Verificar si alguna sección ya está seleccionada
+    this.actualizarSeccionesSeleccionadasEnAgrupadas();
+  }
+  
+  private inicializarAcordeones(): void {
+    this.cursosExpandidos = [];
+    if (this.expandirPrimerCurso && this.seccionesAgrupadas.length > 0) {
+      this.cursosExpandidos.push(0); // Expandir el primer curso
+    }
+  }
+  
+  toggleAcordeon(index: number): void {
+    const posicion = this.cursosExpandidos.indexOf(index);
+    if (posicion === -1) {
+      this.cursosExpandidos.push(index); // Expandir
+    } else {
+      this.cursosExpandidos.splice(posicion, 1); // Colapsar
+    }
+  }
+  
+  isAcordeonExpandido(index: number): boolean {
+    return this.cursosExpandidos.includes(index);
+  }
+
+cargarSeccionesDisponibles(): void {
+    this.isLoading = true;
+    this.seccionService.obtenerSeccionesConHorarios().subscribe({
+      next: (secciones) => {
+        this.seccionesDisponibles = secciones;
+        this.agruparSeccionesPorCurso(secciones);
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        this.mostrarError('Error al cargar secciones: ' + error.message);
+        this.isLoading = false;
+      }
+    });
+  }
+  
+  private actualizarSeccionesSeleccionadasEnAgrupadas(): void {
+    // Limpiar todas las selecciones
+    this.seccionesAgrupadas.forEach(grupo => {
+      grupo.seleccionada = null;
+    });
+    
+    // Marcar las secciones seleccionadas
+    this.seccionesSeleccionadas.forEach(seccionSeleccionada => {
+      const grupo = this.seccionesAgrupadas.find(g => 
+        g.cursoNombre === seccionSeleccionada.cursoNombre
+      );
+      
+      if (grupo) {
+        grupo.seleccionada = seccionSeleccionada;
+      }
+    });
+  }
+  
+  seleccionarEstudiante(estudiante: EstudianteDTO): void {
+    // VERIFICAR SI YA TIENE MATRÍCULA ACTIVA
+    const tieneMatriculaActiva = this.verificarMatriculaActiva(estudiante);
+    
+    if (tieneMatriculaActiva) {
+      this.mostrarError(`El estudiante ${estudiante.nombreCompleto} ya tiene una matrícula ACTIVA en el período ${this.periodoAcademicoActual}.`);
+      this.buscarEstudianteControl.setValue('', { emitEvent: false });
+      this.estudiantesEncontrados = [];
+      return;
+    }
+    
+    // Si ya está matriculado en otro período
+    if (estudiante.yaMatriculado && estudiante.periodoMatriculado !== this.periodoAcademicoActual) {
+      if (!confirm(`Este estudiante ya está matriculado en ${estudiante.periodoMatriculado}. ¿Desea continuar con una nueva matrícula?`)) {
+        this.buscarEstudianteControl.setValue('', { emitEvent: false });
+        this.estudiantesEncontrados = [];
+        return;
+      }
+    }
+    
+    this.estudianteSeleccionado = estudiante;
+    this.estudiantesEncontrados = [];
+    
+    // Mostrar nombre completo en el input
+    this.buscarEstudianteControl.setValue(
+      `${estudiante.codigoEstudiante} - ${estudiante.nombreCompleto}`,
+      { emitEvent: false }
+    );
+    
+    // Si ya está matriculado en otro período, mostrar advertencia
+    if (estudiante.yaMatriculado && estudiante.periodoMatriculado !== this.periodoAcademicoActual) {
+      this.mostrarError(`¡Atención! Este estudiante ya está matriculado en ${estudiante.periodoMatriculado}. Se creará una nueva matrícula para ${this.periodoAcademicoActual}.`);
+    }
+    
+    // Filtrar secciones disponibles para este estudiante
+    this.filtrarSeccionesParaEstudiante(estudiante.id);
+  }
+  
+  private verificarMatriculaActiva(estudiante: EstudianteDTO): boolean {
+    // Buscar si ya tiene matrícula activa en el período actual
+    const matriculaActiva = this.matriculas.find(m => 
+      m.estudianteId === estudiante.id && 
+      m.periodoAcademico === this.periodoAcademicoActual &&
+      m.estado === 'ACTIVA'
+    );
+    
+    return !!matriculaActiva;
+  }
+  
+  toggleSeccionAgrupada(grupo: SeccionAgrupada, seccion: SeccionConHorariosDTO): void {
+    const index = this.seccionesSeleccionadas.findIndex(s => s.id === seccion.id);
+    
+    if (index === -1) {
+      // Verificar cupos
+      if (seccion.cuposDisponibles <= 0) {
+        this.mostrarError('No hay cupos disponibles en esta sección');
+        return;
+      }
+      
+      // Si ya hay una sección seleccionada de este curso, removerla primero
+      const seccionExistenteIndex = this.seccionesSeleccionadas.findIndex(s => 
+        s.cursoNombre === grupo.cursoNombre
+      );
+      
+      if (seccionExistenteIndex !== -1) {
+        this.seccionesSeleccionadas.splice(seccionExistenteIndex, 1);
+      }
+      
+      // Agregar nueva sección
+      this.seccionesSeleccionadas.push(seccion);
+      grupo.seleccionada = seccion;
+    } else {
+      // Remover
+      this.seccionesSeleccionadas.splice(index, 1);
+      grupo.seleccionada = null;
+    }
+    
+    this.validarHorarios();
+  }
+  
+  quitarSeccion(seccion: SeccionConHorariosDTO): void {
+    const index = this.seccionesSeleccionadas.findIndex(s => s.id === seccion.id);
+    if (index !== -1) {
+      this.seccionesSeleccionadas.splice(index, 1);
+      
+      // Actualizar el grupo correspondiente
+      const grupo = this.seccionesAgrupadas.find(g => 
+        g.cursoNombre === seccion.cursoNombre
+      );
+      if (grupo) {
+        grupo.seleccionada = null;
+      }
+      
+      this.validarHorarios();
+    }
+  }
+
+  verDetallesMatricula(matricula: MatriculaDTO): void {
+  // Implementa la lógica para ver detalles
+  // Por ahora, muestra un alert con la información básica
+    const detalles = matricula.detalles?.map(d => 
+      `${d.seccionCodigo} - ${d.cursoNombre} (${d.estado})`
+    ).join('\n') || 'Sin detalles';
+    
+    alert(
+      `Matrícula ID: ${matricula.id}\n` +
+      `Estudiante: ${matricula.estudianteNombre}\n` +
+      `Período: ${matricula.periodoAcademico}\n` +
+      `Estado: ${matricula.estado}\n` +
+      `Cursos:\n${detalles}`
+    );
+  }
+
   private configurarBusquedaEstudiante(): void {
     this.buscarEstudianteControl.valueChanges
       .pipe(
@@ -106,46 +311,6 @@ export class GestionMatriculasComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
-  }
-  
-  cargarSeccionesDisponibles(): void {
-    this.isLoading = true;
-    this.seccionService.obtenerSeccionesConHorarios().subscribe({
-      next: (secciones) => {
-        this.seccionesDisponibles = secciones;
-        this.seccionesFiltradas = [...secciones];
-        this.isLoading = false;
-      },
-      error: (error: any) => {
-        this.mostrarError('Error al cargar secciones: ' + error.message);
-        this.isLoading = false;
-      }
-    });
-  }
-  
-  seleccionarEstudiante(estudiante: EstudianteDTO): void {
-
-    if (estudiante.yaMatriculado && estudiante.periodoMatriculado === this.periodoAcademicoActual) {
-      this.cargarMatriculaExistente(estudiante.id);
-      return;
-    }
-    this.estudianteSeleccionado = estudiante;
-    this.estudiantesEncontrados = [];
-    
-    // Mostrar nombre completo en el input
-    this.buscarEstudianteControl.setValue(
-      `${estudiante.codigoEstudiante} - ${estudiante.nombreCompleto}`,
-      { emitEvent: false }
-    );
-    
-    // Si ya está matriculado, mostrar advertencia
-    if (estudiante.yaMatriculado) {
-      this.mostrarError(`¡Atención! Este estudiante ya está matriculado en ${estudiante.periodoMatriculado}. 
-                        Puede agregar cursos adicionales.`);
-    }
-    
-    // Filtrar secciones disponibles para este estudiante
-    this.filtrarSeccionesParaEstudiante(estudiante.id);
   }
   
   private cargarMatriculaExistente(estudianteId: string): void {

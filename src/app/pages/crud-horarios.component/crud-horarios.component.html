@@ -1,0 +1,229 @@
+<div class="container mt-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-clock-history me-2"></i>Gestión de Horarios
+    </h2>
+  </div>
+
+  <!-- Formulario -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="bi" [class.bi-plus-circle]="!isEditing" [class.bi-pencil]="isEditing"></i>
+        {{ isEditing ? 'Editar Horario' : 'Nuevo Horario' }}
+      </h5>
+    </div>
+    
+    <div class="card-body">
+      <form [formGroup]="horarioForm" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <!-- Sección -->
+          <div class="col-md-6">
+            <label class="form-label">Sección *</label>
+            <select class="form-select" formControlName="seccionId" 
+                    [class.is-invalid]="horarioForm.get('seccionId')?.invalid && horarioForm.get('seccionId')?.touched">
+              <option value="" disabled selected>Seleccione una sección</option>
+              <option *ngFor="let seccion of secciones" [value]="seccion.id">
+                {{ seccion.codigoSeccion }} - {{ seccion.curso }} ({{ seccion.aula }})
+              </option>
+            </select>
+            <div *ngIf="horarioForm.get('seccionId')?.invalid && horarioForm.get('seccionId')?.touched" 
+                 class="invalid-feedback d-block">
+              Seleccione una sección
+            </div>
+          </div>
+          
+          <!-- Día de la semana -->
+          <div class="col-md-6">
+            <label class="form-label">Día de la semana *</label>
+            <select class="form-select" formControlName="diaSemana"
+                    [class.is-invalid]="horarioForm.get('diaSemana')?.invalid && horarioForm.get('diaSemana')?.touched">
+              <option value="" disabled selected>Seleccione un día</option>
+              <option *ngFor="let dia of diasSemana" [value]="dia.value">
+                {{ dia.label }}
+              </option>
+            </select>
+            <div *ngIf="horarioForm.get('diaSemana')?.invalid && horarioForm.get('diaSemana')?.touched" 
+                 class="invalid-feedback d-block">
+              Seleccione un día
+            </div>
+          </div>
+          
+          <!-- Hora inicio -->
+          <div class="col-md-3">
+            <label class="form-label">Hora de inicio *</label>
+            <input type="time" class="form-control" formControlName="horaInicio"
+                   [class.is-invalid]="horarioForm.get('horaInicio')?.invalid && horarioForm.get('horaInicio')?.touched">
+            <div *ngIf="horarioForm.get('horaInicio')?.invalid && horarioForm.get('horaInicio')?.touched" 
+                 class="invalid-feedback d-block">
+              Ingrese la hora de inicio
+            </div>
+          </div>
+          
+          <!-- Hora fin -->
+          <div class="col-md-3">
+            <label class="form-label">Hora de fin *</label>
+            <input type="time" class="form-control" formControlName="horaFin"
+                   [class.is-invalid]="horarioForm.get('horaFin')?.invalid && horarioForm.get('horaFin')?.touched">
+            <div *ngIf="horarioForm.get('horaFin')?.invalid && horarioForm.get('horaFin')?.touched" 
+                 class="invalid-feedback d-block">
+              Ingrese la hora de fin
+            </div>
+          </div>
+          
+          <!-- Botones -->
+          <div class="col-12">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary" [disabled]="horarioForm.invalid || isLoading">
+                <span *ngIf="!isLoading">
+                  <i class="bi" [class.bi-check-circle]="!isEditing" [class.bi-save]="isEditing"></i>
+                  {{ isEditing ? 'Actualizar' : 'Crear' }} Horario
+                </span>
+                <span *ngIf="isLoading">
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                  Procesando...
+                </span>
+              </button>
+              
+              <button type="button" class="btn btn-secondary" 
+                      (click)="limpiarFormulario()" [disabled]="isLoading">
+                <i class="bi bi-x-circle"></i> Cancelar
+              </button>
+              
+              <div *ngIf="isEditing" class="ms-auto">
+                <small class="text-muted">
+                  Editando: {{ selectedHorario?.seccionCodigo }} - {{ selectedHorario?.diaSemana }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+      <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtros</h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Buscar por sección</label>
+          <input type="text" class="form-control" [(ngModel)]="filtroSeccion" 
+                 placeholder="Código de sección..."
+                 (input)="filtrarHorarios()">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Día de la semana</label>
+          <select class="form-select" [(ngModel)]="filtroDia" (change)="filtrarHorarios()">
+            <option value="">Todos los días</option>
+            <option *ngFor="let dia of diasSemana" [value]="dia.value">{{ dia.label }}</option>
+          </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100" (click)="cargarHorarios()" [disabled]="isLoading">
+            <i class="bi bi-arrow-clockwise" *ngIf="!isLoading"></i>
+            <span class="spinner-border spinner-border-sm me-1" *ngIf="isLoading"></span>
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de horarios -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-list-check me-2"></i>Horarios Registrados
+          <span class="badge bg-primary ms-2">{{ horariosFiltrados.length }}</span>
+        </h5>
+      </div>
+    </div>
+    
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th width="15%">Sección</th>
+              <th width="20%">Curso</th>
+              <th width="15%">Día</th>
+              <th width="20%">Horario</th>
+              <th width="15%">Aula</th>
+              <th width="15%" class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let horario of horariosFiltrados" class="align-middle">
+              <td>
+                <span class="badge bg-info">{{ horario.seccionCodigo }}</span>
+              </td>
+              <td>{{ horario.cursoNombre }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-primary': horario.diaSemana === 'LUNES',
+                  'bg-success': horario.diaSemana === 'MARTES',
+                  'bg-warning': horario.diaSemana === 'MIÉRCOLES',
+                  'bg-danger': horario.diaSemana === 'JUEVES',
+                  'bg-info': horario.diaSemana === 'VIERNES',
+                  'bg-secondary': horario.diaSemana === 'SÁBADO'
+                }">
+                  {{ horario.diaSemana }}
+                </span>
+              </td>
+              <td>
+                <div class="fw-medium">
+                  {{ getFormatoHora(horario.horaInicio) }} - {{ getFormatoHora(horario.horaFin) }}
+                </div>
+                <small class="text-muted">
+                  Duración: {{ calcularDuracion(horario.horaInicio, horario.horaFin) }}
+                </small>
+              </td>
+              <td>{{ horario.aula || 'No asignada' }}</td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-warning" 
+                          (click)="editarHorario(horario)"
+                          title="Editar horario">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" 
+                          (click)="eliminarHorario(horario.id)"
+                          title="Eliminar horario">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Sin resultados -->
+            <tr *ngIf="horariosFiltrados.length === 0 && !isLoading">
+              <td colspan="6" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="bi bi-clock display-6 d-block mb-3"></i>
+                  <h5>No hay horarios registrados</h5>
+                  <p class="mb-0">Comience creando un nuevo horario</p>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Loading -->
+            <tr *ngIf="isLoading">
+              <td colspan="6" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 mb-0">Cargando horarios...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -111,162 +111,216 @@
       </div>
       
       <!-- Paso 2: Seleccionar Cursos (solo si hay estudiante seleccionado) -->
-      <div *ngIf="estudianteSeleccionado">
-        <h6 class="text-muted mb-3">
-          <span class="badge bg-primary rounded-circle me-2">2</span>
-          Seleccionar Cursos 
-          <span class="badge bg-secondary ms-2">{{ seccionesSeleccionadas.length }} seleccionados</span>
-        </h6>
-        
-        <!-- Advertencia de conflictos -->
-        <div *ngIf="hayConflictosHorario" class="alert alert-warning alert-dismissible fade show">
-          <i class="bi bi-exclamation-triangle me-2"></i>
-          <strong>¡Atención!</strong> Hay conflictos de horario entre las secciones seleccionadas.
-          <button type="button" class="btn-close" (click)="hayConflictosHorario = false"></button>
-        </div>
-        
-        <!-- Tabla de secciones disponibles -->
-        <div class="table-responsive mb-4">
-          <table class="table table-hover table-sm">
-            <thead class="table-light">
-              <tr>
-                <th width="5%"></th>
-                <th width="15%">Código</th>
-                <th width="25%">Curso</th>
-                <th width="20%">Horario</th>
-                <th width="15%">Aula / Docente</th>
-                <th width="10%">Cupos</th>
-                <th width="10%">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let seccion of seccionesFiltradas" 
-                  [class.table-success]="isSeccionSeleccionada(seccion)">
-                <td class="text-center">
-                  <input type="checkbox" class="form-check-input"
-                         [checked]="isSeccionSeleccionada(seccion)"
-                         [disabled]="seccion.cuposDisponibles <= 0"
-                         (change)="toggleSeccion(seccion)">
-                </td>
-                <td>
-                  <span class="badge bg-info">{{ seccion.codigoSeccion }}</span>
-                </td>
-                <td>
-                  <div class="fw-medium">{{ seccion.cursoNombre }}</div>
-                </td>
-                <td>
-                  <div *ngFor="let horario of seccion.horarios" class="mb-1">
-                    <small class="badge bg-light text-dark border">
-                      <i class="bi bi-calendar-event me-1"></i>
-                      {{ horario.diaSemana }} 
-                      {{ horario.horaInicio }}-{{ horario.horaFin }}
-                    </small>
+      <!-- Paso 2: Seleccionar Cursos (solo si hay estudiante seleccionado) -->
+<div *ngIf="estudianteSeleccionado">
+  <h6 class="text-muted mb-3">
+    <span class="badge bg-primary rounded-circle me-2">2</span>
+    Seleccionar Cursos 
+    <span class="badge bg-secondary ms-2">{{ seccionesSeleccionadas.length }} seleccionados</span>
+  </h6>
+  
+  <!-- Advertencia de conflictos -->
+  <div *ngIf="hayConflictosHorario" class="alert alert-warning alert-dismissible fade show">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>¡Atención!</strong> Hay conflictos de horario entre las secciones seleccionadas.
+    <button type="button" class="btn-close" (click)="hayConflictosHorario = false"></button>
+  </div>
+  
+  <!-- Secciones seleccionadas (resumen) -->
+  <div *ngIf="seccionesSeleccionadas.length > 0" class="card border-primary mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h6 class="mb-0">
+        <i class="bi bi-list-check me-2"></i>
+        Resumen de selección
+      </h6>
+      <span class="badge bg-light text-primary">{{ seccionesSeleccionadas.length }} cursos</span>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="mb-3">
+            <strong>Estudiante:</strong> {{ estudianteSeleccionado.nombreCompleto }}
+          </div>
+          <div class="mb-3">
+            <strong>Cursos seleccionados:</strong>
+            <div class="mt-2">
+              <div *ngFor="let seccion of seccionesSeleccionadas" class="d-flex align-items-center mb-2 p-2 border rounded">
+                <div class="flex-grow-1">
+                  <div class="fw-medium">
+                    <span class="badge bg-info me-2">{{ seccion.codigoSeccion }}</span>
+                    {{ seccion.cursoNombre }}
                   </div>
-                  <div *ngIf="seccion.horarios.length === 0">
-                    <small class="text-muted">Sin horario definido</small>
-                  </div>
-                </td>
-                <td>
-                  <div class="mb-1">
-                    <small>
-                      <i class="bi bi-building me-1"></i>
-                      {{ seccion.aula || 'No asignada' }}
-                    </small>
-                  </div>
-                  <div>
-                    <small class="text-muted">
+                  <div class="small text-muted">
+                    <span class="me-3">
                       <i class="bi bi-person me-1"></i>
                       {{ seccion.docenteNombre }}
-                    </small>
+                    </span>
+                    <span class="me-3">
+                      <i class="bi bi-clock me-1"></i>
+                      {{ seccion.horarios[0]?.diaSemana }} {{ seccion.horarios[0]?.horaInicio }}-{{ seccion.horarios[0]?.horaFin }}
+                    </span>
+                    <span class="badge" [class.bg-success]="seccion.cuposDisponibles > 5"
+                          [class.bg-warning]="seccion.cuposDisponibles <= 5 && seccion.cuposDisponibles > 0">
+                      {{ seccion.cuposDisponibles }} cupos
+                    </span>
                   </div>
-                </td>
-                <td>
+                </div>
+                <button class="btn btn-sm btn-outline-danger ms-2" 
+                        (click)="quitarSeccion(seccion)"
+                        title="Quitar sección">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary btn-lg" 
+                    [disabled]="hayConflictosHorario || isLoading || seccionesSeleccionadas.length === 0"
+                    (click)="crearMatricula()">
+              <span *ngIf="!isLoading">
+                <i class="bi bi-check-circle me-1"></i>
+                Confirmar Matrícula
+              </span>
+              <span *ngIf="isLoading">
+                <span class="spinner-border spinner-border-sm me-1"></span>
+                Procesando...
+              </span>
+            </button>
+            <div class="text-center mt-2">
+              <small class="text-muted">
+                <i class="bi bi-calendar me-1"></i>
+                Período {{ periodoAcademicoActual }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Acordeón de cursos disponibles -->
+  <div class="accordion" id="cursosAccordion">
+    <div *ngFor="let grupo of seccionesAgrupadas; let i = index" class="accordion-item">
+      <h2 class="accordion-header" [id]="'heading' + i">
+        <button class="accordion-button collapsed" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                [attr.data-bs-target]="'#collapse' + i" 
+                [attr.aria-expanded]="i === 0 ? 'true' : 'false'"
+                [attr.aria-controls]="'collapse' + i">
+          <div class="d-flex w-100 align-items-center justify-content-between">
+            <div class="me-3">
+              <span class="fw-bold">{{ grupo.cursoNombre }}</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <span *ngIf="grupo.seleccionada" class="badge bg-success me-3">
+                <i class="bi bi-check-circle me-1"></i>
+                Sección: {{ grupo.seleccionada.codigoSeccion }}
+              </span>
+              <span class="badge bg-secondary">
+                {{ grupo.secciones.length }} secciones
+              </span>
+            </div>
+          </div>
+        </button>
+      </h2>
+      <div [id]="'collapse' + i" 
+           class="accordion-collapse collapse" 
+           [attr.aria-labelledby]="'heading' + i"
+           data-bs-parent="#cursosAccordion">
+        <div class="accordion-body p-3">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div *ngFor="let seccion of grupo.secciones" class="col">
+              <div class="card h-100" 
+                   [class.border-success]="grupo.seleccionada?.id === seccion.id"
+                   [class.border-danger]="seccion.cuposDisponibles === 0">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                  <span class="fw-medium">Sección {{ seccion.codigoSeccion }}</span>
                   <span class="badge" 
                         [class.bg-success]="seccion.cuposDisponibles > 5"
                         [class.bg-warning]="seccion.cuposDisponibles <= 5 && seccion.cuposDisponibles > 0"
                         [class.bg-danger]="seccion.cuposDisponibles === 0">
-                    {{ seccion.cuposDisponibles }}/{{ seccion.capacidad }}
-                  </span>
-                </td>
-                <td>
-                  <button class="btn btn-sm" 
-                          [class.btn-outline-success]="!isSeccionSeleccionada(seccion)"
-                          [class.btn-success]="isSeccionSeleccionada(seccion)"
-                          [disabled]="seccion.cuposDisponibles <= 0"
-                          (click)="toggleSeccion(seccion)"
-                          title="{{ isSeccionSeleccionada(seccion) ? 'Quitar' : 'Agregar' }}">
-                    <i class="bi" 
-                       [class.bi-plus]="!isSeccionSeleccionada(seccion)"
-                       [class.bi-check]="isSeccionSeleccionada(seccion)"></i>
-                  </button>
-                </td>
-              </tr>
-              
-              <!-- Sin resultados -->
-              <tr *ngIf="seccionesFiltradas.length === 0 && !isLoading">
-                <td colspan="7" class="text-center text-muted py-4">
-                  <i class="bi bi-inbox display-6 d-block mb-2"></i>
-                  No hay secciones disponibles
-                </td>
-              </tr>
-              
-              <!-- Loading -->
-              <tr *ngIf="isLoading">
-                <td colspan="7" class="text-center py-4">
-                  <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                  </div>
-                  <small class="text-muted ms-2">Cargando secciones...</small>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
-        <!-- Resumen y botón de crear -->
-        <div *ngIf="seccionesSeleccionadas.length > 0" class="alert alert-info">
-          <div class="row align-items-center">
-            <div class="col-md-8">
-              <h6 class="alert-heading mb-2">
-                <i class="bi bi-list-check me-2"></i>Resumen de selección
-              </h6>
-              <div class="mb-2">
-                <strong>Estudiante:</strong> {{ estudianteSeleccionado.nombreCompleto }}
-              </div>
-              <div class="mb-2">
-                <strong>Cursos seleccionados ({{ seccionesSeleccionadas.length }}):</strong>
-                <div class="mt-1">
-                  <span *ngFor="let seccion of seccionesSeleccionadas" 
-                        class="badge bg-primary me-2 mb-1">
-                    {{ seccion.codigoSeccion }} - {{ seccion.cursoNombre }}
+                    {{ seccion.cuposDisponibles }} cupos
                   </span>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-4 text-end">
-              <button class="btn btn-primary btn-lg" 
-                      [disabled]="hayConflictosHorario || isLoading"
-                      (click)="crearMatricula()">
-                <span *ngIf="!isLoading">
-                  <i class="bi bi-check-circle me-1"></i>
-                  Crear Matrícula
-                </span>
-                <span *ngIf="isLoading">
-                  <span class="spinner-border spinner-border-sm me-1"></span>
-                  Procesando...
-                </span>
-              </button>
-              <div class="mt-2">
-                <small class="text-muted">
-                  <i class="bi bi-info-circle me-1"></i>
-                  {{ seccionesSeleccionadas.length }} cursos • 
-                  Período {{ periodoAcademicoActual }}
-                </small>
+                
+                <div class="card-body">
+                  <!-- Información del docente -->
+                  <div class="mb-3">
+                    <div class="small text-muted mb-1">Docente:</div>
+                    <div class="fw-medium">
+                      <i class="bi bi-person me-1"></i>
+                      {{ seccion.docenteNombre || 'Sin asignar' }}
+                    </div>
+                  </div>
+                  
+                  <!-- Aula -->
+                  <div class="mb-3">
+                    <div class="small text-muted mb-1">Aula:</div>
+                    <div>
+                      <i class="bi bi-building me-1"></i>
+                      {{ seccion.aula || 'No asignada' }}
+                    </div>
+                  </div>
+                  
+                  <!-- Horarios -->
+                  <div class="mb-3">
+                    <div class="small text-muted mb-1">Horarios:</div>
+                    <div *ngFor="let horario of seccion.horarios" class="mb-1">
+                      <div class="badge bg-light text-dark border d-inline-flex align-items-center">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        {{ horario.diaSemana }}
+                        <span class="ms-2">
+                          <i class="bi bi-clock me-1"></i>
+                          {{ horario.horaInicio }}-{{ horario.horaFin }}
+                        </span>
+                      </div>
+                    </div>
+                    <div *ngIf="seccion.horarios.length === 0">
+                      <span class="text-muted">Sin horario definido</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Botón de acción -->
+                  <button class="btn w-100 mt-2"
+                          [class.btn-success]="grupo.seleccionada?.id === seccion.id"
+                          [class.btn-outline-success]="grupo.seleccionada?.id !== seccion.id && seccion.cuposDisponibles > 0"
+                          [class.btn-outline-danger]="seccion.cuposDisponibles === 0"
+                          [disabled]="seccion.cuposDisponibles === 0"
+                          (click)="toggleSeccionAgrupada(grupo, seccion)">
+                    <span *ngIf="grupo.seleccionada?.id === seccion.id">
+                      <i class="bi bi-check-circle me-1"></i>
+                      Seleccionada
+                    </span>
+                    <span *ngIf="grupo.seleccionada?.id !== seccion.id && seccion.cuposDisponibles > 0">
+                      <i class="bi bi-plus-circle me-1"></i>
+                      Seleccionar
+                    </span>
+                    <span *ngIf="seccion.cuposDisponibles === 0">
+                      <i class="bi bi-x-circle me-1"></i>
+                      Sin cupos
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Sin resultados -->
+    <div *ngIf="seccionesAgrupadas.length === 0 && !isLoading" class="text-center py-5">
+      <div class="text-muted">
+        <i class="bi bi-inbox display-6 d-block mb-3"></i>
+        <h5>No hay cursos disponibles</h5>
+        <p class="mb-0">No se encontraron cursos disponibles para este estudiante</p>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
 
@@ -378,7 +432,9 @@
               </td>
               <td class="text-center">
                 <div class="btn-group btn-group-sm" role="group">
-                  <button class="btn btn-outline-info" title="Ver detalles">
+                  <button class="btn btn-outline-info" 
+                          title="Ver detalles"
+                          (click)="verDetallesMatricula(matricula)">
                     <i class="bi bi-eye"></i>
                   </button>
                   <button class="btn btn-outline-warning" 

@@ -75,6 +75,14 @@
       </a>
     </li>
 
+    
+    <li>
+      <a routerLink="/gestion-horarios" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) {
+        <span class="link-text">Gestión de Horarios</span> }
+      </a>
+    </li>
     <!--<li>
       <a routerLink="/registro-pruebas" routerLinkActive="active">
         <i class="bi bi-clipboard-data me-2"></i>
@@ -126,6 +134,14 @@
         <span class="link-text">Ver Asesorias</span> }
       </a>
     </li>
+
+    <li>
+      <a routerLink="/mi-horario" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) {
+        <span class="link-text">Ver Horario</span> }
+      </a>
+    </li>
     }
 
     <!--SECCIÓN DEL ESTUDIANTE-->
@@ -143,6 +159,14 @@
         @if (!isCollapsed) {
         <span class="link-text">Progreso Académico</span> 
         }
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/mi-horario" routerLinkActive="active">
+        <i class="fa-solid fa-chalkboard-user me-2"></i>
+        @if (!isCollapsed) {
+        <span class="link-text">Ver Horario</span> }
       </a>
     </li>
     }

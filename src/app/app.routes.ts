@@ -21,6 +21,8 @@ import { ReporteAsignacionesComponent } from './pages/reporte-asignaciones/repor
 import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
 import { ProgresoAcademicoComponent } from './pages/progreso-academico/progreso.academico.component'; 
 import { RegistroNotasComponent } from './pages/registro-notas/registro.notas.component';
+import { CalendarioHorariosComponent } from './pages/calendario-horarios/calendario-horarios.component';
+import { CrudHorariosComponent } from './pages/crud-horarios.component/crud-horarios.component';
 
 export const routes: Routes = [   
 
@@ -118,6 +120,20 @@ export const routes: Routes = [
         component: ReporteAsignacionesComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ADMINISTRADOR', 'ROL_COORDINADOR'] }
+      },
+      { 
+        path: 'mi-horario', 
+        component: CalendarioHorariosComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_ESTUDIANTE', 'ROL_DOCENTE'] }
+      },
+      
+      // CRUD de horarios (solo coordinador/admin)
+      { 
+        path: 'gestion-horarios', 
+        component: CrudHorariosComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_COORDINADOR', 'ROL_ADMINISTRADOR'] }
       },
       {
         path: 'estudiante/progreso-academico',
