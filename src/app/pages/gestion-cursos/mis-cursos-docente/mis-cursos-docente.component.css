@@ -1,0 +1,121 @@
+/* -------------------------------------- */
+/* 1. Estilos de Contenedor y Layout      */
+/* -------------------------------------- */
+
+/* El host permite que el componente ocupe todo el espacio disponible */
+:host {
+    display: block;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+/* Reutilizar el contenedor principal de la vista de administrador/coordinador */
+.admin-panel-container {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 95%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    /* Margen superior e inferior para separarlo del layout */
+}
+
+.admin-panel-container h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.admin-panel-container p {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+}
+
+/* -------------------------------------- */
+/* 2. Estilos de Tablas y Datos           */
+/* -------------------------------------- */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.panel-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.panel-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.panel-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+    color: #212529;
+}
+
+/* Mensaje cuando no hay cursos */
+.empty-msg {
+    text-align: center;
+    color: #777;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+/* Spinner de carga */
+.text-center {
+    text-align: center;
+    padding: 2rem;
+}
+
+
+/* -------------------------------------- */
+/* 3. Estilos de Botones de Acción        */
+/* -------------------------------------- */
+
+/* Estilo para los botones de acción dentro de la tabla */
+.btn-icon {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-right: 0.4rem;
+    border: none;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    /* Asegura que no tenga subrayado si es un <a> */
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Estilo específico para el botón "Crear Material" (usaremos el color de 'edit' o 'success') */
+.btn-icon-edit {
+    background-color: #ffc107;
+    /* Color amarillo/naranja, similar al que ya tienes */
+}
+
+.btn-icon:hover {
+    opacity: 0.8;
+}
+
+/* Mensajes de error del servidor */
+.server-error-msg {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}

@@ -12,6 +12,8 @@ import { CursoComboboxResponse } from '../dto/response/CursoComboBoxResponse';
 })
 export class CursoService {
   private apiUrl = `${BASE_URL}/cursos`;
+  // URL específica para endpoints de Docente
+  private docenteApiUrl = `${BASE_URL}/docente`;
 
   constructor(private http: HttpClient) { }
 
@@ -28,11 +30,16 @@ export class CursoService {
   }
 
   cambiarEstado(id: string, activo: boolean): Observable<string> {
-    return this.http.put(`${this.apiUrl}/cancelar/${id}?activo=${activo}`, null, 
+    return this.http.put(`${this.apiUrl}/cancelar/${id}?activo=${activo}`, null,
       { responseType: 'text' });
   }
 
   listarCursosParaCombobox(): Observable<CursoComboboxResponse[]> {
     return this.http.get<CursoComboboxResponse[]>(`${this.apiUrl}`);
+  }
+
+  listarMisCursosDocente(): Observable<CursoResponse[]> {
+    // Llama al endpoint DocenteController que usa el token para saber quién es el usuario
+    return this.http.get<CursoResponse[]>(`${this.docenteApiUrl}/mis-cursos`);
   }
 }

@@ -1,6 +1,6 @@
 import { GestionarAsesoriaDocenteComponent } from './pages/gestionar-asesoria-docente/gestionar.asesoria.docente.component';
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component'; 
+import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AdminPanelComponent } from './pages/admin-panel/admin.panel.component';
@@ -12,19 +12,22 @@ import { UserManagementComponent } from './pages/user-management/user.management
 import { authGuard } from './core/auth.guard';
 import { roleGuard } from './core/role.guard';
 import { GestionAsesoriasComponent } from './pages/gestion-asesorias/gestion.asesorias.component';
-import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.secciones.component'; 
+import { GestionSeccionesComponent } from './pages/gestion-secciones/gestion.secciones.component';
 import { PerfilComponent } from './pages/perfil/perfil.component'; // Agregar esta importación
 import { GestionCursosComponent } from './pages/gestion-cursos/gestion.cursos.component';
 import { GestionMatriculasComponent } from './pages/gestion-matriculas/gestion-matriculas.component';
 import { RegistroPruebasComponent } from './pages/registro-pruebas/registro-pruebas.component';
 import { ReporteAsignacionesComponent } from './pages/reporte-asignaciones/reporte-asignaciones.component';
 import { GestionarAsesoriaEstudianteComponent } from './pages/estudiante-asesoria/asesoria-estudiante/asesoria.estudiante.component';
-import { ProgresoAcademicoComponent } from './pages/progreso-academico/progreso.academico.component'; 
+import { ProgresoAcademicoComponent } from './pages/progreso-academico/progreso.academico.component';
 import { RegistroNotasComponent } from './pages/registro-notas/registro.notas.component';
 import { CalendarioHorariosComponent } from './pages/calendario-horarios/calendario-horarios.component';
 import { CrudHorariosComponent } from './pages/crud-horarios.component/crud-horarios.component';
+import { CrearMaterialComponent } from './pages/gestion-cursos/crear-material/crear-material.component'; // Importar el nuevo componente
+import { MisCursosDocenteComponent } from './pages/gestion-cursos/mis-cursos-docente/mis-cursos-docente.component';
 
-export const routes: Routes = [   
+
+export const routes: Routes = [
 
   {
     path: '',
@@ -38,25 +41,25 @@ export const routes: Routes = [
   },
 
   {
-    path: '', 
+    path: '',
     component: AdminLayoutComponent,
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { 
+      {
         path: 'perfil/:id',
-        component: PerfilComponent 
+        component: PerfilComponent
       },
-      { 
-        path: 'admin', 
+      {
+        path: 'admin',
         component: AdminPanelComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ADMINISTRADOR'] }
-      },      
+      },
       {
         path: 'gestion-usuarios',
         component: UserManagementComponent,
-        canActivate: [authGuard, roleGuard], 
+        canActivate: [authGuard, roleGuard],
         data: {
           roles: ['ROL_ADMINISTRADOR']
         }
@@ -121,16 +124,16 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ROL_ADMINISTRADOR', 'ROL_COORDINADOR'] }
       },
-      { 
-        path: 'mi-horario', 
+      {
+        path: 'mi-horario',
         component: CalendarioHorariosComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ESTUDIANTE', 'ROL_DOCENTE'] }
       },
-      
+
       // CRUD de horarios (solo coordinador/admin)
-      { 
-        path: 'gestion-horarios', 
+      {
+        path: 'gestion-horarios',
         component: CrudHorariosComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_COORDINADOR', 'ROL_ADMINISTRADOR'] }
@@ -140,6 +143,18 @@ export const routes: Routes = [
         component: ProgresoAcademicoComponent,
         canActivate: [roleGuard],
         data: { roles: ['ROL_ESTUDIANTE'] }
+      },
+      {
+        path: 'docente/cursos/:cursoId/crear-material', // Captura el UUID del curso
+        component: CrearMaterialComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_DOCENTE'] } // Precondición 1: Solo el docente
+      },
+      {
+        path: 'docente/mis-cursos',
+        component: MisCursosDocenteComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ROL_DOCENTE'] }
       },
     ]
   },
