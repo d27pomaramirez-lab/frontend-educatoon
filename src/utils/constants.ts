@@ -1,5 +1,7 @@
+import { environment } from '../environments/environment';
 
-export const BASE_URL = 'http://localhost:8080/api'; 
+
+export const BASE_URL = environment.apiUrl; 
 
 export const HTTP_STATUS = {
     OK: 200,
