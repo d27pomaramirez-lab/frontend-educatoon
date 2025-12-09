@@ -343,14 +343,6 @@ textarea.form-control {
     opacity: 0.8;
 }
 
-.panel-table td:last-child {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-}
-
-
 .d-flex {
     display: flex;
 }

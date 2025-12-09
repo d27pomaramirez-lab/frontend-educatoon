@@ -124,15 +124,15 @@ export class GestionCursosComponent implements OnInit {
       return;
     }
 
-    // Usamos SweetAlert2 para la confirmación
     Swal.fire({
       title: '¿Guardar cambios?',
       text: "Se actualizará la información del curso.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#28a744',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, guardar'
+      confirmButtonText: 'Sí, guardar',
+      cancelButtonText: 'Cancelar'
     }).then((result: SweetAlertResult) => {
       if (result.isConfirmed) {
         const request: ActualizarCursoRequest = this.cursoEditForm.value as ActualizarCursoRequest;
@@ -164,15 +164,37 @@ export class GestionCursosComponent implements OnInit {
   onCambiarEstado(id: string, nombre: string, estadoActual: boolean): void {
     const nuevoEstado = !estadoActual;
     const accion = nuevoEstado ? 'activar' : 'desactivar';
+    const icon = nuevoEstado ? 'question' : 'warning';
 
-    if (confirm(`¿Estás seguro de que deseas ${accion} el curso "${nombre}"?`)) {
-      this.cursoService.cambiarEstado(id, nuevoEstado).subscribe({
-        next: (resp) => {
-          this.formSuccessMessage = resp;
-          this.cargarCursos();
-        },
-        error: (err) => this.formErrorMessage = err.error || `Error al ${accion} el curso.`
-      });
-    }
+    Swal.fire({
+      title: `¿Confirmar ${accion}?`,
+      text: `¿Estás seguro de que deseas ${accion} el curso "${nombre}"?`,
+      icon: icon,
+      showCancelButton: true,
+      confirmButtonColor: nuevoEstado ? '#28a744' : '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: `Sí, ${accion}`,
+      cancelButtonText: 'Cancelar'
+    }).then((result: SweetAlertResult) => {
+
+      if (result.isConfirmed) {
+        this.cursoService.cambiarEstado(id, nuevoEstado).subscribe({
+          next: (resp) => {
+            Swal.fire({
+              title: '¡Éxito!',
+              text: resp || `Curso ${accion}do exitosamente.`,
+              icon: 'success'
+            });
+            this.formSuccessMessage = resp;
+            this.cargarCursos();
+          },
+          error: (err) => {
+            const errorMessage = err.error || `Error al ${accion} el curso.`;
+            Swal.fire('Error', errorMessage, 'error');
+            this.formErrorMessage = errorMessage;
+          }
+        });
+      }
+    });
   }
 }

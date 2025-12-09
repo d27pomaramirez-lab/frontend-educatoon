@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, formatDate } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormBuilder, FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../services/usuario.service';
 import { RouterModule } from '@angular/router';
 import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
@@ -21,7 +21,8 @@ import Swal, { SweetAlertResult } from 'sweetalert2';
     ReactiveFormsModule,
     RouterModule,
     PaginationComponent,
-    NgSelectModule
+    NgSelectModule,
+    FormsModule
   ],
   templateUrl: './user.management.component.html',
   styleUrl: './user.management.component.css'
@@ -40,11 +41,18 @@ export class UserManagementComponent implements OnInit {
   editFormSuccessMessage: string | null = null;
 
   rolesDisponibles = ['ROL_DOCENTE', 'ROL_COORDINADOR', 'ROL_ADMINISTRADOR'];
+  rolesDisponiblesFiltro = ['', 'ROL_DOCENTE', 'ROL_COORDINADOR', 'ROL_ADMINISTRADOR', 'ROL_ESTUDIANTE'];
+  estadosDisponiblesFiltro = [{ label: 'TODOS', value: '' }, { label: 'Activo', value: 'true' }, { label: 'Inactivo', value: 'false' }];
   listaCursos: CursoComboboxResponse[] = [];
 
   todosLosUsuarios: UsuarioPendienteResponse[] = [];
   tableErrorMessage: string | null = null;
   showPassword = false;
+  isLoading = false;
+
+  filtroBusqueda: string = '';
+  filtroRol: string = '';
+  filtroEstado: string = '';
 
   // Variables de Paginación
   paginaActual: number = 1;
@@ -121,29 +129,51 @@ export class UserManagementComponent implements OnInit {
 
   cargarTodosLosUsuarios(): void {
     this.tableErrorMessage = null;
-    this.usuarioService.getTodosLosUsuarios().subscribe({
+    this.isLoading = true;
+
+    let estadoFiltro: boolean | undefined = undefined;
+    if (this.filtroEstado === 'true') {
+      estadoFiltro = true;
+    } else if (this.filtroEstado === 'false') {
+      estadoFiltro = false;
+    }
+
+    this.usuarioService.getTodosLosUsuarios(
+      this.filtroBusqueda,
+      this.filtroRol,
+      estadoFiltro
+    ).subscribe({
       next: (data) => {
         this.todosLosUsuarios = data;
-        this.aplicarPaginacion(this.paginaActual);
+        this.aplicarPaginacion(1);
+        this.isLoading = false;
       },
       error: (err) => {
+        this.isLoading = false;
         this.tableErrorMessage = 'Error al cargar la lista de usuarios.';
-        console.error(err);
       }
     });
   }
 
+  onFiltrar(): void {
+    this.cargarTodosLosUsuarios();
+  }
+
   cargarCursosParaEspecialidad(): void {
+    this.isLoading = true;
     this.cursoService.listarCursosParaCombobox().subscribe({
       next: (cursos) => {
-        // Filtrar si es necesario (ej. solo cursos activos)
         this.listaCursos = cursos.filter(c => c.estado === true);
+        this.isLoading = false;
       },
-      error: (err) => console.error('Error cargando cursos para especialidad', err)
+      error: (err) => {
+        console.error('Error cargando cursos para especialidad', err)
+        this.isLoading = false;
+      }
+      
     });
   }
 
-  // Método unificado para aplicar y actualizar la paginación
   aplicarPaginacion(pagina: number): void {
     const { data, totalPages } = this.paginationService.getPaginatedData(
       this.todosLosUsuarios,
@@ -182,19 +212,16 @@ export class UserManagementComponent implements OnInit {
     const colegioControl = this.userEditForm.get('colegioProcedencia');
 
     if (usuario.rolNombre === 'ROL_DOCENTE') {
-      // Requerir (o al menos habilitar) especialidad, desactivar estudiante
       especialidadControl?.enable();
       uniControl?.disable();
       carreraControl?.disable();
       colegioControl?.disable();
     } else if (usuario.rolNombre === 'ROL_ESTUDIANTE') {
-      // Requerir (o al menos habilitar) estudiante, desactivar especialidad
       especialidadControl?.disable();
       uniControl?.enable();
       carreraControl?.enable();
       colegioControl?.enable();
     } else {
-      // Si es Admin/Coordinador, desactivar todos los campos específicos
       especialidadControl?.disable();
       uniControl?.disable();
       carreraControl?.disable();
@@ -218,8 +245,8 @@ export class UserManagementComponent implements OnInit {
       text: "Se actualizarán los datos del usuario seleccionado.",
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6', // Puedes personalizar el color
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Sí, guardar cambios',
       cancelButtonText: 'No, cancelar'
     }).then((result: SweetAlertResult) => {
@@ -259,7 +286,6 @@ export class UserManagementComponent implements OnInit {
           },
           error: (err) => {
             this.editFormErrorMessage = err.error || 'Error al actualizar el usuario.';
-            // Mostrar SweetAlert2 de error
             Swal.fire('Error', this.editFormErrorMessage!, 'error');
           }
         });
@@ -282,7 +308,7 @@ export class UserManagementComponent implements OnInit {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Sí, ¡desactivar!',
       cancelButtonText: 'Cancelar'
     }).then((result: SweetAlertResult) => {
