@@ -27,6 +27,13 @@ export class GestionarAsesoriaDocenteComponent implements OnInit{
   totalPaginas: number = 0;
   asesoriasPaginadas: AsesoriaResponse[] = [];
   
+  // Variables para filtros de búsqueda
+  cursosFiltro: string[] = []; 
+  seccionesFiltro: string[] = []; 
+  
+  filtroCursoSeleccionado: string = '';
+  filtroSeccionSeleccionada: string = '';
+
   // Inyectar el PaginationService
   constructor(
     private asesoriaService: AsesoriaService,

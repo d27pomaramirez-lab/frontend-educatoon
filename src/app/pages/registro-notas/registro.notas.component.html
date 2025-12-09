@@ -1,0 +1,202 @@
+<div class="admin-panel-container">
+  <h2>Registro de Notas</h2>
+  <p>Selecciona una sección para visualizar y registrar las calificaciones de los estudiantes.</p>
+
+      <!-- Selector de Sección con Estética Mejorada -->
+  <div class="search-container mb-4 p-3 bg-white rounded shadow-sm border">
+    <div class="row g-3 align-items-end">
+      
+      <!-- Filtro por Curso (Izquierda) -->
+      <div class="col-md-5">
+        <label class="form-label small text-muted">Filtrar por Curso</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fa-solid fa-book"></i></span>
+          <select 
+            id="cursoSelect" 
+            class="form-select" 
+            [(ngModel)]="selectedCurso" 
+            (change)="onCursoChange()">
+            <option value="">-- Todos los cursos --</option>
+            <option *ngFor="let curso of cursosUnicos" [value]="curso">
+              {{ curso }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Selector de Sección (Dependiente) -->
+      <div class="col-md-5">
+        <label class="form-label small text-muted">Seleccionar Sección</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fa-solid fa-barcode"></i></span>
+          <select 
+            id="seccionSelect" 
+            class="form-select" 
+            [(ngModel)]="selectedSeccionId" 
+            (change)="onSeccionChange()"
+            [disabled]="!selectedCurso"> <!-- Deshabilitado si no hay curso -->
+            <option value="">-- Seleccione una sección --</option>
+            <option *ngFor="let seccion of seccionesFiltradas" [value]="seccion.id">
+              {{ seccion.codigoSeccion }} - {{ seccion.docente }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Botón Limpiar -->
+      <div class="col-md-2 d-flex">
+        <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()" title="Limpiar Filtros">
+          <i class="fa-solid fa-rotate-left me-1"></i> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando estudiantes...</p>
+  </div>
+
+  <!-- Tabla de Estudiantes -->
+  <div *ngIf="!loading && estudiantes.length > 0">
+    <div class="table-responsive">
+      <table class="panel-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Estudiante</th>
+            <th style="width: 150px; text-align: center;">Promedio</th>
+            <th style="width: 150px; text-align: center;">Estado</th>
+            <th style="width: 100px; text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let est of estudiantes">
+            <td>{{ est.codigoEstudiante }}</td>
+            <td>{{ est.nombreCompleto }}</td>
+
+            <!-- Columna Promedio (Solo lectura) -->
+            <td style="text-align: center; font-weight: bold;">
+              {{ calcularPromedio(est) | number:'1.1-2' }}
+            </td>
+
+            <!-- Columna Estado -->
+            <td style="text-align: center;">
+              <span class="badge" 
+                [class.bg-success]="est.estado === 'Aprobado'"
+                [class.bg-danger]="est.estado === 'Desaprobado'"
+                [class.bg-secondary]="est.estado === 'Pendiente' || !est.estado">
+                {{ est.estado || 'Pendiente' }}
+              </span>
+            </td>
+            <!-- Botón Editar -->
+            <td style="text-align: center;">
+              <button class="btn btn-sm btn-primary" (click)="abrirModalNotas(est)" title="Editar Notas y Observaciones">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MODAL DE EDICIÓN DE NOTAS -->
+    <div *ngIf="mostrarModalNotas && estudianteEnEdicion" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+              <!-- Título corregido para que no se vea extraño -->
+              <h3 class="modal-title">Editar Calificaciones</h3>
+              <button (click)="cerrarModalNotas()" class="btn-close">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+              <p class="mb-4 text-muted">Estudiante: <strong>{{ estudianteEnEdicion.nombreCompleto }}</strong></p>
+
+              <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold small text-secondary">Nota Parcial</label>
+                    <input 
+                        type="number" 
+                        class="form-control text-center" 
+                        [(ngModel)]="estudianteEnEdicion.notaParcial" 
+                        [class.is-invalid]="estudianteEnEdicion.notaParcial < 0 || estudianteEnEdicion.notaParcial > 20"
+                        min="0" max="20">
+                    <!-- Mensaje de error -->
+                    <div *ngIf="estudianteEnEdicion.notaParcial < 0 || estudianteEnEdicion.notaParcial > 20" class="text-danger small mt-1">
+                      Entre 0 y 20
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold small text-secondary">Nota Final</label>
+                    <input 
+                        type="number" 
+                        class="form-control text-center" 
+                        [(ngModel)]="estudianteEnEdicion.notaFinal"
+                        [class.is-invalid]="estudianteEnEdicion.notaFinal < 0 || estudianteEnEdicion.notaFinal > 20" 
+                        min="0" max="20">
+                    <!-- Mensaje de error -->
+                    <div *ngIf="estudianteEnEdicion.notaFinal < 0 || estudianteEnEdicion.notaFinal > 20" class="text-danger small mt-1">
+                      Entre 0 y 20
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold small text-secondary">Simulacros</label>
+                    <input 
+                        type="number" 
+                        class="form-control text-center" 
+                        [(ngModel)]="estudianteEnEdicion.promedioSimulacros"
+                        [class.is-invalid]="estudianteEnEdicion.promedioSimulacros < 0 || estudianteEnEdicion.promedioSimulacros > 20" 
+                        min="0" max="20">
+                    <!-- Mensaje de error -->
+                    <div *ngIf="estudianteEnEdicion.promedioSimulacros < 0 || estudianteEnEdicion.promedioSimulacros > 20" class="text-danger small mt-1">
+                      Entre 0 y 20
+                    </div>
+                  </div>
+              </div>
+              
+              <!-- Campo de Observaciones -->
+              <div class="mt-4">
+                <label class="form-label fw-bold small text-secondary">Observaciones</label>
+                <textarea 
+                  class="form-control" 
+                  rows="3" 
+                  [(ngModel)]="estudianteEnEdicion.observaciones" 
+                  placeholder="Ingrese comentarios sobre el desempeño del estudiante..."></textarea>
+              </div>
+
+              <div class="mt-4 p-3 bg-light rounded text-center border">
+                  <h5 class="m-0">Promedio Calculado: 
+                  <span class="text-primary fw-bold ms-2">{{ calcularPromedio(estudianteEnEdicion) | number:'1.1-2' }}</span>
+                  </h5>
+              </div>
+            </div>
+            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cerrarModalNotas()">Cancelar</button>
+              <button type="button" class="btn btn-primary" 
+                (click)="guardarCambiosModal()"
+                [disabled]="(estudianteEnEdicion.notaParcial < 0 || estudianteEnEdicion.notaParcial > 20) || 
+                            (estudianteEnEdicion.notaFinal < 0 || estudianteEnEdicion.notaFinal > 20) || 
+                            (estudianteEnEdicion.promedioSimulacros < 0 || estudianteEnEdicion.promedioSimulacros > 20)">
+                <i class="fa-solid fa-check me-1"></i> Aplicar Cambios
+              </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+      <button class="btn-save" (click)="guardarNotas()">
+        <i class="fa-solid fa-save"></i> Guardar Notas
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje vacío -->
+  <div *ngIf="!loading && selectedSeccionId && estudiantes.length === 0" class="empty-msg">
+    <i class="fa-solid fa-info-circle me-2"></i>
+    No hay estudiantes inscritos en esta sección.
+  </div>
+</div>
