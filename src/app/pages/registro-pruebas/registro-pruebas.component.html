@@ -1,0 +1,129 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Registro de Pruebas de Entrada</h2>
+
+  <!-- Formulario de registro -->
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Registrar Nueva Prueba</h5>
+        </div>
+        <div class="card-body">
+          <form #pruebaForm="ngForm" (ngSubmit)="registrarPrueba()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Estudiante *</label>
+                <select class="form-select" [(ngModel)]="pruebaNueva.estudianteId" 
+                        name="estudianteId" required>
+                  <option value="">Seleccionar estudiante</option>
+                  <option *ngFor="let estudiante of estudiantes" [value]="estudiante.id">
+                    {{ estudiante.codigoEstudiante }} - {{ estudiante.nombreCompleto }}
+                  </option>
+                </select>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Puntaje Total (0-100)</label>
+                <input type="number" class="form-control" min="0" max="100" step="0.01"
+                       [(ngModel)]="pruebaNueva.puntajeTotal" name="puntajeTotal" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Perfil de Aprendizaje *</label>
+                <select class="form-select" [(ngModel)]="pruebaNueva.perfilAprendizaje" 
+                        name="perfilAprendizaje" required>
+                  <option value="">Seleccionar perfil</option>
+                  <option value="VISUAL">Visual</option>
+                  <option value="AUDITIVO">Auditivo</option>
+                  <option value="KINESTÉSICO">Kinestésico</option>
+                  <option value="MIXTO">Mixto</option>
+                </select>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Fecha de Rendición</label>
+                <input type="date" class="form-control" 
+                       [(ngModel)]="pruebaNueva.fechaRendicion" name="fechaRendicion">
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-secondary me-md-2" 
+                      (click)="limpiarFormulario()">
+                Limpiar
+              </button>
+              <button type="submit" class="btn btn-primary" 
+                      [disabled]="!pruebaForm.valid || procesando">
+                <span *ngIf="!procesando">
+                  <i class="bi bi-check-circle me-2"></i>Registrar Prueba
+                </span>
+                <span *ngIf="procesando">
+                  <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                  Procesando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <!-- Resultado de asignación -->
+      <div class="card" *ngIf="resultadoAsignacion">
+        <div class="card-header" [ngClass]="{
+          'bg-success text-white': resultadoAsignacion.exitoso,
+          'bg-danger text-white': !resultadoAsignacion.exitoso
+        }">
+          <h5 class="mb-0">
+            {{ resultadoAsignacion.exitoso ? '✓ Asignación Exitosa' : '✗ Error en Asignación' }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Estudiante:</strong> {{ resultadoAsignacion.estudianteNombre }}</p>
+          <p><strong>Perfil:</strong> {{ resultadoAsignacion.perfilAprendizaje }}</p>
+          
+          <div *ngIf="resultadoAsignacion.exitoso">
+            <p><strong>Sección Asignada:</strong> {{ resultadoAsignacion.seccionAsignada }}</p>
+            <p><strong>Horario:</strong> {{ resultadoAsignacion.horarioAsignado }}</p>
+            <p><strong>Razón:</strong> {{ resultadoAsignacion.razon }}</p>
+          </div>
+          
+          <div *ngIf="!resultadoAsignacion.exitoso">
+            <p class="text-danger">{{ resultadoAsignacion.mensaje }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h5 class="mb-0">Estadísticas</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6">
+              <h3>{{ totalPruebas }}</h3>
+              <small class="text-muted">Pruebas Registradas</small>
+            </div>
+            <div class="col-6">
+              <h3>{{ asignacionesExitosas }}</h3>
+              <small class="text-muted">Asignaciones Exitosas</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de pruebas registradas -->
+  <div class="card mt-4">
+    <div class="card-header">
+      <h5 class="mb-0">Pruebas Registradas</h5>
+    </div>
+    <div class="card-body">
+    </div>
+  </div>
+</div>

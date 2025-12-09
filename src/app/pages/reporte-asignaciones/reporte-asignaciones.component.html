@@ -1,0 +1,85 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Reporte de Asignaciones Automáticas</h2>
+    <div class="btn-group">
+      <button class="btn btn-outline-primary" (click)="exportarPDF()">
+        <i class="bi bi-file-earmark-pdf me-2"></i>Exportar PDF
+      </button>
+      <button class="btn btn-outline-success" (click)="exportarExcel()">
+        <i class="bi bi-file-earmark-excel me-2"></i>Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros del reporte -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="form-label">Perfil de Aprendizaje</label>
+          <select class="form-select" [(ngModel)]="filtroPerfil">
+            <option value="">Todos los perfiles</option>
+            <option value="VISUAL">Visual</option>
+            <option value="AUDITIVO">Auditivo</option>
+            <option value="KINESTÉSICO">Kinestésico</option>
+            <option value="MIXTO">Mixto</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" [(ngModel)]="filtroEstado">
+            <option value="">Todos los estados</option>
+            <option value="ASIGNADO">Asignado</option>
+            <option value="MATRICULADO">Matriculado</option>
+            <option value="ERROR_MATRICULA">Error en Matrícula</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Rango de Fechas</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-primary w-100" (click)="filtrarReporte()">
+            <i class="bi bi-filter me-2"></i>Generar Reporte
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen del reporte -->
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-primary">
+        <div class="card-body text-center">
+          <h4>{{ totalAsignaciones }}</h4>
+          <p class="mb-0">Total Asignaciones</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-success">
+        <div class="card-body text-center">
+          <h4>{{ asignacionesExitosas }}</h4>
+          <p class="mb-0">Matriculados Exitosos</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-warning">
+        <div class="card-body text-center">
+          <h4>{{ porcentajeAsignacion }}%</h4>
+          <p class="mb-0">Tasa de Éxito</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-info">
+        <div class="card-body text-center">
+          <h4>{{ perfilMasComun }}</h4>
+          <p class="mb-0">Perfil Más Común</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
