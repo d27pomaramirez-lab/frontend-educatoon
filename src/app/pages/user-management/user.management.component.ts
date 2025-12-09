@@ -136,14 +136,12 @@ export class UserManagementComponent implements OnInit {
   cargarCursosParaEspecialidad(): void {
     this.cursoService.listarCursosParaCombobox().subscribe({
       next: (cursos) => {
-        // Filtrar si es necesario (ej. solo cursos activos)
         this.listaCursos = cursos.filter(c => c.estado === true);
       },
       error: (err) => console.error('Error cargando cursos para especialidad', err)
     });
   }
 
-  // Método unificado para aplicar y actualizar la paginación
   aplicarPaginacion(pagina: number): void {
     const { data, totalPages } = this.paginationService.getPaginatedData(
       this.todosLosUsuarios,
@@ -181,20 +179,17 @@ export class UserManagementComponent implements OnInit {
     const carreraControl = this.userEditForm.get('carreraPostular');
     const colegioControl = this.userEditForm.get('colegioProcedencia');
 
-    if (usuario.rolNombre === 'ROL_DOCENTE') {
-      // Requerir (o al menos habilitar) especialidad, desactivar estudiante
+    if (usuario.rolNombre === 'ROL_DOCENTE') {      
       especialidadControl?.enable();
       uniControl?.disable();
       carreraControl?.disable();
       colegioControl?.disable();
     } else if (usuario.rolNombre === 'ROL_ESTUDIANTE') {
-      // Requerir (o al menos habilitar) estudiante, desactivar especialidad
       especialidadControl?.disable();
       uniControl?.enable();
       carreraControl?.enable();
       colegioControl?.enable();
     } else {
-      // Si es Admin/Coordinador, desactivar todos los campos específicos
       especialidadControl?.disable();
       uniControl?.disable();
       carreraControl?.disable();
@@ -218,8 +213,8 @@ export class UserManagementComponent implements OnInit {
       text: "Se actualizarán los datos del usuario seleccionado.",
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6', // Puedes personalizar el color
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#28a745',  
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Sí, guardar cambios',
       cancelButtonText: 'No, cancelar'
     }).then((result: SweetAlertResult) => {
@@ -259,7 +254,6 @@ export class UserManagementComponent implements OnInit {
           },
           error: (err) => {
             this.editFormErrorMessage = err.error || 'Error al actualizar el usuario.';
-            // Mostrar SweetAlert2 de error
             Swal.fire('Error', this.editFormErrorMessage!, 'error');
           }
         });
@@ -282,7 +276,7 @@ export class UserManagementComponent implements OnInit {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Sí, ¡desactivar!',
       cancelButtonText: 'Cancelar'
     }).then((result: SweetAlertResult) => {

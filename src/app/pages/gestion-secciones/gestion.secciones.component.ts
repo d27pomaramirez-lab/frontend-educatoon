@@ -158,8 +158,8 @@ export class GestionSeccionesComponent implements OnInit {
       text: "No podrás revertir la eliminación de esta sección.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Sí, ¡eliminar!',
       cancelButtonText: 'Cancelar'
     }).then((result) => {

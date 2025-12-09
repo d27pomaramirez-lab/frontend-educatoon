@@ -9,9 +9,9 @@
   background: #ffffff;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  max-width: 1400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 95%;
+  max-width: 1200px;
   margin: 0 auto 2rem auto;
 }
 
@@ -132,13 +132,6 @@ input:focus, select:focus {
   color: #212529;
 }
 
-.panel-table td:last-child {
-  display: flex;
-  align-items: center; 
-  gap: 5px; 
-  white-space: nowrap; 
-}
-
 .status-validated, .status-pending {
   padding: 0.25em 0.6em;
   font-size: 0.75em;
@@ -155,7 +148,8 @@ input:focus, select:focus {
   border: none;
   cursor: pointer;
   color: white;
-  margin: 0;
+  margin-right: 0.5rem;
+  margin-bottom: 0;
 }
 
 .btn-edit { background-color: #ffc107; color: #000; }
