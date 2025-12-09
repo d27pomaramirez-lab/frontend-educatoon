@@ -167,6 +167,9 @@
               <td>{{ seccion.aula }}</td>
               <td>{{ seccion.capacidad }}</td>
               <td>
+                <button (click)="onVerEstudiantes(seccion)" class="btn-icon btn-icon-view" title="Ver Estudiantes">
+                  <i class="fa-solid fa-users"></i>
+                </button>
                 <button (click)="onEditar(seccion)" class="btn-icon btn-icon-edit" title="Editar">
                   <i class="fa-solid fa-pencil-alt"></i>
                 </button>
@@ -187,6 +190,68 @@
     </app-pagination>
   }
 </div>
+
+<!-- MODAL DE LISTADO DE ESTUDIANTES -->
+@if (mostrarModalEstudiantes && seccionSeleccionadaParaVer) {
+  <div class="modal-backdrop">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3>Estudiantes - {{ seccionSeleccionadaParaVer.codigoSeccion }}</h3>
+        <button (click)="cerrarModalEstudiantes()" class="btn-close">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <p class="text-muted mb-3">
+          Curso: <strong>{{ seccionSeleccionadaParaVer.curso }}</strong> | 
+          Docente: <strong>{{ seccionSeleccionadaParaVer.docente }}</strong>
+        </p>
+
+        @if (loadingEstudiantes) {
+          <div class="text-center p-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-2 text-muted">Cargando lista de estudiantes...</p>
+          </div>
+        } @else if (listaEstudiantesSeccion.length === 0) {
+          <div class="alert alert-info text-center">
+            <i class="fa-solid fa-info-circle me-2"></i>
+            No hay estudiantes inscritos en esta sección.
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Código</th>
+                  <th>Apellidos y Nombres</th>
+                  <th>Fecha Matrícula</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (est of listaEstudiantesSeccion; track est.id) {
+                  <tr>
+                    <td>{{ est.codigoEstudiante }}</td>
+                    <td>{{ est.nombreCompleto }}</td>
+                    <td>{{ est.fechaMatricula | date:'dd/MM/yyyy' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="text-end mt-2">
+            <small class="text-muted">Total inscritos: {{ listaEstudiantesSeccion.length }}</small>
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" (click)="cerrarModalEstudiantes()" class="btn-secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}
+
 
 @if (mostrarModalEdicion && seccionEnEdicion) {
   <div class="modal-backdrop">

@@ -79,11 +79,23 @@ export class ProgresoAcademicoComponent implements OnInit{
   }
 
   getEstadoClass(estado: string): string {
-    switch (estado?.toLowerCase()) {
-      case 'aprobado': return 'badge-success';
-      case 'en riesgo': return 'badge-warning';
-      case 'desaprobado': return 'badge-danger';
+    switch (estado?.toUpperCase()) {
+      case 'APROBADO': return 'badge-success';
+      case 'SATISFACTORIO': return 'badge-info'; // Nuevo color para satisfactorio
+      case 'EN RIESGO': return 'badge-warning';
+      case 'DESAPROBADO': return 'badge-danger';
       default: return 'badge-secondary';
+    }
+  }
+
+  // Determina la clase de la cabecera
+  getHeaderClass(estado: string): string {
+    switch (estado?.toUpperCase()) {
+      case 'APROBADO': return 'header-aprobado';
+      case 'SATISFACTORIO': return 'header-satisfactorio'; // Nuevo estilo
+      case 'EN RIESGO': return 'header-en-riesgo';
+      case 'DESAPROBADO': return 'header-desaprobado';
+      default: return '';
     }
   }
   

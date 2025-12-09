@@ -6,6 +6,7 @@ import { SeccionResponse } from '../dto/response/SeccionResponse';
 import { SeccionRequest } from '../dto/request/SeccionRequest';
 import { HorarioDTO } from '../dto/response/HorarioDTO';
 import { SeccionConHorariosDTO } from '../dto/response/SeccionConHorarios';
+import { EstudianteResumenDTO } from '../dto/response/EstudianteResumenDTO';
 
 
 @Injectable({
@@ -54,7 +55,11 @@ export class SeccionService {
     return this.http.get<SeccionResponse[]>(`${this.apiUrl2}/buscar-secciones`, { params });
   }
 
-    // NUEVO: Obtener secciones con horarios
+  listarEstudiantesDeSeccion(seccionId: string): Observable<EstudianteResumenDTO[]> {
+    return this.http.get<EstudianteResumenDTO[]>(`${this.apiUrl2}/secciones/${seccionId}/estudiantes`);
+  }
+
+  // Obtener secciones con horarios
   obtenerSeccionesConHorarios(): Observable<SeccionConHorariosDTO[]> {
     return this.http.get<any[]>(`${this.apiUrl}/con-horarios`).pipe(
       map(secciones => secciones.map(this.convertirASeccionConHorariosDTO))

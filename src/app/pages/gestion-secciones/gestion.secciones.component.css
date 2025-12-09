@@ -113,7 +113,7 @@
 
 /* Estilos para el Modal de Edición */
 .modal-backdrop {
-  position: fixed;
+  position: absolute; 
   top: 0;
   left: 0;
   width: 100%;
@@ -362,4 +362,63 @@
 /* Ajuste para alinear verticalmente los botones con los inputs */
 .align-items-end {
   align-items: flex-end !important;
+}
+
+/* Estilo para el botón de ver estudiantes (Azul) */
+.btn-icon-view {
+  background-color: #0dcaf0; /* Azul cian */
+  color: #000;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-icon-view:hover {
+  background-color: #0aa2c0;
+  color: white;
+}
+
+/* Ajuste para modal grande */
+.modal-lg {
+  max-width: 800px; /* Más ancho que el modal normal */
+}
+
+/* Estilos básicos para la tabla dentro del modal */
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+
+.table-bordered {
+  border: 1px solid #dee2e6;
+}
+
+.table-bordered th, .table-bordered td {
+  border: 1px solid #dee2e6;
+}
+
+.table-light th {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+  padding: 1rem;
+  border-radius: 0.25rem;
 }

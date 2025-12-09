@@ -6,6 +6,7 @@ import { CursoService } from '../../services/curso.service';
 import { CursoResponse } from '../../dto/response/CursoResponse';
 import { SeccionResponse } from '../../dto/response/SeccionResponse';
 import { SeccionRequest } from '../../dto/request/SeccionRequest';
+import { EstudianteResumenDTO } from '../../dto/response/EstudianteResumenDTO';
 import { UsuarioService } from '../../services/usuario.service';
 import { UsuarioPendienteResponse } from '../../dto/response/UsuarioPendienteResponse';
 import Swal from 'sweetalert2';
@@ -50,6 +51,12 @@ export class GestionSeccionesComponent implements OnInit {
   
   filtroCursoSeleccionado: string = '';
   filtroSeccionSeleccionada: string = '';
+
+  // Variables para el modal de estudiantes
+  mostrarModalEstudiantes = false;
+  listaEstudiantesSeccion: EstudianteResumenDTO[] = [];
+  seccionSeleccionadaParaVer: SeccionResponse | null = null;
+  loadingEstudiantes = false;
 
   constructor(
     private fb: FormBuilder,
@@ -167,6 +174,32 @@ export class GestionSeccionesComponent implements OnInit {
         }
       });
     }
+  }
+
+  // Método para abrir el modal y cargar estudiantes
+  onVerEstudiantes(seccion: SeccionResponse): void {
+    this.seccionSeleccionadaParaVer = seccion;
+    this.mostrarModalEstudiantes = true;
+    this.loadingEstudiantes = true;
+    this.listaEstudiantesSeccion = []; // Limpiar lista anterior
+
+    this.seccionService.listarEstudiantesDeSeccion(seccion.id).subscribe({
+      next: (data) => {
+        this.listaEstudiantesSeccion = data;
+        this.loadingEstudiantes = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar estudiantes', err);
+        this.loadingEstudiantes = false;
+        Swal.fire('Error', 'No se pudieron cargar los estudiantes de esta sección.', 'error');
+      }
+    });
+  }
+
+  cerrarModalEstudiantes(): void {
+    this.mostrarModalEstudiantes = false;
+    this.seccionSeleccionadaParaVer = null;
+    this.listaEstudiantesSeccion = [];
   }
 
   onEditar(seccion: SeccionResponse): void {

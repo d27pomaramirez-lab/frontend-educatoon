@@ -28,7 +28,65 @@
   display: flex;
   justify-content: space-between;
   align-items: start;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+/* --- ESTADOS DE LA CABECERA --- */
+
+/* APROBADO (Verde) */
+.header-aprobado {
+  background-color: #d1e7dd;
+  border-bottom-color: #badbcc;
+}
+.header-aprobado .course-info h3 {
+  color: #0f5132;
+}
+
+/* SATISFACTORIO (Azul/Celeste) */
+.header-satisfactorio {
+  background-color: #cff4fc;
+  border-bottom-color: #b6effb;
+}
+.header-satisfactorio .course-info h3 {
+  color: #055160;
+}
+
+/* EN RIESGO (Amarillo/Naranja) */
+.header-en-riesgo {
+  background-color: #fff3cd;
+  border-bottom-color: #ffecb5;
+}
+.header-en-riesgo .course-info h3 {
+  color: #664d03;
+}
+
+/* DESAPROBADO (Rojo) */
+.header-desaprobado {
+  background-color: #f8d7da;
+  border-bottom-color: #f5c2c7;
+}
+.header-desaprobado .course-info h3 {
+  color: #842029;
+}
+
+/* --- BADGES DE ESTADO --- */
+.badge-success { background-color: #198754; color: white; }
+.badge-info { background-color: #0dcaf0; color: black; }
+.badge-warning { background-color: #ffc107; color: black; }
+.badge-danger { background-color: #dc3545; color: white; }
+.badge-secondary { background-color: #6c757d; color: white; }
+
+.status-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ----------------------------- */
+
 
 .course-info h3 {
   margin: 0;
