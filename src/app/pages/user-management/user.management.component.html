@@ -160,6 +160,44 @@
   <p class="empty-msg">No se encontraron usuarios registrados.</p>
   }
   @else {
+  <div class="filter-panel-container">
+    <h3>Filtros de Búsqueda</h3>
+    <div class="row filter-controls">
+
+      <div class="col-md-4 form-group">
+        <label for="filtroBusqueda">Nombre/Apellido</label>
+        <input type="text" id="filtroBusqueda" [(ngModel)]="filtroBusqueda" (keyup.enter)="onFiltrar()"
+          class="form-control" placeholder="Buscar por nombre o apellido">
+      </div>
+
+      <div class="col-md-3 form-group">
+        <label for="filtroRol">Rol</label>
+        <select id="filtroRol" [(ngModel)]="filtroRol" (change)="onFiltrar()" class="form-select">
+          <option value="">TODOS</option>
+          @for (rol of rolesDisponiblesFiltro; track rol) {
+          @if (rol !== '') {
+          <option [value]="rol">{{ rol }}</option>
+          }
+          }
+        </select>
+      </div>
+
+      <div class="col-md-3 form-group">
+        <label for="filtroEstado">Estado</label>
+        <select id="filtroEstado" [(ngModel)]="filtroEstado" (change)="onFiltrar()" class="form-select">
+          @for (estado of estadosDisponiblesFiltro; track estado.value) {
+          <option [value]="estado.value">{{ estado.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-2 form-group d-flex align-items-end">
+        <button (click)="onFiltrar()" class="btn btn-primary w-100">Buscar</button>
+      </div>
+
+    </div>
+  </div>
+
   <div class="table-responsive">
     <table class="panel-table">
       <thead>
@@ -196,12 +234,12 @@
               <span><i class="fa-solid fa-user-slash"></i></span> }
               @else {
               <span><i class="fa-solid fa-user-check"></i></span>
-               }
+              }
             </button>
             @if (!usuario.enabled) {
-              <button class="btn-active" (click)="onActivar(usuario.id)" title="Activar Usuario">
-                <i class="fa-solid fa-check"></i>
-              </button>
+            <button class="btn-active" (click)="onActivar(usuario.id)" title="Activar Usuario">
+              <i class="fa-solid fa-check"></i>
+            </button>
             }
           </td>
         </tr>

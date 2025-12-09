@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BASE_URL } from '../../utils/constants';
 import { AdminCrearUsuarioRequest } from '../dto/request/AdminCrearUsuarioRequest';
@@ -45,8 +45,24 @@ export class UsuarioService {
     return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/coordinador/pendientes`);
   }
 
-  getTodosLosUsuarios(): Observable<UsuarioPendienteResponse[]> {
-    return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/todos`);
+  //getTodosLosUsuarios(): Observable<UsuarioPendienteResponse[]> {
+  //  return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/todos`);
+  //}
+
+  getTodosLosUsuarios(busqueda?: string, rol?: string, estado?: boolean): Observable<UsuarioPendienteResponse[]> {
+    let params = new HttpParams();
+
+    if (busqueda) {
+      params = params.set('busqueda', busqueda);
+    }
+    if (rol) {
+      params = params.set('rol', rol);
+    }
+    if (estado !== undefined && estado !== null) {
+      params = params.set('estado', estado.toString());
+    }
+
+    return this.http.get<UsuarioPendienteResponse[]>(`${BASE_URL}/admin/usuarios/todos`, { params });
   }
 
   cambiarEstado(id: string): Observable<string> {
@@ -58,14 +74,14 @@ export class UsuarioService {
 
   activarUsuario(id: string): Observable<string> {
     return this.http.put(`${BASE_URL}/admin/usuarios/estado/${id}?enabled=true`,
-       {},
-        { responseType: 'text' });
+      {},
+      { responseType: 'text' });
   }
 
   desactivarUsuario(id: string): Observable<string> {
     return this.http.put(`${BASE_URL}/admin/usuarios/estado/${id}?enabled=false`,
-       {},
-        { responseType: 'text' });
+      {},
+      { responseType: 'text' });
   }
 
   getUsuarioById(id: string): Observable<UsuarioPendienteResponse> {
